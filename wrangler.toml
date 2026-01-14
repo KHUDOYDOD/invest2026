@@ -1,9 +1,5 @@
 name = "invest2026"
 compatibility_date = "2024-01-01"
-pages_build_output_dir = ".vercel/output/static"
 
 [build]
 command = "npm install && npm run build"
-
-[env.production]
-vars = { NODE_ENV = "production" }

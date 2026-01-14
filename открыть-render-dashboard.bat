@@ -2,21 +2,20 @@
 chcp 65001 >nul
 echo.
 echo ═══════════════════════════════════════════════════════════
-echo   ОТКРЫТИЕ NEON CONSOLE
+echo   ОТКРЫТИЕ RENDER DASHBOARD
 echo ═══════════════════════════════════════════════════════════
 echo.
-echo Открываю Neon Console...
+echo Открываю Render Dashboard...
 echo.
 
-start https://console.neon.tech/
+start https://dashboard.render.com/
 
 echo.
-echo ✅ Neon Console открыт в браузере
+echo ✅ Render Dashboard открыт в браузере
 echo.
-echo Что делать:
-echo 1. Выберите ваш проект
-echo 2. Откройте SQL Editor
-echo 3. Вставьте SQL (Ctrl+V)
-echo 4. Нажмите Run
+echo Что проверить:
+echo 1. Статус сборки (должна быть успешной)
+echo 2. Логи деплоя
+echo 3. Переменные окружения (Environment Variables)
 echo.
 pause

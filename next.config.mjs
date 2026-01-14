@@ -10,6 +10,12 @@ const nextConfig = {
     serverComponentsExternalPackages: ["pg"],
   },
   webpack: (config, { isServer }) => {
+    // Явно указываем пути для резолва модулей
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@': __dirname,
+    }
+    
     if (!isServer) {
       config.resolve.fallback = {
         ...config.resolve.fallback,

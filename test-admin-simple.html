@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Admin Login</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .result { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        button { padding: 10px 20px; margin: 5px; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 5px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>🔐 Test Admin Login & API</h1>
+    
+    <button onclick="testLogin()">1. Test Admin Login</button>
+    <button onclick="testDepositRequests()">2. Test Deposit Requests API</button>
+    <button onclick="testWithdrawalRequests()">3. Test Withdrawal Requests API</button>
+    <button onclick="clearResults()">Clear Results</button>
+    
+    <div id="results"></div>
+
+    <script>
+        let authToken = '';
+        
+        function addResult(message, isSuccess = true) {
+            const div = document.createElement('div');
+            div.className = `result ${isSuccess ? 'success' : 'error'}`;
+            div.innerHTML = message;
+            document.getElementById('results').appendChild(div);
+        }
+        
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+        }
+        
+        async function testLogin() {
+            try {
+                addResult('🔄 Testing admin login...');
+                
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: 'admin@example.com',
+                        password: 'admin123'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    authToken = data.token;
+                    addResult(`✅ Admin login successful!<br>
+                        👤 User: ${data.user.fullName} (${data.user.email})<br>
+                        🎭 Role: ${data.user.role}<br>
+                        🎫 Token: ${authToken.substring(0, 50)}...`);
+                } else {
+                    addResult(`❌ Login failed: ${data.error}`, false);
+                }
+            } catch (error) {
+                addResult(`❌ Login error: ${error.message}`, false);
+            }
+        }
+        
+        async function testDepositRequests() {
+            if (!authToken) {
+                addResult('❌ Please login first!', false);
+                return;
+            }
+            
+            try {
+                addResult('🔄 Testing deposit requests API...');
+                
+                const response = await fetch('/api/admin/deposit-requests', {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    addResult(`✅ Deposit requests loaded successfully!<br>
+                        📊 Found ${data.requests.length} requests<br>
+                        <pre>${JSON.stringify(data.requests.slice(0, 2), null, 2)}</pre>`);
+                } else {
+                    addResult(`❌ Failed to load deposit requests: ${data.error}`, false);
+                }
+            } catch (error) {
+                addResult(`❌ Deposit requests error: ${error.message}`, false);
+            }
+        }
+        
+        async function testWithdrawalRequests() {
+            if (!authToken) {
+                addResult('❌ Please login first!', false);
+                return;
+            }
+            
+            try {
+                addResult('🔄 Testing withdrawal requests API...');
+                
+                const response = await fetch('/api/admin/withdrawal-requests', {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    addResult(`✅ Withdrawal requests loaded successfully!<br>
+                        📊 Found ${data.requests.length} requests<br>
+                        <pre>${JSON.stringify(data.requests.slice(0, 2), null, 2)}</pre>`);
+                } else {
+                    addResult(`❌ Failed to load withdrawal requests: ${data.error}`, false);
+                }
+            } catch (error) {
+                addResult(`❌ Withdrawal requests error: ${error.message}`, false);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Тест входа админа</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .form-group { margin: 10px 0; }
+        label { display: block; margin-bottom: 5px; }
+        input { padding: 8px; width: 300px; border: 1px solid #ccc; border-radius: 4px; }
+        button { padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .result { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <h1>🔐 Тест входа администратора</h1>
+    
+    <form id="adminLoginForm">
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" value="admin@example.com" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="password">Пароль:</label>
+            <input type="password" id="password" value="admin123" required>
+        </div>
+        
+        <button type="submit">Войти как админ</button>
+    </form>
+    
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('adminLoginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const resultDiv = document.getElementById('result');
+            
+            resultDiv.innerHTML = '<div class="result">🔄 Выполняется вход...</div>';
+            
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    if (data.user.isAdmin) {
+                        // Сохраняем данные как в реальной форме
+                        localStorage.setItem("authToken", data.token);
+                        localStorage.setItem("userId", data.user.id);
+                        localStorage.setItem("adminAuth", "true");
+                        localStorage.setItem("adminUser", JSON.stringify(data.user));
+                        
+                        resultDiv.innerHTML = `
+                            <div class="result success">
+                                ✅ Успешный вход администратора!<br>
+                                👤 Пользователь: ${data.user.fullName}<br>
+                                🎭 Роль: ${data.user.role}<br>
+                                🔄 Redirect: ${data.redirect}<br>
+                                <br>
+                                <a href="/admin/dashboard" target="_blank">🎯 Перейти в админ-панель</a>
+                            </div>
+                        `;
+                    } else {
+                        resultDiv.innerHTML = `
+                            <div class="result error">
+                                ❌ У пользователя нет прав администратора!<br>
+                                🎭 Роль: ${data.user.role}
+                            </div>
+                        `;
+                    }
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="result error">
+                            ❌ Ошибка входа: ${data.error}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="result error">
+                        ❌ Ошибка: ${error.message}
+                    </div>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>

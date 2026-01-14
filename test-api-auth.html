@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test API Auth</title>
+</head>
+<body>
+    <h1>Test API Authentication</h1>
+    <button onclick="testAdminAPI()">Test Admin API</button>
+    <button onclick="testUserAPI()">Test User API</button>
+    <button onclick="checkLocalStorage()">Check LocalStorage</button>
+    <pre id="output"></pre>
+
+    <script>
+        function log(message) {
+            const output = document.getElementById('output');
+            output.textContent += message + '\n';
+            console.log(message);
+        }
+
+        function checkLocalStorage() {
+            const output = document.getElementById('output');
+            output.textContent = '';
+            
+            const token = localStorage.getItem('authToken');
+            const userId = localStorage.getItem('userId');
+            
+            log('=== LocalStorage ===');
+            log('authToken: ' + (token ? 'present (length: ' + token.length + ')' : 'missing'));
+            log('userId: ' + userId);
+            log('Token preview: ' + (token ? token.substring(0, 50) + '...' : 'N/A'));
+        }
+
+        async function testAdminAPI() {
+            const output = document.getElementById('output');
+            output.textContent = '';
+            
+            const token = localStorage.getItem('authToken');
+            
+            log('=== Testing Admin API ===');
+            log('Token: ' + (token ? 'present' : 'missing'));
+            
+            try {
+                const response = await fetch('/api/admin/deposit-requests', {
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                });
+                
+                log('Status: ' + response.status);
+                const data = await response.json();
+                log('Response: ' + JSON.stringify(data, null, 2));
+            } catch (error) {
+                log('Error: ' + error.message);
+            }
+        }
+
+        async function testUserAPI() {
+            const output = document.getElementById('output');
+            output.textContent = '';
+            
+            const token = localStorage.getItem('authToken');
+            
+            log('=== Testing User API ===');
+            log('Token: ' + (token ? 'present' : 'missing'));
+            
+            try {
+                const response = await fetch('/api/user/deposit-requests', {
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                });
+                
+                log('Status: ' + response.status);
+                const data = await response.json();
+                log('Response: ' + JSON.stringify(data, null, 2));
+            } catch (error) {
+                log('Error: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>

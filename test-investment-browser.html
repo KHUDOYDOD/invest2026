@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест создания инвестиций</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #1a1a1a; color: white; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .section { margin: 20px 0; padding: 20px; background: #2a2a2a; border-radius: 8px; }
+        button { padding: 10px 20px; margin: 5px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #45a049; }
+        .error { color: #ff6b6b; }
+        .success { color: #51cf66; }
+        .info { color: #74c0fc; }
+        pre { background: #1a1a1a; padding: 10px; border-radius: 4px; overflow-x: auto; }
+        input, select { padding: 8px; margin: 5px; background: #3a3a3a; color: white; border: 1px solid #555; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Тест создания инвестиций</h1>
+        
+        <div class="section">
+            <h2>1. Авторизация</h2>
+            <input type="email" id="email" placeholder="Email" value="test@example.com">
+            <input type="password" id="password" placeholder="Пароль" value="test123">
+            <button onclick="login()">Войти</button>
+            <div id="loginResult"></div>
+        </div>
+        
+        <div class="section">
+            <h2>2. Загрузка планов</h2>
+            <button onclick="loadPlans()">Загрузить планы</button>
+            <div id="plansResult"></div>
+        </div>
+        
+        <div class="section">
+            <h2>3. Создание инвестиции</h2>
+            <select id="planSelect">
+                <option value="">Выберите план</option>
+            </select>
+            <input type="number" id="amount" placeholder="Сумма" min="100">
+            <button onclick="debugInvestment()">Отладка</button>
+            <button onclick="createInvestment()">Создать инвестицию</button>
+            <div id="investmentResult"></div>
+        </div>
+        
+        <div class="section">
+            <h2>📋 Логи</h2>
+            <div id="logs"></div>
+        </div>
+    </div>
+
+    <script>
+        let authToken = null;
+        let userId = null;
+        let plans = [];
+
+        function log(message, type = 'info') {
+            const logsDiv = document.getElementById('logs');
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type === 'error' ? 'error' : type === 'success' ? 'success' : 'info';
+            logsDiv.innerHTML += `<div class="${className}">[${timestamp}] ${message}</div>`;
+            logsDiv.scrollTop = logsDiv.scrollHeight;
+            console.log(message);
+        }
+
+        async function login() {
+            try {
+                log('🔐 Авторизация...');
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.token) {
+                    authToken = data.token;
+                    userId = data.user.id;
+                    log(`✅ Авторизация успешна: ${data.user.email}, баланс: $${data.user.balance}`, 'success');
+                    document.getElementById('loginResult').innerHTML = `<div class="success">✅ Вошли как: ${data.user.email}<br>💰 Баланс: $${data.user.balance}</div>`;
+                } else {
+                    log(`❌ Ошибка авторизации: ${data.error}`, 'error');
+                    document.getElementById('loginResult').innerHTML = `<div class="error">❌ ${data.error}</div>`;
+                }
+            } catch (error) {
+                log(`💥 Ошибка запроса авторизации: ${error.message}`, 'error');
+            }
+        }
+
+        async function loadPlans() {
+            try {
+                log('📦 Загрузка планов...');
+                const response = await fetch('/api/investment-plans');
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    plans = data.plans;
+                    log(`✅ Загружено планов: ${plans.length}`, 'success');
+                    
+                    const select = document.getElementById('planSelect');
+                    select.innerHTML = '<option value="">Выберите план</option>';
+                    
+                    plans.forEach(plan => {
+                        const option = document.createElement('option');
+                        option.value = plan.id;
+                        option.textContent = `${plan.name} ($${plan.min_amount}-$${plan.max_amount}, ${plan.daily_percent}%)`;
+                        select.appendChild(option);
+                    });
+                    
+                    document.getElementById('plansResult').innerHTML = `<div class="success">✅ Загружено планов: ${plans.length}</div><pre>${JSON.stringify(plans, null, 2)}</pre>`;
+                } else {
+                    log(`❌ Ошибка загрузки планов: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                log(`💥 Ошибка запроса планов: ${error.message}`, 'error');
+            }
+        }
+
+        async function debugInvestment() {
+            if (!authToken) {
+                log('❌ Сначала авторизуйтесь', 'error');
+                return;
+            }
+            
+            try {
+                log('🔍 Отладка создания инвестиции...');
+                const planId = document.getElementById('planSelect').value;
+                const amount = parseFloat(document.getElementById('amount').value);
+                
+                const response = await fetch('/api/debug/investment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({ planId, amount })
+                });
+                
+                const data = await response.json();
+                log(`🔍 Отладка завершена: ${response.status}`, response.ok ? 'success' : 'error');
+                
+                document.getElementById('investmentResult').innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+                
+            } catch (error) {
+                log(`💥 Ошибка отладки: ${error.message}`, 'error');
+            }
+        }
+
+        async function createInvestment() {
+            if (!authToken) {
+                log('❌ Сначала авторизуйтесь', 'error');
+                return;
+            }
+            
+            try {
+                log('💰 Создание инвестиции...');
+                const planId = document.getElementById('planSelect').value;
+                const amount = parseFloat(document.getElementById('amount').value);
+                
+                if (!planId || !amount) {
+                    log('❌ Выберите план и введите сумму', 'error');
+                    return;
+                }
+                
+                log(`📤 Отправка запроса: planId=${planId}, amount=${amount}`);
+                
+                const response = await fetch('/api/investments/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({ planId, amount })
+                });
+                
+                log(`📊 Статус ответа: ${response.status}`);
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    log(`✅ Инвестиция создана: $${data.investment.amount} в план "${data.investment.plan}"`, 'success');
+                    document.getElementById('investmentResult').innerHTML = `<div class="success">✅ Инвестиция создана!</div><pre>${JSON.stringify(data, null, 2)}</pre>`;
+                } else {
+                    log(`❌ Ошибка создания инвестиции: ${data.error}`, 'error');
+                    document.getElementById('investmentResult').innerHTML = `<div class="error">❌ ${data.error}</div><pre>${JSON.stringify(data, null, 2)}</pre>`;
+                }
+                
+            } catch (error) {
+                log(`💥 Ошибка запроса: ${error.message}`, 'error');
+            }
+        }
+
+        // Автоматически загружаем планы при загрузке страницы
+        window.onload = () => {
+            log('🚀 Страница загружена');
+            loadPlans();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: invest2025
+    runtime: node
+    plan: free
+    region: frankfurt
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: POSTGRES_URL
+        sync: false
+      - key: POSTGRES_URL_NON_POOLING
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: NEXTAUTH_SECRET
+        generateValue: true
+      - key: NEXTAUTH_URL
+        value: https://invest2025.onrender.com

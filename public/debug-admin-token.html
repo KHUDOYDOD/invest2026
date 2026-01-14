@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Отладка токена админа</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .result { margin: 10px 0; padding: 10px; border-radius: 5px; background: #f8f9fa; }
+        button { padding: 10px 20px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 5px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Отладка токена администратора</h1>
+    
+    <button onclick="checkToken()">Проверить токен</button>
+    <button onclick="loginAdmin()">Войти как админ</button>
+    <button onclick="testWithdrawalAPI()">Тестировать API вывода</button>
+    <button onclick="clearStorage()">Очистить localStorage</button>
+    
+    <div id="result"></div>
+
+    <script>
+        function addResult(message) {
+            const div = document.createElement('div');
+            div.className = 'result';
+            div.innerHTML = message;
+            document.getElementById('result').appendChild(div);
+        }
+        
+        function clearResults() {
+            document.getElementById('result').innerHTML = '';
+        }
+        
+        function checkToken() {
+            clearResults();
+            
+            const authToken = localStorage.getItem('authToken');
+            const userId = localStorage.getItem('userId');
+            const adminAuth = localStorage.getItem('adminAuth');
+            const adminUser = localStorage.getItem('adminUser');
+            
+            addResult(`
+                <h3>📋 Данные в localStorage:</h3>
+                <strong>authToken:</strong> ${authToken ? authToken.substring(0, 50) + '...' : 'НЕТ'}<br>
+                <strong>userId:</strong> ${userId || 'НЕТ'}<br>
+                <strong>adminAuth:</strong> ${adminAuth || 'НЕТ'}<br>
+                <strong>adminUser:</strong> ${adminUser ? JSON.stringify(JSON.parse(adminUser), null, 2) : 'НЕТ'}
+            `);
+        }
+        
+        async function loginAdmin() {
+            clearResults();
+            addResult('🔄 Выполняется вход админа...');
+            
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: 'admin@example.com',
+                        password: 'admin123'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success && data.user.isAdmin) {
+                    // Сохраняем данные
+                    localStorage.setItem("authToken", data.token);
+                    localStorage.setItem("userId", data.user.id);
+                    localStorage.setItem("adminAuth", "true");
+                    localStorage.setItem("adminUser", JSON.stringify(data.user));
+                    
+                    addResult(`
+                        <h3>✅ Успешный вход админа!</h3>
+                        <strong>Пользователь:</strong> ${data.user.fullName}<br>
+                        <strong>Email:</strong> ${data.user.email}<br>
+                        <strong>Роль:</strong> ${data.user.role}<br>
+                        <strong>Админ:</strong> ${data.user.isAdmin}<br>
+                        <strong>Токен:</strong> ${data.token.substring(0, 50)}...
+                    `);
+                } else {
+                    addResult(`❌ Ошибка входа: ${data.error || 'Нет прав админа'}`);
+                }
+            } catch (error) {
+                addResult(`❌ Ошибка: ${error.message}`);
+            }
+        }
+        
+        async function testWithdrawalAPI() {
+            clearResults();
+            
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                addResult('❌ Нет токена! Сначала войдите как админ.');
+                return;
+            }
+            
+            addResult('🔄 Получаем заявки на вывод...');
+            
+            try {
+                // Получаем заявки
+                const requestsResponse = await fetch('/api/admin/withdrawal-requests', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                const requestsData = await requestsResponse.json();
+                
+                if (!requestsData.success) {
+                    addResult(`❌ Ошибка получения заявок: ${requestsData.error}`);
+                    return;
+                }
+                
+                addResult(`📊 Найдено ${requestsData.requests.length} заявок`);
+                
+                // Находим pending заявку
+                const pendingRequest = requestsData.requests.find(req => req.status === 'pending');
+                
+                if (!pendingRequest) {
+                    addResult('❌ Нет заявок со статусом pending для тестирования');
+                    return;
+                }
+                
+                addResult(`💸 Тестируем заявку: ${pendingRequest.id.substring(0, 8)}... ($${pendingRequest.amount})`);
+                
+                // Пытаемся одобрить
+                const approveResponse = await fetch(`/api/admin/withdrawal-requests/${pendingRequest.id}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        status: 'approved',
+                        admin_comment: 'Тест из браузера'
+                    })
+                });
+                
+                addResult(`📥 Ответ API: Status ${approveResponse.status}`);
+                
+                if (approveResponse.ok) {
+                    const data = await approveResponse.json();
+                    addResult(`✅ Успех: ${data.message}`);
+                } else {
+                    const errorText = await approveResponse.text();
+                    addResult(`❌ Ошибка: ${errorText}`);
+                }
+                
+            } catch (error) {
+                addResult(`❌ Ошибка: ${error.message}`);
+            }
+        }
+        
+        function clearStorage() {
+            localStorage.clear();
+            addResult('🗑️ localStorage очищен');
+        }
+    </script>
+</body>
+</html>

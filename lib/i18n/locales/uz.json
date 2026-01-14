@@ -1,0 +1,225 @@
+{
+  "common": {
+    "loading": "Yuklanmoqda...",
+    "error": "Xato",
+    "success": "Muvaffaqiyatli",
+    "save": "Saqlash",
+    "cancel": "Bekor qilish",
+    "delete": "O'chirish",
+    "edit": "Tahrirlash",
+    "close": "Yopish",
+    "back": "Orqaga",
+    "next": "Keyingi",
+    "submit": "Yuborish",
+    "search": "Qidirish",
+    "filter": "Filtr",
+    "all": "Hammasi",
+    "yes": "Ha",
+    "no": "Yo'q"
+  },
+  "header": {
+    "home": "Bosh sahifa",
+    "about": "Biz haqimizda",
+    "plans": "Tariflar",
+    "contact": "Aloqa",
+    "login": "Kirish",
+    "register": "Ro'yxatdan o'tish",
+    "dashboard": "Shaxsiy kabinet",
+    "logout": "Chiqish"
+  },
+  "hero": {
+    "badge": "Platforma 2025 yildan beri ishlaydi",
+    "title": "Oqilona investitsiya qiling, barqaror daromad oling",
+    "subtitle": "Kundalik to'lovlar, yuqori daromad va kafolatlangan xavfsizlik bilan professional investitsiya platformasi",
+    "cta_primary": "Investitsiyani boshlash",
+    "cta_secondary": "Tizimga kirish",
+    "stats_users": "Faol investorlar",
+    "stats_invested": "Umumiy investitsiyalar",
+    "stats_return": "O'rtacha daromad",
+    "stats_payouts": "Foyda to'landi"
+  },
+  "statistics": {
+    "title": "Bizning yutuqlarimiz",
+    "subtitle": "Investitsiya platformamizning real vaqt ma'lumotlari",
+    "badge": "Real vaqt statistikasi",
+    "users": "Faol investorlar",
+    "investments": "Oylik investitsiyalar",
+    "payouts": "Foyda to'landi",
+    "profitability": "O'rtacha daromadlilik",
+    "updated": "Ma'lumotlar sahifa ochilganda yuklandi"
+  },
+  "features": {
+    "title": "Nima uchun bizni tanlashadi",
+    "subtitle": "Biz investitsiya uchun eng yaxshi sharoitlarni taklif qilamiz",
+    "security_title": "Xavfsizlik",
+    "security_desc": "Ma'lumotlar va mablag'larni himoya qilish",
+    "profit_title": "Yuqori daromad",
+    "profit_desc": "Yiliga 30%gacha",
+    "support_title": "24/7 qo'llab-quvvatlash",
+    "support_desc": "Doimo aloqada",
+    "withdrawal_title": "Tez yechib olish",
+    "withdrawal_desc": "24 soat ichida mablag'larni yechib olish"
+  },
+  "plans": {
+    "title": "Investitsiya rejalari",
+    "subtitle": "Mos tarifni tanlang",
+    "min_deposit": "Minimal depozit",
+    "daily_profit": "Kundalik foyda",
+    "total_profit": "Umumiy foyda",
+    "duration": "Muddati",
+    "days": "kun",
+    "choose": "Rejani tanlash",
+    "popular": "Mashhur"
+  },
+  "calculator": {
+    "title": "Foyda kalkulyatori",
+    "subtitle": "Daromadingizni hisoblang",
+    "amount": "Investitsiya summasi",
+    "plan": "Rejani tanlang",
+    "daily": "Kundalik",
+    "total": "Davr bo'yicha jami",
+    "calculate": "Hisoblash"
+  },
+  "testimonials": {
+    "title": "Mijozlar sharhlari",
+    "subtitle": "Investorlarimiz nima deyishadi"
+  },
+  "cta": {
+    "title": "Bugun investitsiyani boshlang",
+    "subtitle": "Minglab muvaffaqiyatli investorlarga qo'shiling",
+    "button": "Hisob yaratish"
+  },
+  "footer": {
+    "about": "Kompaniya haqida",
+    "about_text": "Professional investitsiya platformasi",
+    "links": "Foydali havolalar",
+    "support": "Qo'llab-quvvatlash",
+    "legal": "Huquqiy ma'lumot",
+    "terms": "Foydalanish shartlari",
+    "privacy": "Maxfiylik siyosati",
+    "rights": "Barcha huquqlar himoyalangan"
+  },
+  "auth": {
+    "login_title": "Tizimga kirish",
+    "register_title": "Ro'yxatdan o'tish",
+    "email": "Email",
+    "password": "Parol",
+    "confirm_password": "Parolni tasdiqlang",
+    "full_name": "To'liq ism",
+    "phone": "Telefon",
+    "referral_code": "Referal kodi (ixtiyoriy)",
+    "login_button": "Kirish",
+    "register_button": "Ro'yxatdan o'tish",
+    "forgot_password": "Parolni unutdingizmi?",
+    "no_account": "Hisobingiz yo'qmi?",
+    "have_account": "Hisobingiz bormi?",
+    "login_link": "Kirish",
+    "register_link": "Ro'yxatdan o'tish"
+  },
+  "dashboard": {
+    "title": "Shaxsiy kabinet",
+    "header": {
+      "control_panel": "Boshqaruv paneli",
+      "online": "Onlayn",
+      "search_placeholder": "Kabinet bo'yicha qidirish...",
+      "messages": "Xabarlar",
+      "notifications": "Bildirishnomalar",
+      "mark_all_read": "Hammasini o'qilgan deb belgilash",
+      "all_messages": "Barcha xabarlar",
+      "all_notifications": "Barcha bildirishnomalar",
+      "my_profile": "Mening profilim",
+      "settings": "Sozlamalar",
+      "support": "Qo'llab-quvvatlash",
+      "logout": "Chiqish",
+      "user_role": "Foydalanuvchi",
+      "active": "Faol"
+    },
+    "balance": "Balans",
+    "total_invested": "Jami investitsiya qilindi",
+    "total_earned": "Jami topildi",
+    "active_investments": "Faol investitsiyalar",
+    "deposit": "To'ldirish",
+    "withdraw": "Yechib olish",
+    "invest": "Investitsiya qilish",
+    "transactions": "Tranzaksiyalar",
+    "investments": "Investitsiyalar",
+    "referrals": "Referallar",
+    "settings": "Sozlamalar",
+    "support": "Qo'llab-quvvatlash"
+  },
+  "transactions": {
+    "title": "Tranzaksiyalar tarixi",
+    "type": "Turi",
+    "amount": "Summa",
+    "status": "Holati",
+    "date": "Sana",
+    "deposit": "To'ldirish",
+    "withdrawal": "Yechib olish",
+    "profit": "Foyda",
+    "pending": "Kutilmoqda",
+    "completed": "Yakunlandi",
+    "rejected": "Rad etildi"
+  },
+  "deposit": {
+    "title": "Hisobni to'ldirish",
+    "amount": "To'ldirish summasi",
+    "method": "To'lov usuli",
+    "submit": "To'ldirish",
+    "min_amount": "Minimal summa",
+    "instructions": "To'lov bo'yicha ko'rsatmalar"
+  },
+  "withdrawal": {
+    "title": "Mablag'larni yechib olish",
+    "amount": "Yechib olish summasi",
+    "method": "Yechib olish usuli",
+    "wallet": "Hamyon/Karta",
+    "submit": "Yechib olish",
+    "available": "Yechib olish uchun mavjud",
+    "min_amount": "Minimal yechib olish summasi"
+  },
+  "investments": {
+    "title": "Mening investitsiyalarim",
+    "plan": "Reja",
+    "amount": "Summa",
+    "profit": "Foyda",
+    "status": "Holati",
+    "start_date": "Boshlanish sanasi",
+    "end_date": "Tugash sanasi",
+    "active": "Faol",
+    "completed": "Yakunlandi",
+    "create_new": "Investitsiya yaratish"
+  },
+  "referrals": {
+    "title": "Referal dasturi",
+    "your_code": "Sizning referal kodingiz",
+    "copy": "Nusxa olish",
+    "total_referrals": "Jami referallar",
+    "total_earned": "Referallardan topildi",
+    "commission": "Komissiya"
+  },
+  "settings": {
+    "title": "Sozlamalar",
+    "profile": "Profil",
+    "security": "Xavfsizlik",
+    "notifications": "Bildirishnomalar",
+    "language": "Til",
+    "save_changes": "O'zgarishlarni saqlash"
+  },
+  "support": {
+    "title": "Qo'llab-quvvatlash",
+    "subject": "Mavzu",
+    "message": "Xabar",
+    "send": "Yuborish",
+    "faq": "Tez-tez beriladigan savollar"
+  },
+  "admin": {
+    "dashboard": "Boshqaruv paneli",
+    "users": "Foydalanuvchilar",
+    "transactions": "Tranzaksiyalar",
+    "investments": "Investitsiyalar",
+    "plans": "Tarif rejalari",
+    "settings": "Sozlamalar",
+    "statistics": "Statistika",
+    "requests": "So'rovlar"
+  }
+}

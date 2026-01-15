@@ -1,0 +1,24 @@
+"use strict";(()=>{var e={};e.id=4314,e.ids=[4314],e.modules={20399:e=>{e.exports=require("next/dist/compiled/next-server/app-page.runtime.prod.js")},30517:e=>{e.exports=require("next/dist/compiled/next-server/app-route.runtime.prod.js")},78893:e=>{e.exports=require("buffer")},84770:e=>{e.exports=require("crypto")},76162:e=>{e.exports=require("stream")},21764:e=>{e.exports=require("util")},8678:e=>{e.exports=import("pg")},54952:(e,r,t)=>{t.a(e,async(e,a)=>{try{t.r(r),t.d(r,{originalPathname:()=>p,patchFetch:()=>d,requestAsyncStorage:()=>c,routeModule:()=>l,serverHooks:()=>_,staticGenerationAsyncStorage:()=>m});var s=t(73278),o=t(45002),n=t(54877),u=t(55363),i=e([u]);u=(i.then?(await i)():i)[0];let l=new s.AppRouteRouteModule({definition:{kind:o.x.APP_ROUTE,page:"/api/admin/withdrawal-requests/route",pathname:"/api/admin/withdrawal-requests",filename:"route",bundlePath:"app/api/admin/withdrawal-requests/route"},resolvedPagePath:"C:\\Users\\x4539\\Downloads\\Invest2025-main\\Invest2025-main\\app\\api\\admin\\withdrawal-requests\\route.ts",nextConfigOutput:"",userland:u}),{requestAsyncStorage:c,staticGenerationAsyncStorage:m,serverHooks:_}=l,p="/api/admin/withdrawal-requests/route";function d(){return(0,n.patchFetch)({serverHooks:_,staticGenerationAsyncStorage:m})}a()}catch(e){a(e)}})},55363:(e,r,t)=>{t.a(e,async(e,a)=>{try{t.r(r),t.d(r,{GET:()=>d});var s=t(71309),o=t(64985),n=t(67390),u=t.n(n),i=e([o]);async function d(e){try{console.log("=== ADMIN GET WITHDRAWAL REQUESTS ==="),console.log("Request URL:",e.url),console.log("Request method:",e.method);let r=function(e){let r=e.headers.get("authorization");if(!r||!r.startsWith("Bearer "))return null;let t=r.substring(7);try{let e=process.env.NEXTAUTH_SECRET||process.env.JWT_SECRET||"fallback_secret",r=u().verify(t,e);if("admin"!==r.role&&"super_admin"!==r.role)return null;return r}catch(e){return console.error("Admin token verification error:",e),null}}(e);if(!r)return console.log("❌ Admin verification failed"),s.NextResponse.json({error:"Доступ запрещен"},{status:403});console.log("✅ Admin verified:",r.email,"Role:",r.role),console.log("\uD83D\uDCE4 Executing database query...");let t=await (0,o.I)(`SELECT 
+        wr.id,
+        wr.user_id,
+        wr.amount,
+        wr.method,
+        wr.wallet_address,
+        wr.card_number,
+        wr.card_holder_name,
+        wr.phone_number,
+        wr.account_holder_name,
+        wr.crypto_network,
+        wr.fee,
+        wr.final_amount,
+        wr.status,
+        wr.admin_comment,
+        wr.created_at,
+        wr.processed_at,
+        wr.processed_by,
+        u.full_name as user_name,
+        u.email as user_email
+      FROM withdrawal_requests wr
+      LEFT JOIN users u ON wr.user_id = u.id
+      ORDER BY wr.created_at DESC
+      LIMIT 100`);console.log(`✅ Found ${t.rows.length} withdrawal requests`),t.rows.length>0&&console.log("\uD83D\uDCCB First request:",{id:t.rows[0].id,user:t.rows[0].user_name,amount:t.rows[0].amount,status:t.rows[0].status});let a=t.rows.map(e=>{var r;return{id:e.id,user_id:e.user_id,users:{id:e.user_id,full_name:e.user_name||"Неизвестный пользователь",email:e.user_email||""},amount:parseFloat(e.amount),method:({bank_card:"Банковская карта",crypto:"Криптовалюта",bank_transfer:"Банковский перевод",e_wallet:"Электронный кошелек",usdt:"USDT",bitcoin:"Bitcoin",ethereum:"Ethereum"})[r=e.method]||r,wallet_address:e.wallet_address,card_number:e.card_number,card_holder_name:e.card_holder_name,phone_number:e.phone_number,account_holder_name:e.account_holder_name,crypto_network:e.crypto_network,fee:parseFloat(e.fee||0),final_amount:parseFloat(e.final_amount||e.amount),status:e.status,admin_comment:e.admin_comment,created_at:e.created_at,processed_at:e.processed_at,processed_by:e.processed_by}});return a.length>0&&a[0].card_number&&console.log("\uD83D\uDCCB First request with card details:",{id:a[0].id,card_number:a[0].card_number,card_holder_name:a[0].card_holder_name}),s.NextResponse.json({success:!0,requests:a})}catch(e){return console.error("❌ Error fetching admin withdrawal requests:",e),s.NextResponse.json({error:"Ошибка получения заявок на вывод",details:e instanceof Error?e.message:"Unknown error"},{status:500})}}o=(i.then?(await i)():i)[0],a()}catch(e){a(e)}})},64985:(e,r,t)=>{t.a(e,async(e,a)=>{try{t.d(r,{I:()=>n,d:()=>i});var s=t(8678),o=e([s]);s=(o.then?(await o)():o)[0];let u=process.env.POSTGRES_URL_NON_POOLING||process.env.DATABASE_URL||process.env.POSTGRES_URL;if(!u)throw Error("DATABASE_URL, POSTGRES_URL, or POSTGRES_URL_NON_POOLING must be set. Did you forget to provision a database?");let i=new s.Pool({connectionString:u,ssl:!!u?.includes("sslmode=require")&&{rejectUnauthorized:!1}});async function n(e,r){let t=await i.connect();try{return await t.query(e,r)}finally{t.release()}}a()}catch(e){a(e)}})}};var r=require("../../../../webpack-runtime.js");r.C(e);var t=e=>r(r.s=e),a=r.X(0,[7787,4833,7390],()=>t(54952));module.exports=a})();

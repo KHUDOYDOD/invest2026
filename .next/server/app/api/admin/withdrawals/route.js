@@ -1,0 +1,18 @@
+"use strict";(()=>{var e={};e.id=9319,e.ids=[9319],e.modules={20399:e=>{e.exports=require("next/dist/compiled/next-server/app-page.runtime.prod.js")},30517:e=>{e.exports=require("next/dist/compiled/next-server/app-route.runtime.prod.js")},8678:e=>{e.exports=import("pg")},76463:(e,t,a)=>{a.a(e,async(e,r)=>{try{a.r(t),a.d(t,{originalPathname:()=>h,patchFetch:()=>d,requestAsyncStorage:()=>c,routeModule:()=>l,serverHooks:()=>w,staticGenerationAsyncStorage:()=>p});var s=a(73278),n=a(45002),o=a(54877),i=a(72611),u=e([i]);i=(u.then?(await u)():u)[0];let l=new s.AppRouteRouteModule({definition:{kind:n.x.APP_ROUTE,page:"/api/admin/withdrawals/route",pathname:"/api/admin/withdrawals",filename:"route",bundlePath:"app/api/admin/withdrawals/route"},resolvedPagePath:"C:\\Users\\x4539\\Downloads\\Invest2025-main\\Invest2025-main\\app\\api\\admin\\withdrawals\\route.ts",nextConfigOutput:"",userland:i}),{requestAsyncStorage:c,staticGenerationAsyncStorage:p,serverHooks:w}=l,h="/api/admin/withdrawals/route";function d(){return(0,o.patchFetch)({serverHooks:w,staticGenerationAsyncStorage:p})}r()}catch(e){r(e)}})},72611:(e,t,a)=>{a.a(e,async(e,r)=>{try{a.r(t),a.d(t,{GET:()=>i,POST:()=>u});var s=a(71309),n=a(64985),o=e([n]);async function i(e){try{console.log("Loading withdrawal requests from database...");let e=await (0,n.I)(`SELECT 
+        t.id,
+        t.user_id,
+        u.full_name as user_name,
+        u.email as user_email,
+        t.amount,
+        t.status,
+        t.created_at,
+        t.payment_method as method,
+        t.description,
+        0 as fee,
+        t.amount as final_amount
+      FROM transactions t
+      JOIN users u ON t.user_id = u.id
+      WHERE t.type = 'withdrawal'
+      ORDER BY t.created_at DESC`,[]);return console.log(`✅ Loaded ${e.rows.length} withdrawal requests from database`),s.NextResponse.json({success:!0,withdrawals:e.rows})}catch(e){return console.error("Error loading withdrawal requests:",e),s.NextResponse.json({error:"Ошибка загрузки запросов на вывод"},{status:500})}}async function u(e){try{let{user_id:t,amount:a,method:r,description:o}=await e.json();if(!t||!a)return s.NextResponse.json({error:"Не указан пользователь или сумма"},{status:400});let i=await (0,n.I)("SELECT balance FROM users WHERE id = $1",[t]);if(0===i.rows.length)return s.NextResponse.json({error:"Пользователь не найден"},{status:404});if((parseFloat(i.rows[0].balance)||0)<a)return s.NextResponse.json({error:"Недостаточно средств на балансе"},{status:400});let u=await (0,n.I)(`INSERT INTO transactions (user_id, type, amount, status, payment_method, description, created_at)
+       VALUES ($1, 'withdrawal', $2, 'pending', $3, $4, CURRENT_TIMESTAMP)
+       RETURNING *`,[t,a,r||"bank_transfer",o||"Запрос на вывод средств"]);return console.log("✅ Created new withdrawal request:",u.rows[0]),s.NextResponse.json({success:!0,withdrawal:u.rows[0]})}catch(e){return console.error("Error creating withdrawal request:",e),s.NextResponse.json({error:"Ошибка создания запроса на вывод"},{status:500})}}n=(o.then?(await o)():o)[0],r()}catch(e){r(e)}})},64985:(e,t,a)=>{a.a(e,async(e,r)=>{try{a.d(t,{I:()=>o,d:()=>u});var s=a(8678),n=e([s]);s=(n.then?(await n)():n)[0];let i=process.env.POSTGRES_URL_NON_POOLING||process.env.DATABASE_URL||process.env.POSTGRES_URL;if(!i)throw Error("DATABASE_URL, POSTGRES_URL, or POSTGRES_URL_NON_POOLING must be set. Did you forget to provision a database?");let u=new s.Pool({connectionString:i,ssl:!!i?.includes("sslmode=require")&&{rejectUnauthorized:!1}});async function o(e,t){let a=await u.connect();try{return await a.query(e,t)}finally{a.release()}}r()}catch(e){r(e)}})}};var t=require("../../../../webpack-runtime.js");t.C(e);var a=e=>t(t.s=e),r=t.X(0,[7787,4833],()=>a(76463));module.exports=r})();

@@ -1,0 +1,14 @@
+"use strict";(()=>{var e={};e.id=4379,e.ids=[4379],e.modules={20399:e=>{e.exports=require("next/dist/compiled/next-server/app-page.runtime.prod.js")},30517:e=>{e.exports=require("next/dist/compiled/next-server/app-route.runtime.prod.js")},8678:e=>{e.exports=import("pg")},15325:(e,t,a)=>{a.a(e,async(e,r)=>{try{a.r(t),a.d(t,{originalPathname:()=>_,patchFetch:()=>l,requestAsyncStorage:()=>p,routeModule:()=>c,serverHooks:()=>m,staticGenerationAsyncStorage:()=>d});var n=a(73278),s=a(45002),o=a(54877),i=a(55805),u=e([i]);i=(u.then?(await u)():u)[0];let c=new n.AppRouteRouteModule({definition:{kind:s.x.APP_ROUTE,page:"/api/new-users/route",pathname:"/api/new-users",filename:"route",bundlePath:"app/api/new-users/route"},resolvedPagePath:"C:\\Users\\x4539\\Downloads\\Invest2025-main\\Invest2025-main\\app\\api\\new-users\\route.ts",nextConfigOutput:"",userland:i}),{requestAsyncStorage:p,staticGenerationAsyncStorage:d,serverHooks:m}=c,_="/api/new-users/route";function l(){return(0,o.patchFetch)({serverHooks:m,staticGenerationAsyncStorage:d})}r()}catch(e){r(e)}})},55805:(e,t,a)=>{a.a(e,async(e,r)=>{try{a.r(t),a.d(t,{GET:()=>i});var n=a(71309),s=a(44819),o=e([s]);async function i(){try{let e=await (0,s.I)(`SELECT 
+        id,
+        full_name,
+        email,
+        country,
+        balance,
+        total_invested,
+        total_earned,
+        avatar_url,
+        created_at
+      FROM users 
+      WHERE status = 'active' 
+      ORDER BY created_at DESC 
+      LIMIT 10`);if(0===e.rows.length)return n.NextResponse.json([{full_name:"Александр Петров",email:"alex@example.com",country:"Russia",balance:5e3,total_invested:2e3,total_earned:300,avatar_url:"/avatars/user1.png"},{full_name:"Мария Иванова",email:"maria@example.com",country:"Ukraine",balance:3500,total_invested:1500,total_earned:225,avatar_url:"/avatars/user2.png"},{full_name:"John Smith",email:"john@example.com",country:"USA",balance:8e3,total_invested:5e3,total_earned:750,avatar_url:"/avatars/user3.png"}]);return n.NextResponse.json(e.rows)}catch(e){return console.error("Error fetching new users:",e),n.NextResponse.json({error:"Failed to fetch new users"},{status:500})}}s=(o.then?(await o)():o)[0],r()}catch(e){r(e)}})},44819:(e,t,a)=>{a.a(e,async(e,r)=>{try{a.d(t,{I:()=>o});var n=a(8678),s=e([n]);n=(s.then?(await s)():s)[0];let i=process.env.POSTGRES_URL_NON_POOLING||process.env.DATABASE_URL||process.env.POSTGRES_URL;if(!i)throw Error("DATABASE_URL, POSTGRES_URL, or POSTGRES_URL_NON_POOLING must be set. Did you forget to provision a database?");let u=new n.Pool({connectionString:i,ssl:!!i?.includes("sslmode=require")&&{rejectUnauthorized:!1}});async function o(e,t){let a=await u.connect();try{return await a.query(e,t)}finally{a.release()}}r()}catch(e){r(e)}})}};var t=require("../../../webpack-runtime.js");t.C(e);var a=e=>t(t.s=e),r=t.X(0,[7787,4833],()=>a(15325));module.exports=r})();

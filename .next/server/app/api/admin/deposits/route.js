@@ -1,0 +1,18 @@
+"use strict";(()=>{var e={};e.id=1105,e.ids=[1105],e.modules={20399:e=>{e.exports=require("next/dist/compiled/next-server/app-page.runtime.prod.js")},30517:e=>{e.exports=require("next/dist/compiled/next-server/app-route.runtime.prod.js")},8678:e=>{e.exports=import("pg")},32220:(e,t,s)=>{s.a(e,async(e,r)=>{try{s.r(t),s.d(t,{originalPathname:()=>R,patchFetch:()=>d,requestAsyncStorage:()=>c,routeModule:()=>p,serverHooks:()=>m,staticGenerationAsyncStorage:()=>l});var a=s(73278),o=s(45002),n=s(54877),i=s(94638),u=e([i]);i=(u.then?(await u)():u)[0];let p=new a.AppRouteRouteModule({definition:{kind:o.x.APP_ROUTE,page:"/api/admin/deposits/route",pathname:"/api/admin/deposits",filename:"route",bundlePath:"app/api/admin/deposits/route"},resolvedPagePath:"C:\\Users\\x4539\\Downloads\\Invest2025-main\\Invest2025-main\\app\\api\\admin\\deposits\\route.ts",nextConfigOutput:"",userland:i}),{requestAsyncStorage:c,staticGenerationAsyncStorage:l,serverHooks:m}=p,R="/api/admin/deposits/route";function d(){return(0,n.patchFetch)({serverHooks:m,staticGenerationAsyncStorage:l})}r()}catch(e){r(e)}})},94638:(e,t,s)=>{s.a(e,async(e,r)=>{try{s.r(t),s.d(t,{GET:()=>i,POST:()=>u});var a=s(71309),o=s(64985),n=e([o]);async function i(e){try{console.log("Loading deposit requests from database...");let e=await (0,o.I)(`SELECT 
+        t.id,
+        t.user_id,
+        u.full_name as user_name,
+        u.email as user_email,
+        t.amount,
+        t.status,
+        t.created_at,
+        t.payment_method as method,
+        t.description,
+        0 as fee,
+        t.amount as final_amount
+      FROM transactions t
+      JOIN users u ON t.user_id = u.id
+      WHERE t.type = 'deposit'
+      ORDER BY t.created_at DESC`,[]);return console.log(`✅ Loaded ${e.rows.length} deposit requests from database`),a.NextResponse.json({success:!0,deposits:e.rows})}catch(e){return console.error("Error loading deposit requests:",e),a.NextResponse.json({error:"Ошибка загрузки запросов на пополнение"},{status:500})}}async function u(e){try{let{user_id:t,amount:s,method:r,description:n}=await e.json();if(!t||!s)return a.NextResponse.json({error:"Не указан пользователь или сумма"},{status:400});let i=await (0,o.I)(`INSERT INTO transactions (user_id, type, amount, status, payment_method, description, created_at)
+       VALUES ($1, 'deposit', $2, 'pending', $3, $4, CURRENT_TIMESTAMP)
+       RETURNING *`,[t,s,r||"bank_transfer",n||"Запрос на пополнение баланса"]);return console.log("✅ Created new deposit request:",i.rows[0]),a.NextResponse.json({success:!0,deposit:i.rows[0]})}catch(e){return console.error("Error creating deposit request:",e),a.NextResponse.json({error:"Ошибка создания запроса на пополнение"},{status:500})}}o=(n.then?(await n)():n)[0],r()}catch(e){r(e)}})},64985:(e,t,s)=>{s.a(e,async(e,r)=>{try{s.d(t,{I:()=>n,d:()=>u});var a=s(8678),o=e([a]);a=(o.then?(await o)():o)[0];let i=process.env.POSTGRES_URL_NON_POOLING||process.env.DATABASE_URL||process.env.POSTGRES_URL;if(!i)throw Error("DATABASE_URL, POSTGRES_URL, or POSTGRES_URL_NON_POOLING must be set. Did you forget to provision a database?");let u=new a.Pool({connectionString:i,ssl:!!i?.includes("sslmode=require")&&{rejectUnauthorized:!1}});async function n(e,t){let s=await u.connect();try{return await s.query(e,t)}finally{s.release()}}r()}catch(e){r(e)}})}};var t=require("../../../../webpack-runtime.js");t.C(e);var s=e=>t(t.s=e),r=t.X(0,[7787,4833],()=>s(32220));module.exports=r})();

@@ -1,0 +1,1 @@
+{"version":1,"functions":{"/api/achievements":{},"/api/admin/auth":{},"/api/admin/check-auth":{},"/api/admin/profile":{},"/api/admin/project-counter":{},"/api/admin/transactions/[id]":{},"/api/admin/transactions":{},"/api/profile":{},"/api/upload-avatar":{},"/admin/login":{}}}

@@ -1,0 +1,1 @@
+{"error":"Server error","message":"Dynamic server usage: Route /api/debug-token couldn't be rendered statically because it used `request.headers`. See more info here: https://nextjs.org/docs/messages/dynamic-server-error"}

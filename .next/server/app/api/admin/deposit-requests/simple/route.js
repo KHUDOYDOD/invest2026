@@ -1,0 +1,19 @@
+"use strict";(()=>{var e={};e.id=3649,e.ids=[3649],e.modules={20399:e=>{e.exports=require("next/dist/compiled/next-server/app-page.runtime.prod.js")},30517:e=>{e.exports=require("next/dist/compiled/next-server/app-route.runtime.prod.js")},78893:e=>{e.exports=require("buffer")},84770:e=>{e.exports=require("crypto")},76162:e=>{e.exports=require("stream")},21764:e=>{e.exports=require("util")},8678:e=>{e.exports=import("pg")},90277:(e,r,t)=>{t.a(e,async(e,s)=>{try{t.r(r),t.d(r,{originalPathname:()=>_,patchFetch:()=>d,requestAsyncStorage:()=>l,routeModule:()=>p,serverHooks:()=>m,staticGenerationAsyncStorage:()=>c});var a=t(73278),n=t(45002),o=t(54877),i=t(28819),u=e([i]);i=(u.then?(await u)():u)[0];let p=new a.AppRouteRouteModule({definition:{kind:n.x.APP_ROUTE,page:"/api/admin/deposit-requests/simple/route",pathname:"/api/admin/deposit-requests/simple",filename:"route",bundlePath:"app/api/admin/deposit-requests/simple/route"},resolvedPagePath:"C:\\Users\\x4539\\Downloads\\Invest2025-main\\Invest2025-main\\app\\api\\admin\\deposit-requests\\simple\\route.ts",nextConfigOutput:"",userland:i}),{requestAsyncStorage:l,staticGenerationAsyncStorage:c,serverHooks:m}=p,_="/api/admin/deposit-requests/simple/route";function d(){return(0,o.patchFetch)({serverHooks:m,staticGenerationAsyncStorage:c})}s()}catch(e){s(e)}})},28819:(e,r,t)=>{t.a(e,async(e,s)=>{try{t.r(r),t.d(r,{GET:()=>d});var a=t(71309),n=t(67390),o=t.n(n),i=t(44819),u=e([i]);async function d(e){try{let r=e.headers.get("authorization");if(!r||!r.startsWith("Bearer "))return a.NextResponse.json({error:"Unauthorized"},{status:401});let t=r.substring(7),s=o().verify(t,process.env.JWT_SECRET||"your-secret-key"),n=await (0,i.I)("SELECT role_id FROM users WHERE id = $1",[s.userId]);if(!n.rows[0]||1!==n.rows[0].role_id)return a.NextResponse.json({error:"Access denied"},{status:403});let u=`
+      SELECT 
+        dr.id,
+        dr.user_id,
+        dr.amount::text as amount,
+        dr.method,
+        dr.payment_details,
+        dr.status,
+        dr.admin_comment,
+        dr.created_at,
+        dr.processed_at,
+        u.full_name,
+        u.email,
+        u.balance::text as balance
+      FROM deposit_requests dr
+      JOIN users u ON dr.user_id = u.id
+      ORDER BY dr.created_at DESC
+      LIMIT 50
+    `,d=(await (0,i.I)(u)).rows.map(e=>({id:e.id,user_id:e.user_id,amount:parseFloat(e.amount),method:e.method,payment_details:e.payment_details,wallet_address:null,card_number:e.payment_details?.card_number||null,phone_number:e.payment_details?.phone_number||null,status:e.status,admin_comment:e.admin_comment,created_at:e.created_at,processed_at:e.processed_at,user:{id:e.user_id,full_name:e.full_name,email:e.email,balance:parseFloat(e.balance),previous_balance:null}}));return a.NextResponse.json({success:!0,requests:d})}catch(e){return console.error("Error fetching deposit requests:",e),a.NextResponse.json({error:"Internal server error"},{status:500})}}i=(u.then?(await u)():u)[0],s()}catch(e){s(e)}})},44819:(e,r,t)=>{t.a(e,async(e,s)=>{try{t.d(r,{I:()=>o});var a=t(8678),n=e([a]);a=(n.then?(await n)():n)[0];let i=process.env.POSTGRES_URL_NON_POOLING||process.env.DATABASE_URL||process.env.POSTGRES_URL;if(!i)throw Error("DATABASE_URL, POSTGRES_URL, or POSTGRES_URL_NON_POOLING must be set. Did you forget to provision a database?");let u=new a.Pool({connectionString:i,ssl:!!i?.includes("sslmode=require")&&{rejectUnauthorized:!1}});async function o(e,r){let t=await u.connect();try{return await t.query(e,r)}finally{t.release()}}s()}catch(e){s(e)}})}};var r=require("../../../../../webpack-runtime.js");r.C(e);var t=e=>r(r.s=e),s=r.X(0,[7787,4833,7390],()=>t(90277));module.exports=s})();

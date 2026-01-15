@@ -1,0 +1,12 @@
+"use strict";(()=>{var e={};e.id=2628,e.ids=[2628],e.modules={20399:e=>{e.exports=require("next/dist/compiled/next-server/app-page.runtime.prod.js")},30517:e=>{e.exports=require("next/dist/compiled/next-server/app-route.runtime.prod.js")},8678:e=>{e.exports=import("pg")},40120:(e,t,r)=>{r.a(e,async(e,s)=>{try{r.r(t),r.d(t,{originalPathname:()=>h,patchFetch:()=>c,requestAsyncStorage:()=>d,routeModule:()=>p,serverHooks:()=>m,staticGenerationAsyncStorage:()=>l});var a=r(73278),n=r(45002),o=r(54877),i=r(51039),u=e([i]);i=(u.then?(await u)():u)[0];let p=new a.AppRouteRouteModule({definition:{kind:n.x.APP_ROUTE,page:"/api/admin/users/route",pathname:"/api/admin/users",filename:"route",bundlePath:"app/api/admin/users/route"},resolvedPagePath:"C:\\Users\\x4539\\Downloads\\Invest2025-main\\Invest2025-main\\app\\api\\admin\\users\\route.ts",nextConfigOutput:"",userland:i}),{requestAsyncStorage:d,staticGenerationAsyncStorage:l,serverHooks:m}=p,h="/api/admin/users/route";function c(){return(0,o.patchFetch)({serverHooks:m,staticGenerationAsyncStorage:l})}s()}catch(e){s(e)}})},51039:(e,t,r)=>{r.a(e,async(e,s)=>{try{r.r(t),r.d(t,{GET:()=>i});var a=r(71309),n=r(44819),o=e([n]);async function i(){try{let e=await (0,n.I)(`
+      SELECT 
+        id,
+        email,
+        full_name,
+        balance,
+        status,
+        created_at,
+        last_login
+      FROM users
+      ORDER BY created_at DESC
+    `);return a.NextResponse.json({success:!0,users:e.rows})}catch(e){return console.error("Error fetching users:",e),a.NextResponse.json({success:!1,error:"Failed to fetch users"},{status:500})}}n=(o.then?(await o)():o)[0],s()}catch(e){s(e)}})},44819:(e,t,r)=>{r.a(e,async(e,s)=>{try{r.d(t,{I:()=>o});var a=r(8678),n=e([a]);a=(n.then?(await n)():n)[0];let i=process.env.POSTGRES_URL_NON_POOLING||process.env.DATABASE_URL||process.env.POSTGRES_URL;if(!i)throw Error("DATABASE_URL, POSTGRES_URL, or POSTGRES_URL_NON_POOLING must be set. Did you forget to provision a database?");let u=new a.Pool({connectionString:i,ssl:!!i?.includes("sslmode=require")&&{rejectUnauthorized:!1}});async function o(e,t){let r=await u.connect();try{return await r.query(e,t)}finally{r.release()}}s()}catch(e){s(e)}})}};var t=require("../../../../webpack-runtime.js");t.C(e);var r=e=>t(t.s=e),s=t.X(0,[7787,4833],()=>r(40120));module.exports=s})();

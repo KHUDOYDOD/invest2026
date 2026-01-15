@@ -1,0 +1,16 @@
+"use strict";(()=>{var t={};t.id=9932,t.ids=[9932],t.modules={20399:t=>{t.exports=require("next/dist/compiled/next-server/app-page.runtime.prod.js")},30517:t=>{t.exports=require("next/dist/compiled/next-server/app-route.runtime.prod.js")},8678:t=>{t.exports=import("pg")},36686:(t,e,a)=>{a.a(t,async(t,n)=>{try{a.r(e),a.d(e,{originalPathname:()=>_,patchFetch:()=>l,requestAsyncStorage:()=>p,routeModule:()=>c,serverHooks:()=>m,staticGenerationAsyncStorage:()=>d});var s=a(73278),r=a(45002),o=a(54877),i=a(30548),u=t([i]);i=(u.then?(await u)():u)[0];let c=new s.AppRouteRouteModule({definition:{kind:r.x.APP_ROUTE,page:"/api/all-transactions/route",pathname:"/api/all-transactions",filename:"route",bundlePath:"app/api/all-transactions/route"},resolvedPagePath:"C:\\Users\\x4539\\Downloads\\Invest2025-main\\Invest2025-main\\app\\api\\all-transactions\\route.ts",nextConfigOutput:"",userland:i}),{requestAsyncStorage:p,staticGenerationAsyncStorage:d,serverHooks:m}=c,_="/api/all-transactions/route";function l(){return(0,o.patchFetch)({serverHooks:m,staticGenerationAsyncStorage:d})}n()}catch(t){n(t)}})},30548:(t,e,a)=>{a.a(t,async(t,n)=>{try{a.r(e),a.d(e,{GET:()=>i});var s=a(71309),r=a(64985),o=t([r]);async function i(){try{console.log("Fetching all transactions...");let t=await (0,r.I)(`
+      SELECT 
+        t.id,
+        t.user_id,
+        t.type,
+        CAST(t.amount AS DECIMAL(10,2)) as amount,
+        t.status,
+        t.created_at as time,
+        COALESCE(u.full_name, 'Неизвестный пользователь') as user_name,
+        ip.name as plan_name
+      FROM transactions t
+      LEFT JOIN users u ON t.user_id = u.id
+      LEFT JOIN investments i ON t.investment_id = i.id
+      LEFT JOIN investment_plans ip ON i.plan_id = ip.id
+      ORDER BY t.created_at DESC
+    `);console.log(`Found ${t.rows.length} transactions in database`);let e=t.rows.map(t=>({...t,amount:parseFloat(t.amount)||0})),a=e.reduce((t,e)=>t+e.amount,0);return console.log(`Total amount calculated: ${a}`),s.NextResponse.json({success:!0,data:e,total:e.length,totalAmount:a})}catch(e){console.error("Error fetching all transactions:",e);let t=[{id:"1",user_id:"1",type:"deposit",amount:1500.5,status:"completed",time:new Date(Date.now()-3e5).toISOString(),user_name:"Александр П.",plan_name:null},{id:"2",user_id:"2",type:"investment",amount:2e3,status:"completed",time:new Date(Date.now()-9e5).toISOString(),user_name:"Мария И.",plan_name:"Стандарт"}];return s.NextResponse.json({success:!0,data:t,total:t.length,totalAmount:t.reduce((t,e)=>t+e.amount,0)})}}r=(o.then?(await o)():o)[0],n()}catch(t){n(t)}})},64985:(t,e,a)=>{a.a(t,async(t,n)=>{try{a.d(e,{I:()=>o,d:()=>u});var s=a(8678),r=t([s]);s=(r.then?(await r)():r)[0];let i=process.env.POSTGRES_URL_NON_POOLING||process.env.DATABASE_URL||process.env.POSTGRES_URL;if(!i)throw Error("DATABASE_URL, POSTGRES_URL, or POSTGRES_URL_NON_POOLING must be set. Did you forget to provision a database?");let u=new s.Pool({connectionString:i,ssl:!!i?.includes("sslmode=require")&&{rejectUnauthorized:!1}});async function o(t,e){let a=await u.connect();try{return await a.query(t,e)}finally{a.release()}}n()}catch(t){n(t)}})}};var e=require("../../../webpack-runtime.js");e.C(t);var a=t=>e(e.s=t),n=e.X(0,[7787,4833],()=>a(36686));module.exports=n})();

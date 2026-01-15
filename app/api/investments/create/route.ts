@@ -84,10 +84,29 @@ export async function POST(request: NextRequest) {
     }
 
     // Получаем информацию о плане (исправляем названия колонок)
-    const planResult = await query(
-      'SELECT duration, daily_percent, name FROM investment_plans WHERE id = $1',
+    // planId может быть UUID или числом, пробуем оба варианта
+    let planResult;
+    
+    // Сначала пробуем как UUID
+    planResult = await query(
+      'SELECT duration, daily_percent, name FROM investment_plans WHERE id::text = $1 OR id = $1::uuid',
       [planId]
-    )
+    );
+    
+    // Если не нашли, пробуем найти по порядковому номеру
+    if (planResult.rows.length === 0) {
+      const planIndex = parseInt(planId) - 1;
+      if (!isNaN(planIndex) && planIndex >= 0) {
+        planResult = await query(
+          `SELECT duration, daily_percent, name, id 
+           FROM investment_plans 
+           WHERE is_active = true 
+           ORDER BY min_amount ASC 
+           LIMIT 1 OFFSET $1`,
+          [planIndex]
+        );
+      }
+    }
 
     if (planResult.rows.length === 0) {
       return NextResponse.json(
@@ -98,6 +117,9 @@ export async function POST(request: NextRequest) {
 
     const plan = planResult.rows[0]
     console.log('Investment plan:', plan);
+    
+    // Используем реальный ID плана из базы данных
+    const realPlanId = plan.id || planId;
     
     const endDate = new Date()
     endDate.setDate(endDate.getDate() + plan.duration)
@@ -115,7 +137,7 @@ export async function POST(request: NextRequest) {
         `INSERT INTO investments (id, user_id, plan_id, amount, daily_profit, status, start_date, end_date, created_at)
          VALUES (gen_random_uuid(), $1, $2, $3, $4, $5, NOW(), $6, NOW())
          RETURNING id`,
-        [userId, planId, amountNum, dailyProfit, 'active', endDate]
+        [userId, realPlanId, amountNum, dailyProfit, 'active', endDate]
       )
 
       // Обновляем баланс пользователя

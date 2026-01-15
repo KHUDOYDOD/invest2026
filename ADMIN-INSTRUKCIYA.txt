@@ -1,0 +1,78 @@
+========================================================
+  SOZDANIE ADMINA - INSTRUKCIYA
+========================================================
+
+DANNYE ADMINA:
+-------------
+Username: Admin
+Email:    X45395x@gmail.com
+Password: X11021997x
+
+
+VARIANT 1: AVTOMATICHESKI (posle nastroyki SSH)
+------------------------------------------------
+
+1. Snachala nastroyte SSH bez parolya:
+   START-HERE.bat
+
+2. Potom zapustite:
+   create-admin-simple.bat
+
+
+VARIANT 2: VRUCHNUYU (3 komandy)
+---------------------------------
+
+1. Skopiruyte skript na VPS:
+   scp admin-script-for-vps.js root@130.49.213.197:/root/create-admin.js
+   
+   Vvedite parol: 12345678
+
+2. Zapustite skript na VPS:
+   ssh root@130.49.213.197 "cd /root && node create-admin.js"
+   
+   Vvedite parol: 12345678
+
+3. Gotovo!
+
+
+VARIANT 3: CHEREZ SSH TERMINAL
+-------------------------------
+
+1. Podklyuchites k VPS:
+   ssh root@130.49.213.197
+   Parol: 12345678
+
+2. Sozdayte fayl:
+   nano /root/create-admin.js
+
+3. Vstavte kod iz fajla: admin-script-for-vps.js
+   (Ctrl+X, Y, Enter dlya sohraneniya)
+
+4. Zapustite:
+   node /root/create-admin.js
+
+5. Gotovo!
+
+
+POSLE SOZDANIYA:
+---------------
+
+Voyti v admin panel:
+http://130.49.213.197/admin
+
+Username: Admin
+Password: X11021997x
+
+
+ESLI OSHIBKA:
+------------
+
+Proverite chto:
+1. VPS rabotaet: http://130.49.213.197
+2. Baza dannyh podklyuchena
+3. DATABASE_URL est v /root/invest2026/.env.production
+
+
+========================================================
+  REKOMENDACIYA: Snachala nastroyte SSH (START-HERE.bat)
+========================================================

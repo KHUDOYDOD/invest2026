@@ -1,0 +1,43 @@
+========================================
+     SOZDANIE ADMINA - 3 SHAGA
+========================================
+
+SHAG 1: Otkroyte etot fayl
+   "!!! SKOPIRUY I VSTAVЬ !!!.txt"
+   
+   Skopiruy parol: 12345678
+
+SHAG 2: Zapustite etot fayl
+   "ZAPUSTIT-SEYCHAS.bat"
+   
+   Dvoynyy klik po faylu
+
+SHAG 3: Vstavte parol 4 raza
+   Kogda poprosit - vstavte: 12345678
+   (Ctrl+V ili pravaya knopka myshi)
+
+========================================
+GOTOVO!
+========================================
+
+Otkroyte: http://130.49.213.197/admin
+
+Voyidite:
+   Username: Admin
+   Password: X11021997x
+
+========================================
+
+VSE RABOTAET AVTOMATICHESKI!
+Prosto vstavlyayte parol kogda poprosit.
+
+========================================
+ESLI HOCHETE BEZ PAROLYA
+========================================
+
+Zapustite odin raz: START-HERE.bat
+
+Eto nastroit SSH klyuch.
+Posle etogo vse komandy rabotayut bez parolya.
+
+========================================

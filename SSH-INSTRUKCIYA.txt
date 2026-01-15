@@ -1,0 +1,76 @@
+========================================================
+  SSH BEZ PAROLYA - PROSTAYA INSTRUKCIYA
+========================================================
+
+CHTO SDELANO:
+-------------
+
+Sozdal 3 skripta dlya nastroyki SSH bez parolya:
+
+1. ZAPUSTIT-SEYCHAS.bat  <-- GLAVNYY, zapustite ego!
+2. setup-ssh-simple.bat
+3. setup-ssh-auto.bat
+
+
+KAK ISPOLZOVAT:
+--------------
+
+Shag 1: Zapustite
+   ZAPUSTIT-SEYCHAS.bat
+
+Shag 2: Vvedite parol ODIN RAZ
+   12345678
+
+Shag 3: Gotovo!
+   Teper VSE komandy rabotayut BEZ parolya!
+
+
+POSLE NASTROYKI:
+---------------
+
+Eti skripty budut rabotat BEZ parolya:
+
+✓ obnovit-sayt.bat     - obnovlyaet sayt
+✓ vps-logs.bat         - pokazyvaet logi
+✓ vps-connect.bat      - podklyuchaetsya k VPS
+✓ proverit-sayt.bat    - proveryaet status
+
+
+ESLI NE RABOTAET:
+----------------
+
+Variant 1: Ruchnaya nastroyka (3 komandy v PowerShell)
+
+ssh-keygen -t rsa -b 4096 -f "$env:USERPROFILE\.ssh\id_rsa_vps" -N '""'
+
+type "$env:USERPROFILE\.ssh\id_rsa_vps.pub" | ssh root@130.49.213.197 "mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys"
+
+ssh -i "$env:USERPROFILE\.ssh\id_rsa_vps" root@130.49.213.197 "echo 'Rabotaet!'"
+
+
+Variant 2: Proverit sushchestvuyushchiy klyuch
+
+dir %USERPROFILE%\.ssh\id_rsa_vps*
+
+ssh -i "%USERPROFILE%\.ssh\id_rsa_vps" root@130.49.213.197 "hostname"
+
+
+GDE NAKHODYATSYA FAILY:
+-----------------------
+
+SSH klyuch: C:\Users\x4539\.ssh\id_rsa_vps
+Publichnyy: C:\Users\x4539\.ssh\id_rsa_vps.pub
+Na VPS:     /root/.ssh/authorized_keys
+
+
+DANNYE VPS:
+----------
+
+IP:     130.49.213.197
+Parol:  12345678
+User:   root
+
+
+========================================================
+  ZAPUSTITE: ZAPUSTIT-SEYCHAS.bat
+========================================================

@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
     try {
       // Проверяем, существует ли пользователь
       console.log("🔍 Checking if user exists...")
-      const existingUser = await client.query(
+      const existingUser = await query(
         "SELECT id FROM users WHERE email = $1",
         [email.toLowerCase()]
       )
@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
       let referredByCode = null
       if (referralCode) {
         console.log("🔍 Checking referral code:", referralCode)
-        const referrerResult = await client.query(
+        const referrerResult = await query(
           "SELECT referral_code FROM users WHERE referral_code = $1",
           [referralCode]
         )
@@ -102,7 +102,7 @@ export async function POST(request: NextRequest) {
 
       // Создаем пользователя
       console.log("💾 Creating user in database...")
-      const result = await client.query(
+      const result = await query(
         `INSERT INTO users (
           email, 
           password_hash, 

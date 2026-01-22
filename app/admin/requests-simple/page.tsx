@@ -518,6 +518,12 @@ export default function SimpleRequestsPage() {
                             <span className="text-gray-900 font-semibold">{selectedRequest.account_holder_name}</span>
                           </div>
                         )}
+                        {selectedRequest.bank_name && (
+                          <div className="flex justify-between items-center p-3 bg-purple-50 rounded-lg border border-purple-200">
+                            <span className="text-gray-700 font-medium">🏦 Банк СБП:</span>
+                            <span className="text-gray-900 font-semibold">{selectedRequest.bank_name}</span>
+                          </div>
+                        )}
                       </>
                     )}
 

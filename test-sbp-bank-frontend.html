@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест СБП с банком - ЖИВОЙ СЕРВЕР</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏦 Тест СБП с выбором банка - ЖИВОЙ СЕРВЕР</h1>
+        
+        <div class="info">
+            <strong>📍 Сервер:</strong> http://213.171.31.215<br>
+            <strong>🎯 Цель:</strong> Проверить, что поле выбора банка для СБП работает<br>
+            <strong>📋 Инструкция:</strong> Заполните форму и создайте заявку на вывод
+        </div>
+
+        <form id="testForm">
+            <div class="form-group">
+                <label for="email">Email пользователя:</label>
+                <input type="email" id="email" value="zabon11@mail.ru" required>
+                <small>Попробуйте: zabon11@mail.ru, 123123@mail.ru, amon@mail.ru</small>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Пароль:</label>
+                <input type="password" id="password" value="123456" required>
+                <small>Обычно: 123456</small>
+            </div>
+
+            <div class="form-group">
+                <label for="amount">Сумма вывода:</label>
+                <input type="number" id="amount" value="25" min="10" required>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Номер телефона СБП:</label>
+                <input type="tel" id="phone" value="79991234567" required>
+            </div>
+
+            <div class="form-group">
+                <label for="fullName">ФИО владельца:</label>
+                <input type="text" id="fullName" value="Тестов Тест Тестович" required>
+            </div>
+
+            <div class="form-group">
+                <label for="bank">🏦 Банк для СБП:</label>
+                <select id="bank" required>
+                    <option value="">Выберите банк</option>
+                    <option value="Сбербанк">Сбербанк</option>
+                    <option value="ВТБ">ВТБ</option>
+                    <option value="Газпромбанк">Газпромбанк</option>
+                    <option value="Альфа-Банк" selected>Альфа-Банк</option>
+                    <option value="Тинькофф Банк">Тинькофф Банк</option>
+                    <option value="МТС Банк">МТС Банк</option>
+                    <option value="Россельхозбанк">Россельхозбанк</option>
+                    <option value="Открытие">Открытие</option>
+                </select>
+            </div>
+
+            <button type="submit">🚀 Создать заявку на вывод СБП</button>
+        </form>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const SERVER_URL = 'http://213.171.31.215';
+        
+        document.getElementById('testForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '⏳ Выполняется тест...';
+            
+            try {
+                // Получаем данные формы
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                const amount = document.getElementById('amount').value;
+                const phone = document.getElementById('phone').value;
+                const fullName = document.getElementById('fullName').value;
+                const bank = document.getElementById('bank').value;
+                
+                console.log('🔐 Авторизация пользователя...');
+                
+                // Авторизуемся
+                const loginResponse = await fetch(`${SERVER_URL}/api/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
+                    })
+                });
+                
+                const loginData = await loginResponse.json();
+                console.log('Login response:', loginData);
+                
+                if (!loginData.success) {
+                    throw new Error(`Ошибка авторизации: ${loginData.error}`);
+                }
+                
+                const token = loginData.token;
+                console.log('✅ Авторизация успешна, токен получен');
+                
+                // Создаем заявку на вывод через СБП
+                console.log('💸 Создание заявки на вывод через СБП...');
+                
+                const withdrawResponse = await fetch(`${SERVER_URL}/api/withdraw`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        amount: parseFloat(amount),
+                        payment_method: 'sbp',
+                        phone_number: phone,
+                        account_holder_name: fullName,
+                        bank_name: bank
+                    })
+                });
+                
+                const withdrawData = await withdrawResponse.json();
+                console.log('Withdraw response:', withdrawData);
+                
+                if (withdrawData.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = `✅ ТЕСТ УСПЕШЕН! СБП с банком работает!
+                    
+🎯 Заявка на вывод через СБП создана:
+• ID транзакции: ${withdrawData.transaction?.id || 'N/A'}
+• Сумма: $${amount}
+• Метод: СБП
+• Телефон: ${phone}
+• ФИО: ${fullName}
+• 🏦 Банк: ${bank}
+• Комиссия: $${withdrawData.transaction?.fee || 'N/A'}
+• К получению: $${withdrawData.transaction?.final_amount || 'N/A'}
+• Статус: ${withdrawData.transaction?.status || 'pending'}
+
+🔗 Проверьте админ панель: 
+${SERVER_URL}/admin/requests
+
+✅ ПОЛЕ БАНКА ДЛЯ СБП РАБОТАЕТ КОРРЕКТНО!`;
+                } else {
+                    throw new Error(withdrawData.error || 'Неизвестная ошибка при создании заявки');
+                }
+                
+            } catch (error) {
+                console.error('❌ Ошибка теста:', error);
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `❌ ОШИБКА ТЕСТА:
+                
+${error.message}
+
+💡 Возможные причины:
+• Неверные данные пользователя
+• Недостаточно средств на балансе
+• Проблемы с сервером: ${SERVER_URL}
+• Проверьте консоль браузера (F12) для подробностей
+
+🔧 Попробуйте:
+• Другой email: 123123@mail.ru или amon@mail.ru
+• Меньшую сумму: 10-20$
+• Обновить страницу и попробовать снова`;
+            }
+        });
+    </script>
+</body>
+</html>

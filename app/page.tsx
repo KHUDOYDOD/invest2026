@@ -16,7 +16,7 @@ import { TrustIndicators } from "@/components/trust-indicators"
 import { LiveActivityFeed } from "@/components/live-activity-feed"
 import { UserActivityRows } from "@/components/user-activity-rows"
 import { ProjectLaunches } from "@/components/project-launches"
-import { AdminAccessButton } from "@/components/admin-access-button"
+
 import { NewUsersShowcase } from "@/components/new-users-showcase"
 import { CTASection } from "@/components/cta-section"
 
@@ -140,8 +140,7 @@ export default function HomePage() {
       {/* Live Chat */}
       <LiveChat />
 
-      {/* Admin Access Button - only visible for admin users */}
-      <AdminAccessButton />
+
     </div>
   )
 }

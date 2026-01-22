@@ -1,0 +1,90 @@
+========================================
+КОМАНДЫ ДЛЯ СОЗДАНИЯ ПРОСТОГО ВЕБ-СЕРВЕРА
+========================================
+
+Выполните эти команды в веб-консоли сервера 213.171.31.215:
+
+1. СОЗДАНИЕ ДИРЕКТОРИИ ДЛЯ ВЕБА:
+mkdir -p /var/www/html
+cd /var/www/html
+
+2. СОЗДАНИЕ ТЕСТОВОГО HTML ФАЙЛА:
+cat > index.html << 'EOF'
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест сервера 213.171.31.215</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 50px;
+            margin: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.1);
+            padding: 40px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        h1 { font-size: 2.5em; margin-bottom: 20px; }
+        .status { font-size: 1.2em; margin: 20px 0; }
+        .success { color: #4CAF50; }
+        .info { color: #2196F3; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Сервер работает!</h1>
+        <div class="status success">✅ Сервер 213.171.31.215 активен</div>
+        <div class="status info">📡 Веб-сервер запущен</div>
+        <div class="status info">🌐 HTML файл загружен успешно</div>
+        
+        <h2>Информация о сервере:</h2>
+        <p><strong>IP:</strong> 213.171.31.215</p>
+        <p><strong>Пользователь:</strong> root11</p>
+        <p><strong>Статус:</strong> <span class="success">Активен</span></p>
+    </div>
+</body>
+</html>
+EOF
+
+3. УСТАНОВКА И ЗАПУСК NGINX:
+apt update
+apt install -y nginx
+systemctl start nginx
+systemctl enable nginx
+
+4. НАСТРОЙКА NGINX:
+cat > /etc/nginx/sites-available/default << 'EOF'
+server {
+    listen 80;
+    server_name 213.171.31.215;
+    root /var/www/html;
+    index index.html;
+    
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}
+EOF
+
+5. ПЕРЕЗАПУСК NGINX:
+systemctl restart nginx
+
+6. ПРОВЕРКА СТАТУСА:
+systemctl status nginx
+curl http://localhost
+
+========================================
+ПОСЛЕ ВЫПОЛНЕНИЯ:
+========================================
+
+Сайт будет доступен по адресу: http://213.171.31.215
+Проверьте в браузере!

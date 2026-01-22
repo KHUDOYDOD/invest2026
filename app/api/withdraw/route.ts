@@ -40,6 +40,7 @@ export async function POST(request: NextRequest) {
       wallet_address, 
       card_number,
       card_holder_name,
+      bank_name,
       phone_number,
       account_holder_name,
       crypto_network
@@ -51,6 +52,7 @@ export async function POST(request: NextRequest) {
       wallet_address, 
       card_number,
       card_holder_name,
+      bank_name,
       phone_number,
       account_holder_name,
       crypto_network
@@ -178,9 +180,9 @@ export async function POST(request: NextRequest) {
       // Создаем заявку на вывод
       const withdrawalResult = await query(
         `INSERT INTO withdrawal_requests (
-          user_id, amount, method, wallet_address, card_number, card_holder_name,
+          user_id, amount, method, wallet_address, card_number, card_holder_name, bank_name,
           phone_number, account_holder_name, crypto_network, fee, final_amount, status, created_at
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, 'pending', NOW()) 
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, 'pending', NOW()) 
         RETURNING id, created_at`,
         [
           user.userId,
@@ -189,6 +191,7 @@ export async function POST(request: NextRequest) {
           wallet_address || null,
           card_number || null,
           card_holder_name || null,
+          bank_name || null,
           phone_number || null,
           account_holder_name || null,
           crypto_network || null,

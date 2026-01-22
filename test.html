@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест сервера 213.171.31.215</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 50px;
+            margin: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.1);
+            padding: 40px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        h1 { font-size: 2.5em; margin-bottom: 20px; }
+        .status { font-size: 1.2em; margin: 20px 0; }
+        .success { color: #4CAF50; }
+        .info { color: #2196F3; }
+        .time { font-size: 0.9em; opacity: 0.8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Сервер работает!</h1>
+        <div class="status success">✅ Подключение к серверу 213.171.31.215 успешно</div>
+        <div class="status info">📡 Веб-сервер активен и отвечает на запросы</div>
+        <div class="status info">🌐 HTML файл успешно загружен</div>
+        <div class="time">Время загрузки: <span id="time"></span></div>
+        
+        <h2>Информация о сервере:</h2>
+        <p><strong>IP:</strong> 213.171.31.215</p>
+        <p><strong>Пользователь:</strong> root11</p>
+        <p><strong>Статус:</strong> <span class="success">Активен</span></p>
+        
+        <h2>Следующие шаги:</h2>
+        <p>1. Установить Node.js и зависимости</p>
+        <p>2. Клонировать проект invest2026</p>
+        <p>3. Настроить Nginx</p>
+        <p>4. Запустить приложение</p>
+    </div>
+
+    <script>
+        document.getElementById('time').textContent = new Date().toLocaleString('ru-RU');
+        
+        // Проверка доступности сервера каждые 30 секунд
+        setInterval(() => {
+            document.getElementById('time').textContent = new Date().toLocaleString('ru-RU');
+        }, 30000);
+    </script>
+</body>
+</html>

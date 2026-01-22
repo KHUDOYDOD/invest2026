@@ -56,6 +56,7 @@ interface WithdrawalRequest {
   wallet_address: string
   card_number?: string
   card_holder_name?: string
+  bank_name?: string
   phone_number?: string
   account_holder_name?: string
   crypto_network?: string
@@ -435,6 +436,12 @@ export default function RequestsPage() {
                     <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg border border-blue-200">
                       <span className="text-gray-700 font-medium">👤 Владелец карты:</span>
                       <span className="text-sm font-semibold text-gray-900">{request.card_holder_name}</span>
+                    </div>
+                  )}
+                  {request.bank_name && (
+                    <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg border border-blue-200">
+                      <span className="text-gray-700 font-medium">🏦 Банк:</span>
+                      <span className="text-sm font-semibold text-gray-900">{request.bank_name}</span>
                     </div>
                   )}
                 </>

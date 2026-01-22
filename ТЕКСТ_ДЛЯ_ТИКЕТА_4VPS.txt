@@ -1,0 +1,31 @@
+Тема: СРОЧНО! Сайт не работает - 502 Bad Gateway
+
+---
+
+Здравствуйте!
+
+СРОЧНО! Мой сайт на VPS 130.49.213.197 не работает.
+Показывает ошибку: 502 Bad Gateway
+
+Также SSH не подключается (Connection timed out на порту 22).
+
+Пожалуйста, помогите восстановить работу сайта:
+
+1. Перезапустите PM2 процесс:
+
+cd /root/invest2026
+pm2 restart investpro
+pm2 status
+
+2. Если PM2 не запущен, запустите его:
+
+cd /root/invest2026
+NODE_OPTIONS='--max-old-space-size=768' pm2 start npm --name investpro --max-memory-restart 800M -- start
+
+3. Пожалуйста, откройте порт 22 (SSH) чтобы я мог управлять сервером самостоятельно.
+
+4. Если можно, пришлите логи ошибок:
+
+pm2 logs investpro --lines 50
+
+Спасибо за помощь!

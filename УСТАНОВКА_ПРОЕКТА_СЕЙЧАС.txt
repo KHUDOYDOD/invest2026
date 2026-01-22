@@ -1,0 +1,73 @@
+========================================
+🚀 УСТАНОВКА ПРОЕКТА НА 213.171.31.215
+========================================
+
+✅ СТАТУС: Nginx работает! http://213.171.31.215
+
+ВЫПОЛНИТЕ В ВЕБ-КОНСОЛИ:
+
+1. КЛОНИРОВАНИЕ ПРОЕКТА:
+cd /root
+git clone https://github.com/KHUDOYDOD/invest2026.git
+cd invest2026
+
+2. УСТАНОВКА NODE.JS:
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+apt-get install -y nodejs
+
+3. УСТАНОВКА ЗАВИСИМОСТЕЙ:
+npm install -g pm2
+npm install
+
+4. СОЗДАНИЕ .ENV.PRODUCTION:
+cat > .env.production << 'EOF'
+DATABASE_URL=postgresql://neondb_owner:npg_w5yC0HdchuEB@ep-bold-grass-abge4ccn-pooler.eu-west-2.aws.neon.tech/neondb?sslmode=require
+NEXTAUTH_SECRET=your-secret-key-here-change-this-in-production-2026
+NEXTAUTH_URL=http://213.171.31.215
+JWT_SECRET=your-jwt-secret-key-here-change-this-in-production-2026
+NODE_ENV=production
+EOF
+
+5. СБОРКА ПРОЕКТА:
+npm run build
+
+6. НАСТРОЙКА NGINX ДЛЯ NEXT.JS:
+cat > /etc/nginx/sites-available/default << 'EOF'
+server {
+    listen 80;
+    server_name 213.171.31.215;
+    
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+EOF
+
+7. ПЕРЕЗАПУСК NGINX:
+systemctl restart nginx
+
+8. ЗАПУСК ПРИЛОЖЕНИЯ:
+cd /root/invest2026
+NODE_OPTIONS='--max-old-space-size=768' pm2 start npm --name investpro --max-memory-restart 800M -- start
+
+9. АВТОЗАПУСК:
+pm2 startup
+pm2 save
+
+========================================
+✅ ПОСЛЕ УСТАНОВКИ:
+========================================
+
+Сайт: http://213.171.31.215
+Админка: http://213.171.31.215/admin/dashboard
+
+Логин: admin
+Пароль: X11021997x

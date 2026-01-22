@@ -1,0 +1,17 @@
+========================================
+ДОБАВЛЕНИЕ SSH КЛЮЧА НА СЕРВЕР 213.171.31.215
+========================================
+
+1. Откройте веб-консоль VPS провайдера
+2. Подключитесь к серверу 213.171.31.215
+3. Войдите как root11 с паролем $X11021997x$
+4. Выполните команды:
+
+mkdir -p ~/.ssh
+chmod 700 ~/.ssh
+
+echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDbNj6IC+Zeg8Zt719vKVqaEoR27t6OUDkWojyRl19tcBR8uk/iMKhsb+GPrvXBb0s0UKj76rHUibNRIx3Vq0ksFJYousUiSqYAdZCpSOG9DGhqsaLQxoLRQmEhL+nKfStudLbUVRsV/g2tWdS2j5xEvs4wD8Sr4FYibds2UphV/l1vzbcNfNlrAJ2Z2/jvvgsWXKXK7w2wjF5LVtdze0b0q5PMLYD/7qijyN+0Ipj0bjTuWKzB4YXM17HQ5VJa6HxFXNI8TyLCXmmjRKnjbyz86EsYjztA/XdaUTqGoXhKTf0tJhIE/7+lOmI5c4I2lFyLgGSEQ2kOMDvAEtFULuSL/06twlbfayF2LYg1bd3ASZKWNJoBPXIZbtHotAqMmNIeRhFFnkZHRK/pw1sdhgze1durbgCdkHro4R4tF7uUgqbZLa/RL0xPew2HwXOXT0hOJOu9Q1Twmhbl/vj+/jT37XswYebZAMnMPCk0FwqIR1rL1Si2KUUd/e8Re8e+MTbdh7Rp+amGFsbgCA0Zm1GJepPX58bHY2DgpXbZT6wUr+v5/blCXIC45r5rpdjjJ/fFOTvmB6rKTjlrLVPc8ZTbAsrihyA4sP5ME9O3O3k/WUrCovq9/3RAsA9pHlzLg5vhF0f4NL3B+fId6cyLL1k2gQXDQFytlPJFXxYaEkiZeQ== kiro@invest2026" >> ~/.ssh/authorized_keys
+
+chmod 600 ~/.ssh/authorized_keys
+
+5. После этого SSH ключ будет добавлен и можно подключаться без пароля

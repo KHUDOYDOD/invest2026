@@ -207,9 +207,9 @@ export default function SimpleRequestsPage() {
     toast.success('Скопировано!')
   }
 
-  const RequestRow = ({ request, type }: { request: SimpleRequest, type: 'deposit' | 'withdrawal' }) => {
+  // Простая карточка - только имя и сумма
+  const SimpleRequestCard = ({ request, type }: { request: SimpleRequest, type: 'deposit' | 'withdrawal' }) => {
     const userName = request.users?.full_name || request.user_name || 'Неизвестный пользователь'
-    const userEmail = request.users?.email || request.user_email || 'Нет email'
     
     return (
       <div
@@ -222,20 +222,17 @@ export default function SimpleRequestsPage() {
           </div>
           <div className="flex-1">
             <h3 className="text-white font-semibold text-lg">{userName}</h3>
-            <p className="text-white/60 text-sm">{userEmail}</p>
+            <p className="text-white/60 text-sm">{type === 'deposit' ? 'Пополнение' : 'Вывод'}</p>
           </div>
         </div>
         
         <div className="flex items-center gap-6">
           <div className="text-right">
-            <div className="flex items-center gap-2 text-white/70 text-sm mb-1">
-              <Calendar className="w-4 h-4" />
-              {formatDate(request.created_at)}
-            </div>
             <div className="flex items-center gap-2">
               <DollarSign className="w-5 h-5 text-green-400" />
               <span className="text-white font-bold text-xl">${request.amount.toFixed(2)}</span>
             </div>
+            <div className="text-white/60 text-sm">{formatDate(request.created_at)}</div>
           </div>
           {getStatusBadge(request.status)}
         </div>
@@ -245,74 +242,101 @@ export default function SimpleRequestsPage() {
 
   return (
     <AdminGuard>
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 p-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h1 className="text-4xl font-bold text-white mb-2">💼 Управление Заявками</h1>
-              <p className="text-white/70">Простой просмотр заявок на пополнение и вывод</p>
+      <div className="min-h-screen w-full bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
+        <div className="w-full min-h-screen p-4 lg:p-8">
+          {/* Заголовок */}
+          <div className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 backdrop-blur-sm rounded-2xl p-6 mb-8 border border-white/10">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+              <div>
+                <h1 className="text-3xl lg:text-5xl font-bold text-white mb-2 flex items-center gap-3">
+                  💼 Простые Заявки
+                </h1>
+                <p className="text-white/70 text-lg">Кликните на заявку для просмотра реквизитов</p>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 text-center border border-white/20">
+                  <div className="text-2xl font-bold text-green-400">{depositRequests.filter(r => r.status === 'pending').length}</div>
+                  <div className="text-sm text-white/70">Пополнений</div>
+                </div>
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 text-center border border-white/20">
+                  <div className="text-2xl font-bold text-red-400">{withdrawalRequests.filter(r => r.status === 'pending').length}</div>
+                  <div className="text-sm text-white/70">Выводов</div>
+                </div>
+                <Button
+                  onClick={fetchRequests}
+                  disabled={isLoading}
+                  className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-6 py-3"
+                >
+                  <RefreshCw className={`w-5 h-5 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+                  Обновить
+                </Button>
+              </div>
             </div>
-            <Button
-              onClick={fetchRequests}
-              disabled={isLoading}
-              className="bg-white/10 hover:bg-white/20 text-white"
-            >
-              <RefreshCw className={`w-4 h-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
-              Обновить
-            </Button>
           </div>
 
-          <Tabs defaultValue="deposits" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-2 bg-white/10">
-              <TabsTrigger value="deposits" className="data-[state=active]:bg-green-600">
+          <Tabs defaultValue="withdrawals" className="space-y-6">
+            <TabsList className="grid w-full grid-cols-2 bg-white/10 backdrop-blur-sm border border-white/20 h-14 p-1">
+              <TabsTrigger 
+                value="deposits" 
+                className="data-[state=active]:bg-green-600 data-[state=active]:text-white text-white/70 font-semibold text-lg h-full rounded-lg transition-all"
+              >
                 📥 Пополнения ({depositRequests.filter(r => r.status === 'pending').length})
               </TabsTrigger>
-              <TabsTrigger value="withdrawals" className="data-[state=active]:bg-red-600">
+              <TabsTrigger 
+                value="withdrawals" 
+                className="data-[state=active]:bg-red-600 data-[state=active]:text-white text-white/70 font-semibold text-lg h-full rounded-lg transition-all"
+              >
                 💸 Выводы ({withdrawalRequests.filter(r => r.status === 'pending').length})
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="deposits" className="space-y-3">
+            <TabsContent value="deposits" className="space-y-4">
               {isLoading ? (
-                <div className="text-center py-12">
-                  <RefreshCw className="w-8 h-8 animate-spin mx-auto text-white mb-4" />
-                  <p className="text-white">Загрузка...</p>
+                <div className="text-center py-20">
+                  <RefreshCw className="w-12 h-12 animate-spin mx-auto text-white mb-6" />
+                  <p className="text-white text-xl">Загрузка заявок на пополнение...</p>
                 </div>
               ) : depositRequests.length === 0 ? (
-                <Card className="bg-white/5 border-white/10">
-                  <CardContent className="text-center py-12">
-                    <p className="text-white/70">Нет заявок на пополнение</p>
+                <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
+                  <CardContent className="text-center py-20">
+                    <div className="text-6xl mb-4">📥</div>
+                    <p className="text-white/70 text-xl">Нет заявок на пополнение</p>
                   </CardContent>
                 </Card>
               ) : (
-                depositRequests.map(request => (
-                  <RequestRow key={request.id} request={request} type="deposit" />
-                ))
+                <div className="grid gap-4">
+                  {depositRequests.map(request => (
+                    <SimpleRequestCard key={request.id} request={request} type="deposit" />
+                  ))}
+                </div>
               )}
             </TabsContent>
 
-            <TabsContent value="withdrawals" className="space-y-3">
+            <TabsContent value="withdrawals" className="space-y-4">
               {isLoading ? (
-                <div className="text-center py-12">
-                  <RefreshCw className="w-8 h-8 animate-spin mx-auto text-white mb-4" />
-                  <p className="text-white">Загрузка...</p>
+                <div className="text-center py-20">
+                  <RefreshCw className="w-12 h-12 animate-spin mx-auto text-white mb-6" />
+                  <p className="text-white text-xl">Загрузка заявок на вывод...</p>
                 </div>
               ) : withdrawalRequests.length === 0 ? (
-                <Card className="bg-white/5 border-white/10">
-                  <CardContent className="text-center py-12">
-                    <p className="text-white/70">Нет заявок на вывод</p>
+                <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
+                  <CardContent className="text-center py-20">
+                    <div className="text-6xl mb-4">💸</div>
+                    <p className="text-white/70 text-xl">Нет заявок на вывод</p>
                   </CardContent>
                 </Card>
               ) : (
-                withdrawalRequests.map(request => (
-                  <RequestRow key={request.id} request={request} type="withdrawal" />
-                ))
+                <div className="grid gap-4">
+                  {withdrawalRequests.map(request => (
+                    <SimpleRequestCard key={request.id} request={request} type="withdrawal" />
+                  ))}
+                </div>
               )}
             </TabsContent>
           </Tabs>
         </div>
 
-        {/* Диалог с деталями заявки */}
+        {/* Диалог с полными реквизитами */}
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogContent className="bg-gradient-to-br from-slate-900 to-blue-900 border-white/20 text-white max-w-2xl">
             <DialogHeader>

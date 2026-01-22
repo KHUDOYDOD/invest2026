@@ -45,6 +45,7 @@ export default function WithdrawPage() {
   // Данные для СБП
   const [phoneNumber, setPhoneNumber] = useState<string>("")
   const [sbpName, setSbpName] = useState<string>("")
+  const [sbpBankName, setSbpBankName] = useState<string>("")
 
   // Данные для криптовалюты
   const [cryptoNetwork, setCryptoNetwork] = useState<string>("trc20")
@@ -186,6 +187,10 @@ export default function WithdrawPage() {
           toast.error("Введите ФИО владельца")
           return
         }
+        if (!sbpBankName) {
+          toast.error("Выберите банк для СБП")
+          return
+        }
       } else if (selectedMethod === "crypto") {
         if (!cryptoAddress) {
           toast.error("Введите адрес кошелька")
@@ -233,7 +238,7 @@ export default function WithdrawPage() {
           wallet_address: selectedMethod === 'crypto' ? cryptoAddress : null,
           card_number: selectedMethod === 'card' ? cardNumber.replace(/\s/g, '') : null,
           card_holder_name: selectedMethod === 'card' ? cardName : null,
-          bank_name: selectedMethod === 'card' ? bankName : null,
+          bank_name: selectedMethod === 'card' ? bankName : (selectedMethod === 'sbp' ? sbpBankName : null),
           phone_number: selectedMethod === 'sbp' ? phoneNumber.replace(/\D/g, '') : null,
           account_holder_name: selectedMethod === 'sbp' ? sbpName : null,
           crypto_network: selectedMethod === 'crypto' ? cryptoNetwork : null
@@ -278,6 +283,7 @@ export default function WithdrawPage() {
     setBankName("")
     setPhoneNumber("")
     setSbpName("")
+    setSbpBankName("")
     setCryptoNetwork("trc20")
     setCryptoAddress("")
     setIsSuccess(false)
@@ -645,6 +651,33 @@ export default function WithdrawPage() {
                               onChange={(e) => setSbpName(e.target.value)}
                               className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
                             />
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label htmlFor="sbpBankName" className="text-white">
+                              Банк для СБП
+                            </Label>
+                            <select
+                              id="sbpBankName"
+                              value={sbpBankName}
+                              onChange={(e) => setSbpBankName(e.target.value)}
+                              className="w-full bg-white/10 border border-white/20 text-white rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                            >
+                              <option value="" className="bg-gray-800 text-white">Выберите банк</option>
+                              <option value="Сбербанк" className="bg-gray-800 text-white">Сбербанк</option>
+                              <option value="ВТБ" className="bg-gray-800 text-white">ВТБ</option>
+                              <option value="Газпромбанк" className="bg-gray-800 text-white">Газпромбанк</option>
+                              <option value="Альфа-Банк" className="bg-gray-800 text-white">Альфа-Банк</option>
+                              <option value="Россельхозбанк" className="bg-gray-800 text-white">Россельхозбанк</option>
+                              <option value="Открытие" className="bg-gray-800 text-white">Открытие</option>
+                              <option value="Совкомбанк" className="bg-gray-800 text-white">Совкомбанк</option>
+                              <option value="Райффайзенбанк" className="bg-gray-800 text-white">Райффайзенбанк</option>
+                              <option value="Промсвязьбанк" className="bg-gray-800 text-white">Промсвязьбанк</option>
+                              <option value="Тинькофф Банк" className="bg-gray-800 text-white">Тинькофф Банк</option>
+                              <option value="МТС Банк" className="bg-gray-800 text-white">МТС Банк</option>
+                              <option value="Росбанк" className="bg-gray-800 text-white">Росбанк</option>
+                              <option value="Другой" className="bg-gray-800 text-white">Другой</option>
+                            </select>
                           </div>
                         </div>
                       </div>

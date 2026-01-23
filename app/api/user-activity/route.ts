@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/server/db';
 
+// Force dynamic rendering to prevent caching
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 export async function GET() {
   try {
     const result = await query(`
@@ -82,6 +86,12 @@ export async function GET() {
       return NextResponse.json({
         success: true,
         data: demoActivity
+      }, {
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
       });
     }
 
@@ -91,6 +101,12 @@ export async function GET() {
         ...row,
         amount: parseFloat(row.amount) || 0
       }))
+    }, {
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      }
     });
 
   } catch (error) {
@@ -121,6 +137,12 @@ export async function GET() {
     return NextResponse.json({
       success: true,
       data: demoActivity
+    }, {
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      }
     });
   }
 }

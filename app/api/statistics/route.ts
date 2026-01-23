@@ -36,6 +36,12 @@ export async function GET() {
         payouts_change: 15.7,
         profitability_rate: 24.8,
         profitability_change: 3.2
+      }, {
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
       })
     }
 
@@ -55,12 +61,25 @@ export async function GET() {
 
     console.log('📊 Returning statistics:', responseData);
 
-    return NextResponse.json(responseData)
+    return NextResponse.json(responseData, {
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      }
+    })
   } catch (error) {
     console.error('❌ Error fetching statistics:', error)
     return NextResponse.json(
       { error: 'Failed to fetch statistics' },
-      { status: 500 }
+      { 
+        status: 500,
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
+      }
     )
   }
 }

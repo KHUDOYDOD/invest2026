@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import jwt from 'jsonwebtoken'
 import { query } from "@/server/db"
+import { updateStatistics } from '@/lib/update-statistics'
 
 export async function POST(
   request: NextRequest,
@@ -81,6 +82,9 @@ export async function POST(
       'UPDATE users SET balance = balance - $1 WHERE id = $2',
       [amount, user_id]
     )
+
+    // Обновляем статистику после одобрения вывода
+    await updateStatistics()
 
     return NextResponse.json({
       success: true,

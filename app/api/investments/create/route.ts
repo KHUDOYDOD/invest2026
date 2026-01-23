@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { query } from '@/server/db'
 import jwt from 'jsonwebtoken'
+import { updateStatistics } from '@/lib/update-statistics'
 
 // Функция для проверки токена
 function verifyToken(request: NextRequest) {
@@ -156,6 +157,9 @@ export async function POST(request: NextRequest) {
       await query('COMMIT');
       
       console.log('✅ Investment created successfully');
+
+      // Обновляем статистику после создания инвестиции
+      await updateStatistics();
 
       return NextResponse.json({
         success: true,

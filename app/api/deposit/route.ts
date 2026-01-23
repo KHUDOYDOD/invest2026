@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { pool } from "@/lib/database"
 import jwt from "jsonwebtoken"
+import { updateStatistics } from '@/lib/update-statistics'
 
 export async function POST(request: NextRequest) {
   try {
@@ -101,6 +102,9 @@ export async function POST(request: NextRequest) {
       const depositRequest = result.rows[0]
 
       console.log("✅ Deposit request created:", depositRequest.id)
+
+      // Обновляем статистику после создания заявки на пополнение
+      await updateStatistics()
 
       return NextResponse.json({
         success: true,

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 import { query } from "@/server/db"
+import { updateStatistics } from '@/lib/update-statistics'
 
 export async function POST(request: NextRequest) {
   console.log("🔵 Registration API called")
@@ -123,6 +124,9 @@ export async function POST(request: NextRequest) {
 
       const user = result.rows[0]
       console.log("✅ User created successfully:", user.id)
+
+      // Обновляем статистику после регистрации нового пользователя
+      await updateStatistics()
 
       // Создаем JWT токен (как при входе)
       const userRole = user.role_id === 1 ? 'super_admin' : user.role_id === 2 ? 'admin' : 'user';

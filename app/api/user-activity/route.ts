@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { query } from '@/lib/database';
+import { query } from '@/server/db';
 
 export async function GET() {
   try {
@@ -11,13 +11,24 @@ export async function GET() {
         CAST(t.amount AS DECIMAL(10,2)) as amount,
         t.status,
         t.created_at as time,
-        u.full_name as user_name
+        u.full_name as user_name,
+        CASE 
+          WHEN t.type = 'investment' AND t.investment_id IS NOT NULL THEN 
+            (SELECT p.name FROM investment_plans p 
+             JOIN investments i ON i.plan_id = p.id 
+             WHERE i.id = t.investment_id
+             LIMIT 1)
+          ELSE NULL
+        END as plan_name
       FROM transactions t
       LEFT JOIN users u ON t.user_id = u.id
+      WHERE t.status IN ('completed', 'pending')
       ORDER BY t.created_at DESC
       LIMIT 20
     `);
 
+    console.log('📊 User activity query result:', result.rows.length, 'rows');
+    
     // Если нет транзакций, возвращаем демо-данные
     if (result.rows.length === 0) {
       const demoActivity = [

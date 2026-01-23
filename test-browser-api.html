@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест API в браузере</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #1a1a1a;
+            color: white;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #333;
+            border-radius: 8px;
+            background: #2a2a2a;
+        }
+        .result {
+            background: #333;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+        .success { border-left: 4px solid #4CAF50; }
+        .error { border-left: 4px solid #f44336; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Тест API на главной странице</h1>
+    <p>Проверяем работу API эндпоинтов в браузере</p>
+
+    <div class="test-section">
+        <h2>📊 Статистика платформы</h2>
+        <button onclick="testStatistics()">Тестировать /api/statistics</button>
+        <div id="statistics-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>💼 Инвестиционные планы</h2>
+        <button onclick="testInvestmentPlans()">Тестировать /api/investment-plans</button>
+        <div id="plans-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>⭐ Отзывы пользователей</h2>
+        <button onclick="testTestimonials()">Тестировать /api/testimonials</button>
+        <div id="testimonials-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>🔄 Тестировать все API</h2>
+        <button onclick="testAllAPIs()">Запустить все тесты</button>
+    </div>
+
+    <script>
+        const BASE_URL = 'http://213.171.31.215';
+
+        async function testAPI(endpoint, resultElementId, description) {
+            const resultElement = document.getElementById(resultElementId);
+            resultElement.textContent = `🔄 Загрузка ${description}...`;
+            resultElement.className = 'result';
+
+            try {
+                console.log(`Testing: ${BASE_URL}${endpoint}`);
+                
+                const response = await fetch(`${BASE_URL}${endpoint}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                const responseText = `Статус: ${response.status} ${response.statusText}\n`;
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    resultElement.textContent = responseText + '✅ Успешно:\n' + JSON.stringify(data, null, 2);
+                    resultElement.className = 'result success';
+                } else {
+                    const errorText = await response.text();
+                    resultElement.textContent = responseText + '❌ Ошибка:\n' + errorText;
+                    resultElement.className = 'result error';
+                }
+            } catch (error) {
+                resultElement.textContent = `❌ Ошибка сети: ${error.message}`;
+                resultElement.className = 'result error';
+                console.error('Network error:', error);
+            }
+        }
+
+        async function testStatistics() {
+            await testAPI('/api/statistics', 'statistics-result', 'статистики');
+        }
+
+        async function testInvestmentPlans() {
+            await testAPI('/api/investment-plans', 'plans-result', 'инвестиционных планов');
+        }
+
+        async function testTestimonials() {
+            await testAPI('/api/testimonials?limit=5', 'testimonials-result', 'отзывов');
+        }
+
+        async function testAllAPIs() {
+            await testStatistics();
+            await testInvestmentPlans();
+            await testTestimonials();
+        }
+
+        // Автоматически запускаем тесты при загрузке страницы
+        window.addEventListener('load', () => {
+            console.log('🚀 Страница загружена, запускаем тесты...');
+            testAllAPIs();
+        });
+    </script>
+</body>
+</html>

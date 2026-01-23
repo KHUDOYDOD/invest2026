@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
-import { query } from '@/lib/database'
+import { query } from '@/server/db'
 
 // Демо-пользователи (используются когда БД недоступна)
 const DEMO_USERS = [

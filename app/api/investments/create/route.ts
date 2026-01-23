@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { query } from '@/lib/database'
+import { query } from '@/server/db'
 import jwt from 'jsonwebtoken'
 
 // Функция для проверки токена
@@ -146,11 +146,11 @@ export async function POST(request: NextRequest) {
         [amountNum, userId]
       )
 
-      // Создаем транзакцию
+      // Создаем транзакцию с investment_id
       await query(
-        `INSERT INTO transactions (id, user_id, type, amount, status, description, created_at)
-         VALUES (gen_random_uuid(), $1, $2, $3, $4, $5, NOW())`,
-        [userId, 'investment', amountNum, 'completed', `Инвестиция в план "${plan.name}"`]
+        `INSERT INTO transactions (id, user_id, investment_id, type, amount, status, description, created_at)
+         VALUES (gen_random_uuid(), $1, $2, $3, $4, $5, $6, NOW())`,
+        [userId, investmentResult.rows[0].id, 'investment', amountNum, 'completed', `Инвестиция в план "${plan.name}"`]
       )
 
       await query('COMMIT');

@@ -160,10 +160,16 @@ export async function POST(request: NextRequest) {
 
       // Обновляем статистику после создания инвестиции
       try {
+        console.log('🔄 Attempting to update statistics...');
         // Динамический импорт JavaScript версии функции
         const { updateStatistics } = require('../../../lib/update-statistics.js');
         const statsResult = await updateStatistics();
         console.log('📊 Статистика обновлена:', statsResult.success ? 'Успешно' : 'Ошибка');
+        if (statsResult.success) {
+          console.log('📊 Новые данные статистики:', statsResult.data);
+        } else {
+          console.log('❌ Ошибка статистики:', statsResult.error);
+        }
       } catch (statsError) {
         console.error('⚠️ Ошибка обновления статистики:', statsError);
       }

@@ -3,6 +3,8 @@ import { query } from '@/server/db'
 
 export async function GET() {
   try {
+    console.log('📊 Statistics API called at:', new Date().toISOString());
+    
     // Получаем статистику из таблицы platform_statistics
     const result = await query(`
       SELECT 
@@ -20,7 +22,10 @@ export async function GET() {
       LIMIT 1
     `)
 
+    console.log('📊 Database query result:', result.rows.length > 0 ? result.rows[0] : 'No data');
+
     if (result.rows.length === 0) {
+      console.log('⚠️ No statistics data found, returning defaults');
       // Если данных нет, возвращаем значения по умолчанию
       return NextResponse.json({
         users_count: 15420,
@@ -36,7 +41,7 @@ export async function GET() {
 
     const stats = result.rows[0]
 
-    return NextResponse.json({
+    const responseData = {
       users_count: parseInt(stats.users_count),
       users_change: parseFloat(stats.users_change),
       investments_amount: parseInt(stats.investments_amount),
@@ -46,9 +51,13 @@ export async function GET() {
       profitability_rate: parseFloat(stats.profitability_rate),
       profitability_change: parseFloat(stats.profitability_change),
       updated_at: stats.updated_at
-    })
+    };
+
+    console.log('📊 Returning statistics:', responseData);
+
+    return NextResponse.json(responseData)
   } catch (error) {
-    console.error('Error fetching statistics:', error)
+    console.error('❌ Error fetching statistics:', error)
     return NextResponse.json(
       { error: 'Failed to fetch statistics' },
       { status: 500 }

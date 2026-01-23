@@ -119,9 +119,8 @@ export function NewUsersShowcase({ limit, showButton = true }: NewUsersShowcaseP
     }
 
     fetchNewUsers()
-    // Автообновление каждые 30 секунд для актуальных данных
-    const interval = setInterval(fetchNewUsers, 30000)
-    return () => clearInterval(interval)
+    // Данные загружаются только при открытии/обновлении страницы
+    // Автообновление отключено по запросу пользователя
   }, [])
 
   const formatTimeAgo = (dateString: string) => {
@@ -420,10 +419,10 @@ export function NewUsersShowcase({ limit, showButton = true }: NewUsersShowcaseP
 
           <div className="text-center p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl">
             <div className="flex items-center justify-center gap-2 mb-2">
-              <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-              <span className="text-emerald-400 text-sm font-medium">ЖИВЫЕ ДАННЫЕ</span>
+              <div className="w-2 h-2 bg-emerald-400 rounded-full"></div>
+              <span className="text-emerald-400 text-sm font-medium">АКТУАЛЬНЫЕ ДАННЫЕ</span>
             </div>
-            <div className="text-slate-300 text-sm">Обновляется каждые 30 секунд</div>
+            <div className="text-slate-300 text-sm">Обновляется при перезагрузке страницы</div>
           </div>
         </div>
       </div>

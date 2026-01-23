@@ -61,9 +61,8 @@ export function UserActivityRows() {
     }
 
     fetchTransactions()
-    // Автообновление каждые 30 секунд для актуальных данных
-    const interval = setInterval(fetchTransactions, 30000)
-    return () => clearInterval(interval)
+    // Данные загружаются только при открытии/обновлении страницы
+    // Автообновление отключено по запросу пользователя
   }, [])
 
   const getTypeIcon = (type: string) => {
@@ -334,9 +333,9 @@ export function UserActivityRows() {
         <div className="mt-12 text-center animate-fade-in-delayed">
           <div className="inline-flex items-center gap-3 px-6 py-3 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full">
             <Clock className="h-4 w-4 text-slate-400" />
-            <div className="w-2 h-2 bg-indigo-400 rounded-full animate-pulse"></div>
+            <div className="w-2 h-2 bg-indigo-400 rounded-full"></div>
             <span className="text-slate-300 text-sm font-medium">
-              Показано последних {filteredTransactions.length} операций • Обновляется каждые 30 сек
+              Показано последних {filteredTransactions.length} операций • Обновляется при перезагрузке страницы
             </span>
           </div>
         </div>

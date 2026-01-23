@@ -54,9 +54,8 @@ export function LiveActivityFeed() {
     }
 
     fetchActivities()
-    // Автообновление каждые 30 секунд для актуальных данных
-    const interval = setInterval(fetchActivities, 30000)
-    return () => clearInterval(interval)
+    // Данные загружаются только при открытии/обновлении страницы
+    // Автообновление отключено по запросу пользователя
   }, [])
 
   const formatTimeAgo = (date: Date) => {
@@ -283,8 +282,8 @@ export function LiveActivityFeed() {
         {/* Индикатор живой активности */}
         <div className="mt-16 text-center animate-fade-in-delayed">
           <div className="inline-flex items-center gap-3 px-6 py-3 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full">
-            <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-            <span className="text-slate-300 text-sm font-medium">Обновляется каждые 30 секунд</span>
+            <div className="w-2 h-2 bg-emerald-400 rounded-full"></div>
+            <span className="text-slate-300 text-sm font-medium">Данные обновляются при перезагрузке страницы</span>
           </div>
         </div>
       </div>

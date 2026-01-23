@@ -34,9 +34,9 @@ export function Statistics() {
   useEffect(() => {
     loadStatistics()
     
-    // Автообновление отключено для экономии ресурсов
-    // const interval = setInterval(loadStatistics, 300000)
-    // return () => clearInterval(interval)
+    // Автообновление каждые 30 секунд для актуальной статистики
+    const interval = setInterval(loadStatistics, 30000)
+    return () => clearInterval(interval)
   }, [])
 
   const loadStatistics = async () => {

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { query } from '@/server/db'
 import jwt from 'jsonwebtoken'
-import { updateStatistics } from '@/lib/update-statistics'
+// Import will be done dynamically to avoid TypeScript issues
 
 // Функция для проверки токена
 function verifyToken(request: NextRequest) {
@@ -159,7 +159,14 @@ export async function POST(request: NextRequest) {
       console.log('✅ Investment created successfully');
 
       // Обновляем статистику после создания инвестиции
-      await updateStatistics();
+      try {
+        // Динамический импорт JavaScript версии функции
+        const { updateStatistics } = require('../../../lib/update-statistics.js');
+        const statsResult = await updateStatistics();
+        console.log('📊 Статистика обновлена:', statsResult.success ? 'Успешно' : 'Ошибка');
+      } catch (statsError) {
+        console.error('⚠️ Ошибка обновления статистики:', statsError);
+      }
 
       return NextResponse.json({
         success: true,

@@ -1,11 +1,11 @@
 require('dotenv').config({ path: '.env.production' });
 
-// Импортируем функцию обновления статистики
-const { updateStatistics } = require('./lib/update-statistics.ts');
+// Импортируем JavaScript версию функции
+const { updateStatistics } = require('./lib/update-statistics.js');
 
-async function testUpdateStatisticsFunction() {
+async function testJSUpdateStatistics() {
   try {
-    console.log('🧪 Тестируем функцию updateStatistics() напрямую...\n');
+    console.log('🧪 Тестируем JavaScript версию updateStatistics()...\n');
     
     // Получаем статистику до обновления
     console.log('📊 Статистика ДО обновления:');
@@ -50,4 +50,4 @@ async function testUpdateStatisticsFunction() {
   }
 }
 
-testUpdateStatisticsFunction();
+testJSUpdateStatistics();

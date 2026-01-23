@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Textarea } from "@/components/ui/textarea"
@@ -12,696 +12,555 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog"
-import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
   CheckCircle,
   XCircle,
   Clock,
   DollarSign,
-  CreditCard,
   User,
   Calendar,
   RefreshCw,
-  AlertCircle,
+  CreditCard,
+  Smartphone,
+  Bitcoin,
+  Copy
 } from "lucide-react"
 import { toast } from "sonner"
-import { Alert, AlertDescription } from "@/components/ui/alert"
+import { AdminGuard } from "@/components/admin-guard"
 
-interface DepositRequest {
+interface SimpleRequest {
   id: string
   user_id: string
   amount: number
   method: string
-  payment_details: any
-  status: string
-  admin_comment?: string
-  created_at: string
-  processed_at?: string
-  users?: {
-    id: string
-    full_name: string
-    email: string
-  }
-}
-
-interface WithdrawalRequest {
-  id: string
-  user_id: string
-  amount: number
-  method: string
-  wallet_address: string
+  payment_details?: any
+  wallet_address?: string
   card_number?: string
   card_holder_name?: string
   bank_name?: string
   phone_number?: string
   account_holder_name?: string
   crypto_network?: string
-  fee: number
-  final_amount: number
   status: string
   admin_comment?: string
   created_at: string
-  processed_at?: string
   users?: {
-    id: string
     full_name: string
     email: string
   }
+  user_name?: string
+  user_email?: string
 }
 
-export default function RequestsPage() {
-  const [depositRequests, setDepositRequests] = useState<DepositRequest[]>([])
-  const [withdrawalRequests, setWithdrawalRequests] = useState<WithdrawalRequest[]>([])
-  const [selectedRequest, setSelectedRequest] = useState<any>(null)
-  const [rejectReason, setRejectReason] = useState("")
+export default function AdminRequestsPage() {
+  const [depositRequests, setDepositRequests] = useState<SimpleRequest[]>([])
+  const [withdrawalRequests, setWithdrawalRequests] = useState<SimpleRequest[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [selectedRequest, setSelectedRequest] = useState<SimpleRequest | null>(null)
+  const [adminComment, setAdminComment] = useState("")
+  const [isProcessing, setIsProcessing] = useState(false)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [loading, setLoading] = useState(true)
-  const [processing, setProcessing] = useState<string | null>(null)
-  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     fetchRequests()
-    // Обновляем каждые 30 секунд
     const interval = setInterval(fetchRequests, 30000)
     return () => clearInterval(interval)
   }, [])
 
   const fetchRequests = async () => {
     try {
-      setLoading(true)
-      setError(null)
-
-      console.log("🔄 Fetching admin requests...")
-
-      const token = localStorage.getItem("authToken")
+      const token = localStorage.getItem('authToken')
       if (!token) {
-        console.error("No token found, redirecting to login...")
-        window.location.href = "/login"
+        window.location.href = '/admin/login'
         return
       }
-
-      // Проверяем токен
-      if (token.length < 50) {
-        console.error("❌ Token is corrupted (length:", token.length, "), clearing and redirecting...")
-        localStorage.clear()
-        window.location.href = "/login"
-        return
-      }
-
-      // Fetch deposit requests
-      const depositResponse = await fetch("/api/admin/deposit-requests", {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      console.log("Deposit response status:", depositResponse.status)
-
-      if (!depositResponse.ok) {
-        const errorText = await depositResponse.text()
-        console.error("Deposit error:", errorText)
-        throw new Error(`HTTP error! status: ${depositResponse.status}`)
-      }
-
-      const depositData = await depositResponse.json()
-      console.log("✅ Deposit requests loaded:", depositData.requests?.length || 0)
-      setDepositRequests(depositData.requests || [])
-
-      // Fetch withdrawal requests
-      const withdrawalResponse = await fetch("/api/admin/withdrawal-requests", {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      console.log("Withdrawal response status:", withdrawalResponse.status)
-
-      if (!withdrawalResponse.ok) {
-        const errorText = await withdrawalResponse.text()
-        console.error("Withdrawal error:", errorText)
-        throw new Error(`HTTP error! status: ${withdrawalResponse.status}`)
-      }
-
-      const withdrawalData = await withdrawalResponse.json()
-      console.log("✅ Withdrawal response data:", withdrawalData)
-      console.log("✅ Withdrawal requests loaded:", withdrawalData.requests?.length || 0)
       
-      if (withdrawalData.requests && withdrawalData.requests.length > 0) {
-        console.log("📋 First withdrawal request:", withdrawalData.requests[0])
-        
-        // Проверяем наличие реквизитов
-        const firstReq = withdrawalData.requests[0]
-        console.log("🔍 Checking payment details:", {
-          has_card_number: !!firstReq.card_number,
-          has_phone_number: !!firstReq.phone_number,
-          has_wallet_address: !!firstReq.wallet_address,
-          card_number: firstReq.card_number,
-          card_holder_name: firstReq.card_holder_name,
-          phone_number: firstReq.phone_number,
-          wallet_address: firstReq.wallet_address
+      const [depositResponse, withdrawalResponse] = await Promise.all([
+        fetch('/api/admin/deposit-requests', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        }),
+        fetch('/api/admin/withdrawal-requests', {
+          headers: { 'Authorization': `Bearer ${token}` }
         })
-      } else {
-        console.log("⚠️  No withdrawal requests in response")
+      ])
+
+      if (depositResponse.ok) {
+        const depositData = await depositResponse.json()
+        setDepositRequests(depositData.requests || [])
       }
-      
-      setWithdrawalRequests(withdrawalData.requests || [])
+
+      if (withdrawalResponse.ok) {
+        const withdrawalData = await withdrawalResponse.json()
+        setWithdrawalRequests(withdrawalData.requests || [])
+      }
+
     } catch (error) {
-      console.error("❌ Error fetching requests:", error)
-      setError("Ошибка подключения к серверу")
-      toast.error("Ошибка загрузки запросов")
+      console.error('Error fetching requests:', error)
     } finally {
-      setLoading(false)
+      setIsLoading(false)
     }
   }
 
-  const handleApproveDeposit = async (requestId: string) => {
-    setProcessing(requestId)
-    try {
-      const token = localStorage.getItem("authToken")
-      if (!token) {
-        throw new Error("Не авторизован")
-      }
-
-      const response = await fetch(`/api/admin/deposit-requests/${requestId}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          status: "approved",
-        }),
-      })
-
-      if (response.ok) {
-        setDepositRequests((prev) =>
-          prev.map((req) =>
-            req.id === requestId ? { ...req, status: "approved", processed_at: new Date().toISOString() } : req,
-          ),
-        )
-        toast.success("Запрос на пополнение одобрен")
-      } else {
-        const errorData = await response.json()
-        throw new Error(errorData.error || "Failed to approve request")
-      }
-    } catch (error) {
-      console.error("Error approving deposit:", error)
-      toast.error("Ошибка при одобрении запроса")
-    } finally {
-      setProcessing(null)
-    }
+  const handleRequestClick = (request: SimpleRequest) => {
+    setSelectedRequest(request)
+    setAdminComment(request.admin_comment || "")
+    setIsDialogOpen(true)
   }
 
-  const handleRejectDeposit = async (requestId: string, reason: string) => {
-    setProcessing(requestId)
+  const handleApprove = async () => {
+    if (!selectedRequest) return
+    
+    setIsProcessing(true)
     try {
-      const token = localStorage.getItem("authToken")
-      if (!token) {
-        throw new Error("Не авторизован")
-      }
+      const token = localStorage.getItem('authToken')
+      const endpoint = depositRequests.find(r => r.id === selectedRequest.id)
+        ? `/api/admin/deposit-requests/${selectedRequest.id}`
+        : `/api/admin/withdrawal-requests/${selectedRequest.id}`
 
-      const response = await fetch(`/api/admin/deposit-requests/${requestId}`, {
-        method: "PATCH",
+      const response = await fetch(endpoint, {
+        method: 'PATCH',
         headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
-          status: "rejected",
-          admin_comment: reason,
-        }),
+          status: 'approved',
+          admin_comment: adminComment
+        })
       })
 
       if (response.ok) {
-        setDepositRequests((prev) =>
-          prev.map((req) =>
-            req.id === requestId
-              ? { ...req, status: "rejected", admin_comment: reason, processed_at: new Date().toISOString() }
-              : req,
-          ),
-        )
-        toast.success("Запрос на пополнение отклонен")
-        // Перезагружаем данные
+        toast.success('Заявка одобрена!')
+        setIsDialogOpen(false)
         fetchRequests()
       } else {
-        const errorData = await response.json()
-        throw new Error(errorData.error || "Failed to reject request")
+        toast.error('Ошибка при одобрении')
       }
     } catch (error) {
-      console.error("Error rejecting deposit:", error)
-      toast.error("Ошибка при отклонении запроса")
+      toast.error('Ошибка при одобрении')
     } finally {
-      setProcessing(null)
+      setIsProcessing(false)
     }
   }
 
-  const handleApproveWithdrawal = async (requestId: string) => {
-    console.log('🔄 Starting withdrawal approval for:', requestId)
-    setProcessing(requestId)
+  const handleReject = async () => {
+    if (!selectedRequest) return
+    
+    setIsProcessing(true)
     try {
-      const token = localStorage.getItem("authToken")
-      console.log('🎫 Token found:', token ? 'YES' : 'NO')
-      console.log('🎫 Token length:', token?.length || 0)
-      
-      if (!token) {
-        throw new Error("Не авторизован")
-      }
+      const token = localStorage.getItem('authToken')
+      const endpoint = depositRequests.find(r => r.id === selectedRequest.id)
+        ? `/api/admin/deposit-requests/${selectedRequest.id}`
+        : `/api/admin/withdrawal-requests/${selectedRequest.id}`
 
-      console.log('📤 Sending PATCH request to:', `/api/admin/withdrawal-requests/${requestId}`)
-      console.log('📤 Request body:', { status: "approved" })
-
-      const response = await fetch(`/api/admin/withdrawal-requests/${requestId}`, {
-        method: "PATCH",
+      const response = await fetch(endpoint, {
+        method: 'PATCH',
         headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
-          status: "approved",
-        }),
+          status: 'rejected',
+          admin_comment: adminComment
+        })
       })
 
-      console.log('📥 Response status:', response.status)
-      console.log('📥 Response ok:', response.ok)
-
       if (response.ok) {
-        const data = await response.json()
-        console.log('📥 Response data:', data)
-        
-        setWithdrawalRequests((prev) =>
-          prev.map((req) =>
-            req.id === requestId ? { ...req, status: "approved", processed_at: new Date().toISOString() } : req,
-          ),
-        )
-        toast.success("Запрос на вывод одобрен")
+        toast.success('Заявка отклонена')
+        setIsDialogOpen(false)
         fetchRequests()
       } else {
-        const errorText = await response.text()
-        console.error('❌ Error response:', errorText)
-        const errorData = JSON.parse(errorText)
-        throw new Error(errorData.error || "Failed to approve request")
+        toast.error('Ошибка при отклонении')
       }
     } catch (error) {
-      console.error("Error approving withdrawal:", error)
-      toast.error("Ошибка при одобрении запроса")
+      toast.error('Ошибка при отклонении')
     } finally {
-      setProcessing(null)
+      setIsProcessing(false)
     }
   }
 
-  const handleRejectWithdrawal = async (requestId: string, reason: string) => {
-    setProcessing(requestId)
-    try {
-      const token = localStorage.getItem("authToken")
-      if (!token) {
-        throw new Error("Не авторизован")
-      }
-
-      const response = await fetch(`/api/admin/withdrawal-requests/${requestId}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          status: "rejected",
-          admin_comment: reason,
-        }),
-      })
-
-      if (response.ok) {
-        setWithdrawalRequests((prev) =>
-          prev.map((req) =>
-            req.id === requestId
-              ? { ...req, status: "rejected", admin_comment: reason, processed_at: new Date().toISOString() }
-              : req,
-          ),
-        )
-        toast.success("Запрос на вывод отклонен")
-        fetchRequests()
-      } else {
-        const errorData = await response.json()
-        throw new Error(errorData.error || "Failed to reject request")
-      }
-    } catch (error) {
-      console.error("Error rejecting withdrawal:", error)
-      toast.error("Ошибка при отклонении запроса")
-    } finally {
-      setProcessing(null)
-    }
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString)
+    return new Intl.DateTimeFormat('ru-RU', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    }).format(date)
   }
 
   const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "pending":
-        return (
-          <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200">
-            <Clock className="w-3 h-3 mr-1" />
-            Ожидает
-          </Badge>
-        )
-      case "approved":
-        return (
-          <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-            <CheckCircle className="w-3 h-3 mr-1" />
-            Одобрено
-          </Badge>
-        )
-      case "rejected":
-        return (
-          <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">
-            <XCircle className="w-3 h-3 mr-1" />
-            Отклонено
-          </Badge>
-        )
-      default:
-        return <Badge variant="outline">{status}</Badge>
+    const config = {
+      pending: { label: 'Ожидает', className: 'bg-yellow-500' },
+      approved: { label: 'Одобрено', className: 'bg-green-500' },
+      rejected: { label: 'Отклонено', className: 'bg-red-500' }
     }
+    const { label, className } = config[status as keyof typeof config] || config.pending
+    return <Badge className={className}>{label}</Badge>
   }
 
-  const RequestCard = ({ request, type, onApprove, onReject }: any) => {
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text)
+    toast.success('Скопировано!')
+  }
+
+  // Полная карточка с реквизитами
+  const FullRequestCard = ({ request, type }: { request: SimpleRequest, type: 'deposit' | 'withdrawal' }) => {
+    const userName = request.users?.full_name || request.user_name || 'Неизвестный пользователь'
+    
     return (
-      <Card className="relative overflow-hidden hover:shadow-lg transition-all duration-300 border hover:border-blue-400">
+      <Card className="bg-white/5 border-white/10 backdrop-blur-sm hover:bg-white/10 transition-all">
         <CardContent className="p-6">
-        <div className="flex justify-between items-start mb-4">
-          <div className="flex items-center space-x-3">
-            <div className={`p-3 rounded-xl ${type === "deposit" ? "bg-green-500" : "bg-red-500"} shadow-lg`}>
-              {type === "deposit" ? (
-                <DollarSign className="w-6 h-6 text-white" />
-              ) : (
-                <CreditCard className="w-6 h-6 text-white" />
-              )}
-            </div>
-            <div>
-              <h3 className="font-bold text-xl text-slate-900">#{request.id}</h3>
-              <p className="text-sm text-gray-600 flex items-center font-medium">
-                <User className="w-4 h-4 mr-1" />
-                {request.users?.full_name || request.users?.email || "Пользователь"}
-              </p>
-            </div>
-          </div>
-          {getStatusBadge(request.status)}
-        </div>
-
-        <div className="space-y-3 mb-4">
-          <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4 border-2 border-blue-200">
-            <div className="flex justify-between items-center">
-              <span className="text-gray-700 font-medium">💰 Сумма:</span>
-              <span className="font-bold text-2xl text-blue-600">${request.amount}</span>
-            </div>
-          </div>
-          
-          <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-            <span className="text-gray-600 font-medium">Способ:</span>
-            <span className="font-semibold text-gray-900">{request.method}</span>
-          </div>
-          
-          {type === "withdrawal" && (
-            <>
-              {/* Реквизиты для банковской карты */}
-              {request.card_number && (
-                <>
-                  <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg border border-blue-200">
-                    <span className="text-gray-700 font-medium">💳 Номер карты:</span>
-                    <span className="text-sm font-mono text-gray-900">{request.card_number}</span>
-                  </div>
-                  {request.card_holder_name && (
-                    <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg border border-blue-200">
-                      <span className="text-gray-700 font-medium">👤 Владелец карты:</span>
-                      <span className="text-sm font-semibold text-gray-900">{request.card_holder_name}</span>
-                    </div>
-                  )}
-                  {request.bank_name && (
-                    <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg border border-blue-200">
-                      <span className="text-gray-700 font-medium">🏦 Банк:</span>
-                      <span className="text-sm font-semibold text-gray-900">{request.bank_name}</span>
-                    </div>
-                  )}
-                </>
-              )}
-              
-              {/* Реквизиты для СБП */}
-              {request.phone_number && (
-                <>
-                  <div className="flex justify-between items-center p-3 bg-purple-50 rounded-lg border border-purple-200">
-                    <span className="text-gray-700 font-medium">📱 Телефон (СБП):</span>
-                    <span className="text-sm font-mono text-gray-900">{request.phone_number}</span>
-                  </div>
-                  {request.account_holder_name && (
-                    <div className="flex justify-between items-center p-3 bg-purple-50 rounded-lg border border-purple-200">
-                      <span className="text-gray-700 font-medium">👤 Владелец:</span>
-                      <span className="text-sm font-semibold text-gray-900">{request.account_holder_name}</span>
-                    </div>
-                  )}
-                  {request.bank_name && (
-                    <div className="flex justify-between items-center p-3 bg-purple-50 rounded-lg border border-purple-200">
-                      <span className="text-gray-700 font-medium">🏦 Банк СБП:</span>
-                      <span className="text-sm font-semibold text-gray-900">{request.bank_name}</span>
-                    </div>
-                  )}
-                    </div>
-                  )}
-                </>
-              )}
-              
-              {/* Реквизиты для криптовалюты */}
-              {request.wallet_address && (
-                <>
-                  {request.crypto_network && (
-                    <div className="flex justify-between items-center p-3 bg-orange-50 rounded-lg border border-orange-200">
-                      <span className="text-gray-700 font-medium">🌐 Сеть:</span>
-                      <span className="text-sm font-semibold text-gray-900 uppercase">{request.crypto_network}</span>
-                    </div>
-                  )}
-                  <div className="flex justify-between items-center p-3 bg-orange-50 rounded-lg border border-orange-200">
-                    <span className="text-gray-700 font-medium">🔐 Адрес кошелька:</span>
-                    <span className="text-xs font-mono text-gray-900 break-all">{request.wallet_address}</span>
-                  </div>
-                </>
-              )}
-              
-              <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg border border-green-200">
-                <span className="text-gray-700 font-medium">К выплате:</span>
-                <span className="font-bold text-xl text-green-600">${request.final_amount}</span>
+          <div className="flex justify-between items-start mb-4">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                <User className="w-6 h-6 text-white" />
               </div>
-            </>
-          )}
-          
-          <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-            <span className="text-gray-600 font-medium">📅 Дата:</span>
-            <span className="text-sm font-medium text-gray-900">
-              {new Date(request.created_at).toLocaleString("ru-RU")}
-            </span>
-          </div>
-          
-          {request.admin_comment && (
-            <div className="p-3 bg-red-50 rounded-lg border border-red-200">
-              <div className="text-gray-700 font-medium mb-1">💬 Комментарий:</div>
-              <div className="text-sm text-red-700">{request.admin_comment}</div>
+              <div>
+                <h3 className="text-white font-semibold text-lg">{userName}</h3>
+                <p className="text-white/60 text-sm">{type === 'deposit' ? 'Пополнение' : 'Вывод'}</p>
+                <p className="text-white/60 text-xs">{formatDate(request.created_at)}</p>
+              </div>
             </div>
-          )}
-        </div>
+            
+            <div className="text-right">
+              <div className="flex items-center gap-2 mb-2">
+                <DollarSign className="w-5 h-5 text-green-400" />
+                <span className="text-white font-bold text-xl">${request.amount.toFixed(2)}</span>
+              </div>
+              {getStatusBadge(request.status)}
+            </div>
+          </div>
 
-        {request.status === "pending" && (
-          <div className="flex space-x-3">
-            <Button
-              onClick={() => onApprove(request.id)}
-              disabled={processing === request.id}
-              className="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all"
-            >
-              {processing === request.id ? (
-                <RefreshCw className="w-5 h-5 mr-2 animate-spin" />
-              ) : (
-                <CheckCircle className="w-5 h-5 mr-2" />
-              )}
-              Одобрить
-            </Button>
-            <Dialog open={isDialogOpen && selectedRequest?.id === request.id} onOpenChange={setIsDialogOpen}>
-              <DialogTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="flex-1 border-2 border-red-300 text-red-600 hover:bg-red-50 font-semibold shadow-lg hover:shadow-xl transition-all"
-                  onClick={() => setSelectedRequest(request)}
-                  disabled={processing === request.id}
-                >
-                  <XCircle className="w-5 h-5 mr-2" />
-                  Отклонить
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Отклонить запрос #{request.id}</DialogTitle>
-                  <DialogDescription>
-                    Укажите причину отклонения запроса пользователя {request.users?.full_name || request.users?.email}
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="reason">Причина отклонения</Label>
-                    <Textarea
-                      id="reason"
-                      placeholder="Введите причину отклонения..."
-                      value={rejectReason}
-                      onChange={(e) => setRejectReason(e.target.value)}
-                    />
+          {/* Реквизиты */}
+          <div className="space-y-3 mt-4">
+            <h4 className="text-white font-medium">Реквизиты:</h4>
+            
+            {/* Способ оплаты */}
+            <div className="flex justify-between items-center p-3 bg-white/10 rounded-lg">
+              <span className="text-white/70">Способ:</span>
+              <span className="text-white font-semibold">{request.method}</span>
+            </div>
+
+            {/* Реквизиты из payment_details (для пополнений) */}
+            {request.payment_details && typeof request.payment_details === 'object' && (
+              <>
+                {request.payment_details.card_number && (
+                  <div className="flex justify-between items-center p-3 bg-blue-500/20 rounded-lg">
+                    <span className="text-white/70">💳 Номер карты:</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-white font-mono text-sm">{request.payment_details.card_number}</span>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => copyToClipboard(request.payment_details.card_number)}
+                        className="h-8 w-8 p-0 text-white hover:bg-white/20"
+                      >
+                        <Copy className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+                )}
+                {request.payment_details.phone_number && (
+                  <div className="flex justify-between items-center p-3 bg-purple-500/20 rounded-lg">
+                    <span className="text-white/70">📱 Телефон (СБП):</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-white font-mono text-sm">{request.payment_details.phone_number}</span>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => copyToClipboard(request.payment_details.phone_number)}
+                        className="h-8 w-8 p-0 text-white hover:bg-white/20"
+                      >
+                        <Copy className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+                )}
+                {request.payment_details.wallet_address && (
+                  <div className="flex justify-between items-center p-3 bg-orange-500/20 rounded-lg">
+                    <span className="text-white/70">🔐 Кошелек:</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-white font-mono text-xs break-all">{request.payment_details.wallet_address}</span>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => copyToClipboard(request.payment_details.wallet_address)}
+                        className="h-8 w-8 p-0 text-white hover:bg-white/20"
+                      >
+                        <Copy className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+
+            {/* Реквизиты для банковской карты (для выводов) */}
+            {request.card_number && (
+              <>
+                <div className="flex justify-between items-center p-3 bg-blue-500/20 rounded-lg">
+                  <span className="text-white/70">💳 Номер карты:</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-white font-mono text-sm">{request.card_number}</span>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => copyToClipboard(request.card_number)}
+                      className="h-8 w-8 p-0 text-white hover:bg-white/20"
+                    >
+                      <Copy className="w-4 h-4" />
+                    </Button>
                   </div>
                 </div>
-                <DialogFooter>
-                  <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
-                    Отмена
-                  </Button>
-                  <Button
-                    variant="destructive"
-                    onClick={() => onReject(request.id, rejectReason)}
-                    disabled={!rejectReason.trim() || processing === request.id}
-                  >
-                    {processing === request.id ? <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> : null}
-                    Отклонить запрос
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
+                {request.card_holder_name && (
+                  <div className="flex justify-between items-center p-3 bg-blue-500/20 rounded-lg">
+                    <span className="text-white/70">👤 Владелец карты:</span>
+                    <span className="text-white">{request.card_holder_name}</span>
+                  </div>
+                )}
+                {request.bank_name && (
+                  <div className="flex justify-between items-center p-3 bg-blue-500/20 rounded-lg">
+                    <span className="text-white/70">🏦 Банк:</span>
+                    <span className="text-white">{request.bank_name}</span>
+                  </div>
+                )}
+              </>
+            )}
+
+            {/* Реквизиты для СБП */}
+            {request.phone_number && (
+              <>
+                <div className="flex justify-between items-center p-3 bg-purple-500/20 rounded-lg">
+                  <span className="text-white/70">📱 Телефон (СБП):</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-white font-mono text-sm">{request.phone_number}</span>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => copyToClipboard(request.phone_number)}
+                      className="h-8 w-8 p-0 text-white hover:bg-white/20"
+                    >
+                      <Copy className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+                {request.account_holder_name && (
+                  <div className="flex justify-between items-center p-3 bg-purple-500/20 rounded-lg">
+                    <span className="text-white/70">👤 Владелец:</span>
+                    <span className="text-white">{request.account_holder_name}</span>
+                  </div>
+                )}
+                {request.bank_name && (
+                  <div className="flex justify-between items-center p-3 bg-purple-500/20 rounded-lg">
+                    <span className="text-white/70">🏦 Банк СБП:</span>
+                    <span className="text-white">{request.bank_name}</span>
+                  </div>
+                )}
+              </>
+            )}
+
+            {/* Реквизиты для криптовалюты */}
+            {request.wallet_address && (
+              <>
+                {request.crypto_network && (
+                  <div className="flex justify-between items-center p-3 bg-orange-500/20 rounded-lg">
+                    <span className="text-white/70">🌐 Сеть:</span>
+                    <span className="text-white uppercase">{request.crypto_network}</span>
+                  </div>
+                )}
+                <div className="flex justify-between items-center p-3 bg-orange-500/20 rounded-lg">
+                  <span className="text-white/70">🔐 Адрес кошелька:</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-white font-mono text-xs break-all">{request.wallet_address}</span>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => copyToClipboard(request.wallet_address)}
+                      className="h-8 w-8 p-0 text-white hover:bg-white/20"
+                    >
+                      <Copy className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
-        )}
-      </CardContent>
-    </Card>
-    )
-  }
 
-  const pendingDeposits = depositRequests.filter((req) => req.status === "pending").length
-  const pendingWithdrawals = withdrawalRequests.filter((req) => req.status === "pending").length
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-96">
-        <RefreshCw className="h-8 w-8 animate-spin" />
-        <span className="ml-2">Загрузка запросов...</span>
-      </div>
+          {/* Кнопки действий */}
+          {request.status === 'pending' && (
+            <div className="flex gap-2 mt-4">
+              <Button
+                onClick={() => handleRequestClick(request)}
+                className="flex-1 bg-green-600 hover:bg-green-700"
+              >
+                <CheckCircle className="w-4 h-4 mr-2" />
+                Одобрить
+              </Button>
+              <Button
+                onClick={() => handleRequestClick(request)}
+                className="flex-1 bg-red-600 hover:bg-red-700"
+              >
+                <XCircle className="w-4 h-4 mr-2" />
+                Отклонить
+              </Button>
+            </div>
+          )}
+        </CardContent>
+      </Card>
     )
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6 p-6">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-white shadow-xl">
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-4xl font-bold mb-2">💼 Управление заявками</h1>
-            <p className="text-blue-100">Обработка запросов на пополнение и вывод средств</p>
-          </div>
-          <div className="flex space-x-4">
-            <div className="bg-white/20 backdrop-blur-sm rounded-xl p-4 text-center">
-              <div className="text-3xl font-bold">{pendingDeposits}</div>
-              <div className="text-sm text-blue-100">Пополнений</div>
+    <AdminGuard>
+      <div className="min-h-screen w-full bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900">
+        <div className="w-full min-h-screen p-4 lg:p-8">
+          {/* Заголовок */}
+          <div className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 backdrop-blur-sm rounded-2xl p-6 mb-8 border border-white/10">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+              <div>
+                <h1 className="text-3xl lg:text-5xl font-bold text-white mb-2 flex items-center gap-3">
+                  💼 Админ Панель - Заявки
+                </h1>
+                <p className="text-white/70 text-lg">Управление заявками на пополнение и вывод средств</p>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 text-center border border-white/20">
+                  <div className="text-2xl font-bold text-green-400">{depositRequests.filter(r => r.status === 'pending').length}</div>
+                  <div className="text-sm text-white/70">Пополнений</div>
+                </div>
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 text-center border border-white/20">
+                  <div className="text-2xl font-bold text-red-400">{withdrawalRequests.filter(r => r.status === 'pending').length}</div>
+                  <div className="text-sm text-white/70">Выводов</div>
+                </div>
+                <Button
+                  onClick={fetchRequests}
+                  disabled={isLoading}
+                  className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-6 py-3"
+                >
+                  <RefreshCw className={`w-5 h-5 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+                  Обновить
+                </Button>
+              </div>
             </div>
-            <div className="bg-white/20 backdrop-blur-sm rounded-xl p-4 text-center">
-              <div className="text-3xl font-bold">{pendingWithdrawals}</div>
-              <div className="text-sm text-blue-100">Выводов</div>
-            </div>
-            <Button 
-              onClick={fetchRequests} 
-              variant="outline" 
-              className="bg-white/20 border-white/30 text-white hover:bg-white/30"
-            >
-              <RefreshCw className="w-4 h-4 mr-2" />
-              Обновить
-            </Button>
           </div>
+
+          <Tabs defaultValue="withdrawals" className="space-y-6">
+            <TabsList className="grid w-full grid-cols-2 bg-white/10 backdrop-blur-sm border border-white/20 h-14 p-1">
+              <TabsTrigger 
+                value="deposits" 
+                className="data-[state=active]:bg-green-600 data-[state=active]:text-white text-white/70 font-semibold text-lg h-full rounded-lg transition-all"
+              >
+                📥 Пополнения ({depositRequests.filter(r => r.status === 'pending').length})
+              </TabsTrigger>
+              <TabsTrigger 
+                value="withdrawals" 
+                className="data-[state=active]:bg-red-600 data-[state=active]:text-white text-white/70 font-semibold text-lg h-full rounded-lg transition-all"
+              >
+                💸 Выводы ({withdrawalRequests.filter(r => r.status === 'pending').length})
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="deposits" className="space-y-4">
+              {isLoading ? (
+                <div className="text-center py-20">
+                  <RefreshCw className="w-12 h-12 animate-spin mx-auto text-white mb-6" />
+                  <p className="text-white text-xl">Загрузка заявок на пополнение...</p>
+                </div>
+              ) : depositRequests.length === 0 ? (
+                <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
+                  <CardContent className="text-center py-20">
+                    <div className="text-6xl mb-4">📥</div>
+                    <p className="text-white/70 text-xl">Нет заявок на пополнение</p>
+                  </CardContent>
+                </Card>
+              ) : (
+                <div className="grid gap-4">
+                  {depositRequests.map(request => (
+                    <FullRequestCard key={request.id} request={request} type="deposit" />
+                  ))}
+                </div>
+              )}
+            </TabsContent>
+
+            <TabsContent value="withdrawals" className="space-y-4">
+              {isLoading ? (
+                <div className="text-center py-20">
+                  <RefreshCw className="w-12 h-12 animate-spin mx-auto text-white mb-6" />
+                  <p className="text-white text-xl">Загрузка заявок на вывод...</p>
+                </div>
+              ) : withdrawalRequests.length === 0 ? (
+                <Card className="bg-white/5 border-white/10 backdrop-blur-sm">
+                  <CardContent className="text-center py-20">
+                    <div className="text-6xl mb-4">💸</div>
+                    <p className="text-white/70 text-xl">Нет заявок на вывод</p>
+                  </CardContent>
+                </Card>
+              ) : (
+                <div className="grid gap-4">
+                  {withdrawalRequests.map(request => (
+                    <FullRequestCard key={request.id} request={request} type="withdrawal" />
+                  ))}
+                </div>
+              )}
+            </TabsContent>
+          </Tabs>
         </div>
+
+        {/* Диалог для действий с заявкой */}
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogContent className="bg-gradient-to-br from-slate-900 to-blue-900 border-white/20 text-white max-w-md">
+            <DialogHeader>
+              <DialogTitle className="text-xl">Действие с заявкой</DialogTitle>
+              <DialogDescription className="text-white/70">
+                Выберите действие для заявки на сумму ${selectedRequest?.amount.toFixed(2)}
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-white font-medium">Комментарий администратора</label>
+                <Textarea
+                  value={adminComment}
+                  onChange={(e) => setAdminComment(e.target.value)}
+                  placeholder="Добавьте комментарий..."
+                  className="bg-white/10 border-white/20 text-white placeholder:text-white/50"
+                  rows={3}
+                />
+              </div>
+            </div>
+
+            <DialogFooter className="gap-2">
+              <Button
+                onClick={() => setIsDialogOpen(false)}
+                variant="outline"
+                className="border-white/20 text-white hover:bg-white/10"
+              >
+                Отмена
+              </Button>
+              <Button
+                onClick={handleReject}
+                disabled={isProcessing}
+                className="bg-red-600 hover:bg-red-700"
+              >
+                <XCircle className="w-4 h-4 mr-2" />
+                Отклонить
+              </Button>
+              <Button
+                onClick={handleApprove}
+                disabled={isProcessing}
+                className="bg-green-600 hover:bg-green-700"
+              >
+                <CheckCircle className="w-4 h-4 mr-2" />
+                Одобрить
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
-
-      {error && (
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
-
-      <Tabs defaultValue="deposits" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 h-14 bg-gradient-to-r from-slate-100 to-slate-200 p-1 rounded-xl">
-          <TabsTrigger 
-            value="deposits" 
-            className="flex items-center space-x-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-500 data-[state=active]:to-emerald-600 data-[state=active]:text-white font-semibold rounded-lg transition-all"
-          >
-            <DollarSign className="w-5 h-5" />
-            <span>💰 Пополнения ({pendingDeposits})</span>
-          </TabsTrigger>
-          <TabsTrigger 
-            value="withdrawals" 
-            className="flex items-center space-x-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-500 data-[state=active]:to-pink-600 data-[state=active]:text-white font-semibold rounded-lg transition-all"
-          >
-            <CreditCard className="w-5 h-5" />
-            <span>💸 Выводы ({pendingWithdrawals})</span>
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="deposits" className="space-y-6 mt-6">
-          <Card className="border-2 border-green-200 shadow-xl">
-            <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50">
-              <CardTitle className="text-2xl flex items-center">
-                <DollarSign className="w-7 h-7 mr-2 text-green-600" />
-                Запросы на пополнение
-              </CardTitle>
-              <CardDescription className="text-base">
-                Управление запросами пользователей на пополнение баланса
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="pt-6">
-              {depositRequests.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {depositRequests.map((request) => (
-                    <RequestCard
-                      key={request.id}
-                      request={request}
-                      type="deposit"
-                      onApprove={handleApproveDeposit}
-                      onReject={handleRejectDeposit}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-16">
-                  <CheckCircle className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                  <p className="text-gray-500 text-lg font-medium">Нет запросов на пополнение</p>
-                  <p className="text-gray-400 text-sm mt-2">Все заявки обработаны</p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="withdrawals" className="space-y-6 mt-6">
-          <Card className="border-2 border-red-200 shadow-xl">
-            <CardHeader className="bg-gradient-to-r from-red-50 to-pink-50">
-              <CardTitle className="text-2xl flex items-center">
-                <CreditCard className="w-7 h-7 mr-2 text-red-600" />
-                Запросы на вывод
-              </CardTitle>
-              <CardDescription className="text-base">
-                Управление запросами пользователей на вывод средств
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="pt-6">
-              {withdrawalRequests.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {withdrawalRequests.map((request) => (
-                    <RequestCard
-                      key={request.id}
-                      request={request}
-                      type="withdrawal"
-                      onApprove={handleApproveWithdrawal}
-                      onReject={handleRejectWithdrawal}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-16">
-                  <CheckCircle className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                  <p className="text-gray-500 text-lg font-medium">Нет запросов на вывод</p>
-                  <p className="text-gray-400 text-sm mt-2">Все заявки обработаны</p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
-    </div>
+    </AdminGuard>
   )
 }

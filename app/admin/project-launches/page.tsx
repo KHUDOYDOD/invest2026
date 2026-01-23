@@ -1,387 +1,463 @@
-'use client';
+"use client"
 
-import { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Plus, Edit, Trash2, TrendingUp } from 'lucide-react';
-import { toast } from 'sonner';
+import React, { useState, useEffect } from "react"
+import { motion } from "framer-motion"
+import { Plus, Edit, Trash2, Calendar, Clock, Rocket, TrendingUp, Smartphone, Zap, Save, X } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Badge } from "@/components/ui/badge"
+import { Switch } from "@/components/ui/switch"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { AdminGuard } from "@/components/admin-guard"
 
 interface ProjectLaunch {
-  id: number;
-  title: string;
-  description: string;
-  image_url: string;
-  status: string;
-  target_amount: number;
-  raised_amount: number;
-  participants_count: number;
-  created_at: string;
+  id: string
+  name: string
+  title: string
+  description: string
+  launch_date: string
+  countdown_end?: string
+  is_launched: boolean
+  is_active: boolean
+  show_on_site: boolean
+  show_countdown: boolean
+  position: number
+  icon_type: string
+  background_type: string
+  color_scheme: string
+  created_at: string
+  updated_at: string
 }
 
-export default function ProjectLaunchesPage() {
-  const [projects, setProjects] = useState<ProjectLaunch[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [showForm, setShowForm] = useState(false);
-  const [editingProject, setEditingProject] = useState<ProjectLaunch | null>(null);
-  const [formData, setFormData] = useState({
+interface LaunchFormData {
+  name: string
+  title: string
+  description: string
+  launch_date: string
+  countdown_end: string
+  show_countdown: boolean
+  icon_type: string
+  color_scheme: string
+  position: number
+}
+
+const iconOptions = [
+  { value: 'rocket', label: '🚀 Ракета', icon: Rocket },
+  { value: 'trending-up', label: '📈 Рост', icon: TrendingUp },
+  { value: 'smartphone', label: '📱 Мобильное', icon: Smartphone },
+  { value: 'zap', label: '⚡ Энергия', icon: Zap }
+]
+
+const colorOptions = [
+  { value: 'blue', label: '🔵 Синий' },
+  { value: 'green', label: '🟢 Зеленый' },
+  { value: 'purple', label: '🟣 Фиолетовый' },
+  { value: 'orange', label: '🟠 Оранжевый' }
+]
+
+export default function ProjectLaunchesAdmin() {
+  const [launches, setLaunches] = useState<ProjectLaunch[]>([])
+  const [loading, setLoading] = useState(true)
+  const [showForm, setShowForm] = useState(false)
+  const [editingLaunch, setEditingLaunch] = useState<ProjectLaunch | null>(null)
+  const [formData, setFormData] = useState<LaunchFormData>({
+    name: '',
     title: '',
     description: '',
-    image_url: '',
-    status: 'active',
-    target_amount: '',
-    raised_amount: '',
-    participants_count: ''
-  });
+    launch_date: '',
+    countdown_end: '',
+    show_countdown: true,
+    icon_type: 'rocket',
+    color_scheme: 'blue',
+    position: 1
+  })
+
+  const fetchLaunches = async () => {
+    try {
+      const response = await fetch("/api/admin/project-launches")
+      if (response.ok) {
+        const data = await response.json()
+        setLaunches(data)
+      }
+    } catch (error) {
+      console.error("Error fetching launches:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   useEffect(() => {
-    fetchProjects();
-  }, []);
-
-  const fetchProjects = async () => {
-    try {
-      const response = await fetch('/api/admin/project-launches');
-      if (response.ok) {
-        const data = await response.json();
-        setProjects(data.projects || []);
-      }
-    } catch (error) {
-      console.error('Ошибка загрузки проектов:', error);
-      toast.error('Не удалось загрузить проекты');
-    } finally {
-      setLoading(false);
-    }
-  };
+    fetchLaunches()
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
     
     try {
-      const url = editingProject 
-        ? `/api/admin/project-launches?id=${editingProject.id}`
-        : '/api/admin/project-launches';
-      
-      const method = editingProject ? 'PUT' : 'POST';
-      
-      const response = await fetch(url, {
+      const method = editingLaunch ? 'PUT' : 'POST'
+      const body = editingLaunch 
+        ? { ...formData, id: editingLaunch.id }
+        : formData
+
+      const response = await fetch("/api/admin/project-launches", {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...formData,
-          target_amount: parseFloat(formData.target_amount),
-          raised_amount: parseFloat(formData.raised_amount || '0'),
-          participants_count: parseInt(formData.participants_count || '0')
-        })
-      });
+        body: JSON.stringify(body)
+      })
 
       if (response.ok) {
-        toast.success(editingProject ? 'Проект обновлен' : 'Проект создан');
-        setShowForm(false);
-        setEditingProject(null);
-        resetForm();
-        fetchProjects();
-      } else {
-        toast.error('Ошибка сохранения проекта');
+        await fetchLaunches()
+        resetForm()
       }
     } catch (error) {
-      console.error('Ошибка:', error);
-      toast.error('Ошибка сохранения проекта');
+      console.error("Error saving launch:", error)
     }
-  };
+  }
 
-  const handleEdit = (project: ProjectLaunch) => {
-    setEditingProject(project);
-    setFormData({
-      title: project.title,
-      description: project.description,
-      image_url: project.image_url,
-      status: project.status,
-      target_amount: project.target_amount.toString(),
-      raised_amount: project.raised_amount.toString(),
-      participants_count: project.participants_count.toString()
-    });
-    setShowForm(true);
-  };
-
-  const handleDelete = async (id: number) => {
-    if (!confirm('Вы уверены, что хотите удалить этот проект?')) return;
+  const handleDelete = async (id: string) => {
+    if (!confirm('Вы уверены, что хотите удалить этот запуск?')) return
 
     try {
       const response = await fetch(`/api/admin/project-launches?id=${id}`, {
         method: 'DELETE'
-      });
+      })
 
       if (response.ok) {
-        toast.success('Проект удален');
-        fetchProjects();
-      } else {
-        toast.error('Ошибка удаления проекта');
+        await fetchLaunches()
       }
     } catch (error) {
-      console.error('Ошибка:', error);
-      toast.error('Ошибка удаления проекта');
+      console.error("Error deleting launch:", error)
     }
-  };
+  }
+
+  const handleEdit = (launch: ProjectLaunch) => {
+    setEditingLaunch(launch)
+    setFormData({
+      name: launch.name,
+      title: launch.title,
+      description: launch.description,
+      launch_date: new Date(launch.launch_date).toISOString().slice(0, 16),
+      countdown_end: launch.countdown_end ? new Date(launch.countdown_end).toISOString().slice(0, 16) : '',
+      show_countdown: launch.show_countdown,
+      icon_type: launch.icon_type,
+      color_scheme: launch.color_scheme,
+      position: launch.position
+    })
+    setShowForm(true)
+  }
 
   const resetForm = () => {
     setFormData({
+      name: '',
       title: '',
       description: '',
-      image_url: '',
-      status: 'active',
-      target_amount: '',
-      raised_amount: '',
-      participants_count: ''
-    });
-  };
+      launch_date: '',
+      countdown_end: '',
+      show_countdown: true,
+      icon_type: 'rocket',
+      color_scheme: 'blue',
+      position: 1
+    })
+    setEditingLaunch(null)
+    setShowForm(false)
+  }
 
-  const calculateProgress = (raised: number, target: number) => {
-    return Math.min((raised / target) * 100, 100).toFixed(1);
-  };
+  const toggleLaunchStatus = async (launch: ProjectLaunch) => {
+    try {
+      const response = await fetch("/api/admin/project-launches", {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...launch,
+          is_launched: !launch.is_launched
+        })
+      })
+
+      if (response.ok) {
+        await fetchLaunches()
+      }
+    } catch (error) {
+      console.error("Error toggling launch status:", error)
+    }
+  }
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Загрузка...</p>
+      <AdminGuard>
+        <div className="min-h-screen bg-slate-900 flex items-center justify-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500"></div>
         </div>
-      </div>
-    );
+      </AdminGuard>
+    )
   }
 
   return (
-    <div className="container mx-auto p-6 max-w-7xl">
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h1 className="text-3xl font-bold">Запуски проектов</h1>
-          <p className="text-gray-600 mt-1">Управление инвестиционными проектами</p>
-        </div>
-        <Button 
-          onClick={() => {
-            setShowForm(!showForm);
-            setEditingProject(null);
-            resetForm();
-          }}
-          className="bg-blue-600 hover:bg-blue-700"
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          Добавить проект
-        </Button>
-      </div>
+    <AdminGuard>
+      <div className="min-h-screen bg-slate-900 text-white p-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex justify-between items-center mb-8">
+            <div>
+              <h1 className="text-3xl font-bold">Управление запусками проектов</h1>
+              <p className="text-slate-400 mt-2">Создавайте и управляйте запусками с обратным отсчетом</p>
+            </div>
+            <Button
+              onClick={() => setShowForm(true)}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Добавить запуск
+            </Button>
+          </div>
 
-      {showForm && (
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle>{editingProject ? 'Редактировать проект' : 'Новый проект'}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="title">Название проекта *</Label>
-                  <Input
-                    id="title"
-                    value={formData.title}
-                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="status">Статус</Label>
-                  <Select value={formData.status} onValueChange={(value) => setFormData({ ...formData, status: value })}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="active">Активный</SelectItem>
-                      <SelectItem value="completed">Завершен</SelectItem>
-                      <SelectItem value="pending">В ожидании</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div>
-                <Label htmlFor="description">Описание *</Label>
-                <Textarea
-                  id="description"
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  rows={3}
-                  required
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="image_url">URL изображения</Label>
-                <Input
-                  id="image_url"
-                  type="url"
-                  value={formData.image_url}
-                  onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                  placeholder="https://example.com/image.jpg"
-                />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <Label htmlFor="target_amount">Целевая сумма *</Label>
-                  <Input
-                    id="target_amount"
-                    type="number"
-                    step="0.01"
-                    value={formData.target_amount}
-                    onChange={(e) => setFormData({ ...formData, target_amount: e.target.value })}
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="raised_amount">Собрано</Label>
-                  <Input
-                    id="raised_amount"
-                    type="number"
-                    step="0.01"
-                    value={formData.raised_amount}
-                    onChange={(e) => setFormData({ ...formData, raised_amount: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="participants_count">Участников</Label>
-                  <Input
-                    id="participants_count"
-                    type="number"
-                    value={formData.participants_count}
-                    onChange={(e) => setFormData({ ...formData, participants_count: e.target.value })}
-                  />
-                </div>
-              </div>
-
-              <div className="flex gap-2">
-                <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
-                  {editingProject ? 'Обновить' : 'Создать'}
-                </Button>
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  onClick={() => {
-                    setShowForm(false);
-                    setEditingProject(null);
-                    resetForm();
-                  }}
-                >
-                  Отмена
-                </Button>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
-      )}
-
-      <div className="grid grid-cols-1 gap-6">
-        {projects.length === 0 ? (
-          <Card>
-            <CardContent className="text-center py-12">
-              <p className="text-gray-500">Нет проектов. Создайте первый проект.</p>
-            </CardContent>
-          </Card>
-        ) : (
-          projects.map((project) => (
-            <Card key={project.id} className="overflow-hidden">
-              <div className="md:flex">
-                {project.image_url && (
-                  <div className="md:w-1/3">
-                    <img 
-                      src={project.image_url} 
-                      alt={project.title}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                )}
-                <div className={project.image_url ? "md:w-2/3" : "w-full"}>
-                  <CardHeader>
-                    <div className="flex justify-between items-start">
+          {/* Форма создания/редактирования */}
+          {showForm && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-8"
+            >
+              <Card className="bg-slate-800 border-slate-700">
+                <CardHeader>
+                  <CardTitle className="flex items-center justify-between">
+                    {editingLaunch ? 'Редактировать запуск' : 'Новый запуск'}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={resetForm}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <form onSubmit={handleSubmit} className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <CardTitle className="text-xl">{project.title}</CardTitle>
-                        <CardDescription className="mt-2">{project.description}</CardDescription>
+                        <label className="block text-sm font-medium mb-2">Системное имя</label>
+                        <Input
+                          value={formData.name}
+                          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                          placeholder="project-launch-name"
+                          className="bg-slate-700 border-slate-600"
+                          required
+                        />
                       </div>
-                      <div className="flex gap-2">
-                        <Button 
-                          size="sm" 
-                          variant="outline"
-                          onClick={() => handleEdit(project)}
-                        >
-                          <Edit className="w-4 h-4" />
-                        </Button>
-                        <Button 
-                          size="sm" 
-                          variant="outline"
-                          onClick={() => handleDelete(project.id)}
-                          className="text-red-600 hover:text-red-700"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Заголовок</label>
+                        <Input
+                          value={formData.title}
+                          onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                          placeholder="Название запуска"
+                          className="bg-slate-700 border-slate-600"
+                          required
+                        />
                       </div>
                     </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
+
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Описание</label>
+                      <Textarea
+                        value={formData.description}
+                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                        placeholder="Описание запуска..."
+                        className="bg-slate-700 border-slate-600"
+                        rows={3}
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <div className="flex justify-between text-sm mb-2">
-                          <span className="text-gray-600">Прогресс</span>
-                          <span className="font-semibold">
-                            {calculateProgress(project.raised_amount, project.target_amount)}%
-                          </span>
+                        <label className="block text-sm font-medium mb-2">Дата запуска</label>
+                        <Input
+                          type="datetime-local"
+                          value={formData.launch_date}
+                          onChange={(e) => setFormData({ ...formData, launch_date: e.target.value })}
+                          className="bg-slate-700 border-slate-600"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Дата окончания отсчета</label>
+                        <Input
+                          type="datetime-local"
+                          value={formData.countdown_end}
+                          onChange={(e) => setFormData({ ...formData, countdown_end: e.target.value })}
+                          className="bg-slate-700 border-slate-600"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Иконка</label>
+                        <Select
+                          value={formData.icon_type}
+                          onValueChange={(value) => setFormData({ ...formData, icon_type: value })}
+                        >
+                          <SelectTrigger className="bg-slate-700 border-slate-600">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {iconOptions.map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Цветовая схема</label>
+                        <Select
+                          value={formData.color_scheme}
+                          onValueChange={(value) => setFormData({ ...formData, color_scheme: value })}
+                        >
+                          <SelectTrigger className="bg-slate-700 border-slate-600">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {colorOptions.map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-2">Позиция</label>
+                        <Input
+                          type="number"
+                          value={formData.position}
+                          onChange={(e) => setFormData({ ...formData, position: parseInt(e.target.value) })}
+                          className="bg-slate-700 border-slate-600"
+                          min="1"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex items-center space-x-2">
+                      <Switch
+                        checked={formData.show_countdown}
+                        onCheckedChange={(checked) => setFormData({ ...formData, show_countdown: checked })}
+                      />
+                      <label className="text-sm">Показывать обратный отсчет</label>
+                    </div>
+
+                    <div className="flex space-x-4">
+                      <Button type="submit" className="bg-green-600 hover:bg-green-700">
+                        <Save className="h-4 w-4 mr-2" />
+                        {editingLaunch ? 'Сохранить' : 'Создать'}
+                      </Button>
+                      <Button type="button" variant="outline" onClick={resetForm}>
+                        Отмена
+                      </Button>
+                    </div>
+                  </form>
+                </CardContent>
+              </Card>
+            </motion.div>
+          )}
+
+          {/* Список запусков */}
+          <div className="grid gap-4">
+            {launches.map((launch, index) => (
+              <motion.div
+                key={launch.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <Card className="bg-slate-800 border-slate-700">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-4">
+                        <div className="p-3 rounded-full bg-blue-500/20 text-blue-400">
+                          {iconOptions.find(opt => opt.value === launch.icon_type)?.icon && (
+                            <div className="h-6 w-6">
+                              {React.createElement(iconOptions.find(opt => opt.value === launch.icon_type)!.icon)}
+                            </div>
+                          )}
                         </div>
-                        <div className="w-full bg-gray-200 rounded-full h-2">
-                          <div 
-                            className="bg-blue-600 h-2 rounded-full transition-all"
-                            style={{ width: `${calculateProgress(project.raised_amount, project.target_amount)}%` }}
-                          />
+                        <div>
+                          <div className="flex items-center space-x-3 mb-2">
+                            <h3 className="text-xl font-bold">{launch.title}</h3>
+                            <Badge variant={launch.is_launched ? "default" : "secondary"}>
+                              {launch.is_launched ? 'Запущено' : 'Ожидает'}
+                            </Badge>
+                            <Badge variant={launch.show_on_site ? "default" : "outline"}>
+                              {launch.show_on_site ? 'Показывается' : 'Скрыто'}
+                            </Badge>
+                          </div>
+                          <p className="text-slate-300 text-sm mb-2">{launch.description}</p>
+                          <div className="flex items-center space-x-4 text-xs text-slate-400">
+                            <div className="flex items-center space-x-1">
+                              <Calendar className="h-3 w-3" />
+                              <span>
+                                {new Date(launch.launch_date).toLocaleString('ru-RU')}
+                              </span>
+                            </div>
+                            {launch.countdown_end && (
+                              <div className="flex items-center space-x-1">
+                                <Clock className="h-3 w-3" />
+                                <span>
+                                  До: {new Date(launch.countdown_end).toLocaleString('ru-RU')}
+                                </span>
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-3 gap-4 text-center">
-                        <div>
-                          <p className="text-sm text-gray-600">Целевая сумма</p>
-                          <p className="text-lg font-semibold">${project.target_amount.toLocaleString()}</p>
-                        </div>
-                        <div>
-                          <p className="text-sm text-gray-600">Собрано</p>
-                          <p className="text-lg font-semibold text-green-600">
-                            ${project.raised_amount.toLocaleString()}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-sm text-gray-600">Участников</p>
-                          <p className="text-lg font-semibold">{project.participants_count}</p>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center justify-between pt-2 border-t">
-                        <span className={`px-3 py-1 rounded-full text-sm ${
-                          project.status === 'active' ? 'bg-green-100 text-green-800' :
-                          project.status === 'completed' ? 'bg-blue-100 text-blue-800' :
-                          'bg-yellow-100 text-yellow-800'
-                        }`}>
-                          {project.status === 'active' ? 'Активный' :
-                           project.status === 'completed' ? 'Завершен' : 'В ожидании'}
-                        </span>
-                        <span className="text-sm text-gray-500">
-                          Создан: {new Date(project.created_at).toLocaleDateString('ru-RU')}
-                        </span>
+                      <div className="flex items-center space-x-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => toggleLaunchStatus(launch)}
+                        >
+                          {launch.is_launched ? 'Отменить запуск' : 'Запустить'}
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleEdit(launch)}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleDelete(launch.id)}
+                          className="text-red-400 hover:text-red-300"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
                       </div>
                     </div>
                   </CardContent>
-                </div>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+
+          {launches.length === 0 && (
+            <div className="text-center py-12">
+              <div className="text-slate-400 mb-4">
+                <Rocket className="h-16 w-16 mx-auto mb-4 opacity-50" />
+                <p>Пока нет запусков проектов</p>
               </div>
-            </Card>
-          ))
-        )}
+              <Button
+                onClick={() => setShowForm(true)}
+                className="bg-blue-600 hover:bg-blue-700"
+              >
+                Создать первый запуск
+              </Button>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
-  );
+    </AdminGuard>
+  )
 }

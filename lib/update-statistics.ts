@@ -1,4 +1,4 @@
-import { query } from '@/lib/database'
+import { query } from '@/server/db'
 
 export async function updateStatistics() {
   try {

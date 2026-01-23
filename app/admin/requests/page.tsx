@@ -29,7 +29,6 @@ import {
 } from "lucide-react"
 import { toast } from "sonner"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { motion } from "framer-motion"
 
 interface DepositRequest {
   id: string
@@ -377,22 +376,13 @@ export default function RequestsPage() {
     }
   }
 
-  const RequestCard = ({ request, type, onApprove, onReject }: any) => (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      whileHover={{ scale: 1.03, y: -8 }}
-      transition={{ duration: 0.2 }}
-    >
-      <Card className="relative overflow-hidden hover:shadow-2xl transition-all duration-300 border-2 hover:border-blue-400 bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30">
-        {/* Decorative elements */}
-        <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-blue-400/10 to-purple-500/10 rounded-bl-full"></div>
-        <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-pink-400/10 to-orange-500/10 rounded-tr-full"></div>
-        
-        <CardContent className="p-6 relative z-10">
+  const RequestCard = ({ request, type, onApprove, onReject }: any) => {
+    return (
+      <Card className="relative overflow-hidden hover:shadow-lg transition-all duration-300 border hover:border-blue-400">
+        <CardContent className="p-6">
         <div className="flex justify-between items-start mb-4">
           <div className="flex items-center space-x-3">
-            <div className={`p-3 rounded-xl ${type === "deposit" ? "bg-gradient-to-br from-green-400 to-emerald-500" : "bg-gradient-to-br from-red-400 to-pink-500"} shadow-lg`}>
+            <div className={`p-3 rounded-xl ${type === "deposit" ? "bg-green-500" : "bg-red-500"} shadow-lg`}>
               {type === "deposit" ? (
                 <DollarSign className="w-6 h-6 text-white" />
               ) : (
@@ -572,8 +562,8 @@ export default function RequestsPage() {
         )}
       </CardContent>
     </Card>
-    </motion.div>
-  )
+    )
+  }
 
   const pendingDeposits = depositRequests.filter((req) => req.status === "pending").length
   const pendingWithdrawals = withdrawalRequests.filter((req) => req.status === "pending").length

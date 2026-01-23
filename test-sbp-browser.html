@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест СБП с выбором банка</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            border-left: 4px solid #4CAF50;
+        }
+        .button {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px 5px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .result {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .success { border-left: 4px solid #4CAF50; }
+        .error { border-left: 4px solid #f44336; }
+        .info { border-left: 4px solid #2196F3; }
+        h1, h2 { text-align: center; }
+        .step {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 3px solid #FFC107;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Тест функционала СБП с выбором банка</h1>
+        
+        <div class="test-section">
+            <h2>📋 Автоматические тесты</h2>
+            <button class="button" onclick="testSiteAvailability()">Проверить доступность сайта</button>
+            <button class="button" onclick="testAllPages()">Проверить все страницы</button>
+            <div id="autoResults"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>👤 Ручное тестирование пользователя</h2>
+            <div class="step">
+                <strong>Шаг 1:</strong> 
+                <button class="button" onclick="openUserLogin()">Открыть страницу входа</button>
+                <p>Войдите как пользователь или зарегистрируйтесь</p>
+            </div>
+            
+            <div class="step">
+                <strong>Шаг 2:</strong> 
+                <button class="button" onclick="openWithdrawPage()">Открыть страницу вывода</button>
+                <p>Выберите метод "СБП" и проверьте наличие выбора банка</p>
+            </div>
+            
+            <div class="step">
+                <strong>Шаг 3:</strong> 
+                <p>Заполните форму СБП:</p>
+                <ul>
+                    <li>Сумма: 1000</li>
+                    <li>Телефон: +79123456789</li>
+                    <li>Имя владельца: Тестовый Пользователь</li>
+                    <li>🏦 Банк: Выберите любой из списка (Сбербанк, ВТБ, Альфа-Банк и т.д.)</li>
+                </ul>
+                <p>Создайте заявку на вывод</p>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>👨‍💼 Ручное тестирование админа</h2>
+            <div class="step">
+                <strong>Шаг 4:</strong> 
+                <button class="button" onclick="openAdminLogin()">Открыть админ панель</button>
+                <p>Логин: <code>admin</code>, Пароль: <code>X11021997x</code></p>
+            </div>
+            
+            <div class="step">
+                <strong>Шаг 5:</strong> 
+                <button class="button" onclick="openAdminRequests()">Открыть заявки (основная панель)</button>
+                <p>Проверьте, что для СБП заявок отображается выбранный банк с иконкой 🏦</p>
+            </div>
+            
+            <div class="step">
+                <strong>Шаг 6:</strong> 
+                <button class="button" onclick="openAdminRequestsSimple()">Открыть заявки (простая панель)</button>
+                <p>Проверьте, что банк отображается в детальном просмотре СБП заявок</p>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>✅ Критерии успешного теста</h2>
+            <div class="result info">
+                <strong>Пользовательская часть:</strong>
+                <ul>
+                    <li>При выборе СБП появляется выпадающий список банков</li>
+                    <li>Можно выбрать банк из списка популярных российских банков</li>
+                    <li>Заявка успешно создается с указанием банка</li>
+                </ul>
+            </div>
+            
+            <div class="result info">
+                <strong>Админская часть:</strong>
+                <ul>
+                    <li>В основной админ панели СБП заявки показывают банк в фиолетовой секции</li>
+                    <li>В простой админ панели банк отображается в детальном просмотре</li>
+                    <li>Банк отображается с иконкой 🏦</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="testResults"></div>
+    </div>
+
+    <script>
+        const BASE_URL = 'http://213.171.31.215';
+        
+        function addResult(message, type = 'info') {
+            const results = document.getElementById('autoResults');
+            const div = document.createElement('div');
+            div.className = `result ${type}`;
+            div.innerHTML = message;
+            results.appendChild(div);
+        }
+        
+        async function testSiteAvailability() {
+            addResult('🔄 Проверка доступности сайта...', 'info');
+            
+            try {
+                const response = await fetch(BASE_URL + '/', { 
+                    method: 'GET',
+                    mode: 'no-cors'
+                });
+                addResult('✅ Сайт доступен', 'success');
+            } catch (error) {
+                addResult('❌ Сайт недоступен: ' + error.message, 'error');
+            }
+        }
+        
+        async function testAllPages() {
+            const pages = [
+                { url: '/login', name: 'Страница входа' },
+                { url: '/dashboard/withdraw', name: 'Страница вывода' },
+                { url: '/admin/login', name: 'Админ вход' },
+                { url: '/admin/requests', name: 'Админ заявки' },
+                { url: '/admin/requests-simple', name: 'Простая админ панель' }
+            ];
+            
+            addResult('🔄 Проверка всех страниц...', 'info');
+            
+            for (const page of pages) {
+                try {
+                    const response = await fetch(BASE_URL + page.url, { 
+                        method: 'GET',
+                        mode: 'no-cors'
+                    });
+                    addResult(`✅ ${page.name} доступна`, 'success');
+                } catch (error) {
+                    addResult(`❌ ${page.name} недоступна`, 'error');
+                }
+            }
+        }
+        
+        function openUserLogin() {
+            window.open(BASE_URL + '/login', '_blank');
+        }
+        
+        function openWithdrawPage() {
+            window.open(BASE_URL + '/dashboard/withdraw', '_blank');
+        }
+        
+        function openAdminLogin() {
+            window.open(BASE_URL + '/admin/login', '_blank');
+        }
+        
+        function openAdminRequests() {
+            window.open(BASE_URL + '/admin/requests', '_blank');
+        }
+        
+        function openAdminRequestsSimple() {
+            window.open(BASE_URL + '/admin/requests-simple', '_blank');
+        }
+        
+        // Автоматический тест при загрузке
+        window.onload = function() {
+            testSiteAvailability();
+        };
+    </script>
+</body>
+</html>

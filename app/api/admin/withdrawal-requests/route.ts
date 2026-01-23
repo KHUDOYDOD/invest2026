@@ -137,9 +137,11 @@ export async function GET(request: NextRequest) {
 function getMethodName(method: string): string {
   const methodNames: Record<string, string> = {
     'bank_card': 'Банковская карта',
+    'card': 'Банковская карта',
     'crypto': 'Криптовалюта',
     'bank_transfer': 'Банковский перевод',
     'e_wallet': 'Электронный кошелек',
+    'sbp': 'СБП',
     'usdt': 'USDT',
     'bitcoin': 'Bitcoin',
     'ethereum': 'Ethereum'

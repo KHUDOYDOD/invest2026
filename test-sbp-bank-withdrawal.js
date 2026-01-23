@@ -1,100 +1,136 @@
-const { Pool } = require('pg');
+// Тест создания заявки на вывод через СБП с банком
+const SERVER_URL = 'http://213.171.31.215:3000';
 
-// Подключение к базе данных
-const pool = new Pool({
-  connectionString: 'postgresql://neondb_owner:npg_w5yC0HdchuEB@ep-bold-grass-abge4ccn-pooler.eu-west-2.aws.neon.tech/neondb?sslmode=require'
-});
-
-async function testSbpBankWithdrawal() {
+async function testSBPWithdrawal() {
+  console.log('🧪 Тестирование создания СБП заявки с банком');
+  
   try {
-    console.log('🧪 Тестирование заявки на вывод через СБП с банком...');
+    // 1. Авторизация
+    console.log('\n🔐 1. Авторизация пользователя...');
+    const loginResponse = await fetch(`${SERVER_URL}/api/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: 'admin',
+        password: 'X11021997x'
+      })
+    });
 
-    // Находим тестового пользователя
-    const userResult = await pool.query(
-      'SELECT id, full_name, balance FROM users WHERE email = $1',
-      ['zabon11@mail.ru']
-    );
+    const loginData = await loginResponse.json();
+    
+    if (!loginData.success) {
+      console.log('❌ Ошибка авторизации:', loginData.error);
+      return;
+    }
+    
+    const token = loginData.token;
+    console.log('✅ Авторизация успешна');
 
-    if (userResult.rows.length === 0) {
-      console.log('❌ Тестовый пользователь не найден');
+    // 2. Создание СБП заявки
+    console.log('\n📱 2. Создание СБП заявки с банком...');
+    const withdrawalData = {
+      amount: 150.00,
+      method: 'sbp',
+      phone_number: '+79876543210',
+      account_holder_name: 'Тест СБП Пользователь',
+      bank_name: 'Альфа-Банк'
+    };
+
+    console.log('📋 Данные заявки:', withdrawalData);
+
+    const withdrawResponse = await fetch(`${SERVER_URL}/api/withdraw`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(withdrawalData)
+    });
+
+    const withdrawResult = await withdrawResponse.json();
+    
+    if (!withdrawResult.success) {
+      console.log('❌ Ошибка создания заявки:', withdrawResult.error);
+      if (withdrawResult.details) {
+        console.log('📋 Детали:', withdrawResult.details);
+      }
       return;
     }
 
-    const user = userResult.rows[0];
-    console.log(`👤 Пользователь: ${user.full_name}, Баланс: $${user.balance}`);
+    console.log('✅ СБП заявка создана успешно!');
+    console.log('📋 Результат:', withdrawResult);
 
-    // Создаем тестовую заявку на вывод через СБП с банком
-    const withdrawalResult = await pool.query(
-      `INSERT INTO withdrawal_requests (
-        user_id, amount, method, phone_number, account_holder_name, bank_name,
-        fee, final_amount, status, created_at
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'pending', NOW()) 
-      RETURNING id, created_at`,
-      [
-        user.id,
-        500, // сумма
-        'sbp', // метод
-        '79991234567', // номер телефона
-        'Иванов Иван Иванович', // ФИО
-        'Сбербанк', // банк для СБП
-        7.5, // комиссия 1.5%
-        492.5 // итоговая сумма
-      ]
+    // 3. Проверка в админ панели
+    console.log('\n🔍 3. Проверка заявки в админ панели...');
+    
+    const adminResponse = await fetch(`${SERVER_URL}/api/admin/withdrawal-requests`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    const adminData = await adminResponse.json();
+    
+    if (!adminData.success) {
+      console.log('❌ Ошибка получения админ данных:', adminData.error);
+      return;
+    }
+
+    const requests = adminData.requests;
+    console.log(`📊 Всего заявок: ${requests.length}`);
+
+    // Ищем СБП заявки
+    const sbpRequests = requests.filter(req => 
+      req.method === 'СБП' || req.method === 'sbp' || req.phone_number
     );
 
-    const withdrawal = withdrawalResult.rows[0];
-    console.log(`✅ Создана заявка на вывод через СБП:`);
-    console.log(`   ID: ${withdrawal.id}`);
-    console.log(`   Сумма: $500`);
-    console.log(`   Метод: СБП`);
-    console.log(`   Телефон: +7 (999) 123-45-67`);
-    console.log(`   ФИО: Иванов Иван Иванович`);
-    console.log(`   Банк: Сбербанк`);
-    console.log(`   Комиссия: $7.50`);
-    console.log(`   К получению: $492.50`);
+    console.log(`📱 СБП заявок: ${sbpRequests.length}`);
 
-    // Проверяем, что заявка создалась с банком
-    const checkResult = await pool.query(
-      'SELECT * FROM withdrawal_requests WHERE id = $1',
-      [withdrawal.id]
-    );
+    if (sbpRequests.length > 0) {
+      console.log('\n📋 СБП заявки с банками:');
+      sbpRequests.forEach((req, index) => {
+        console.log(`\n${index + 1}. Заявка ID: ${req.id}`);
+        console.log(`   Метод: ${req.method}`);
+        console.log(`   Телефон: ${req.phone_number}`);
+        console.log(`   Банк: ${req.bank_name || '❌ НЕ УКАЗАН'}`);
+        console.log(`   Владелец: ${req.account_holder_name}`);
+        console.log(`   Сумма: $${req.amount}`);
+        console.log(`   Статус: ${req.status}`);
+        
+        if (req.bank_name) {
+          console.log(`   ✅ Банк СБП отображается!`);
+        } else {
+          console.log(`   ❌ Банк СБП НЕ отображается!`);
+        }
+      });
 
-    const request = checkResult.rows[0];
-    console.log('\n📋 Проверка созданной заявки:');
-    console.log(`   Метод: ${request.method}`);
-    console.log(`   Телефон: ${request.phone_number}`);
-    console.log(`   ФИО: ${request.account_holder_name}`);
-    console.log(`   Банк: ${request.bank_name}`);
-    console.log(`   Статус: ${request.status}`);
-
-    // Создаем еще одну заявку с другим банком
-    const withdrawal2Result = await pool.query(
-      `INSERT INTO withdrawal_requests (
-        user_id, amount, method, phone_number, account_holder_name, bank_name,
-        fee, final_amount, status, created_at
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'pending', NOW()) 
-      RETURNING id`,
-      [
-        user.id,
-        300,
-        'sbp',
-        '79997654321',
-        'Петров Петр Петрович',
-        'Тинькофф Банк',
-        4.5,
-        295.5
-      ]
-    );
-
-    console.log(`✅ Создана вторая заявка на вывод через СБП с банком Тинькофф`);
-
-    console.log('\n🎯 Тест завершен успешно!');
+      // Проверяем последнюю созданную заявку
+      const latestSBP = sbpRequests.find(req => req.phone_number === '+79876543210');
+      if (latestSBP) {
+        console.log('\n🎯 РЕЗУЛЬТАТ ТЕСТА:');
+        if (latestSBP.bank_name === 'Альфа-Банк') {
+          console.log('✅ СБП банк сохраняется и отображается корректно!');
+          console.log(`✅ Банк: ${latestSBP.bank_name}`);
+          console.log(`✅ Телефон: ${latestSBP.phone_number}`);
+          console.log(`✅ Владелец: ${latestSBP.account_holder_name}`);
+        } else {
+          console.log('❌ СБП банк НЕ сохраняется правильно!');
+          console.log(`❌ Ожидался: Альфа-Банк`);
+          console.log(`❌ Получен: ${latestSBP.bank_name || 'null'}`);
+        }
+      } else {
+        console.log('❌ Созданная СБП заявка не найдена в админ панели!');
+      }
+    } else {
+      console.log('❌ СБП заявки не найдены в админ панели!');
+    }
 
   } catch (error) {
-    console.error('❌ Ошибка при тестировании:', error);
-  } finally {
-    await pool.end();
+    console.error('❌ Ошибка тестирования:', error);
   }
 }
 
-testSbpBankWithdrawal();
+// Запуск теста
+testSBPWithdrawal();

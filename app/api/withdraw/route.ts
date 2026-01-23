@@ -36,6 +36,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { 
       amount, 
+      method,
       payment_method, 
       wallet_address, 
       card_number,
@@ -46,9 +47,12 @@ export async function POST(request: NextRequest) {
       crypto_network
     } = body;
 
+    // Используем method или payment_method
+    const withdrawMethod = method || payment_method;
+
     console.log('Данные запроса:', { 
       amount, 
-      payment_method, 
+      method: withdrawMethod,
       wallet_address, 
       card_number,
       card_holder_name,
@@ -82,7 +86,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Валидация способа вывода
-    if (!payment_method) {
+    if (!withdrawMethod) {
       return NextResponse.json({ 
         success: false,
         error: 'Выберите способ вывода средств' 
@@ -90,7 +94,7 @@ export async function POST(request: NextRequest) {
     }
 
     const validMethods = ['card', 'crypto', 'sbp', 'bank'];
-    if (!validMethods.includes(payment_method)) {
+    if (!validMethods.includes(withdrawMethod)) {
       return NextResponse.json({ 
         success: false,
         error: 'Недопустимый способ вывода' 
@@ -98,24 +102,39 @@ export async function POST(request: NextRequest) {
     }
 
     // Валидация реквизитов
-    if (payment_method === 'crypto' && !wallet_address) {
+    if (withdrawMethod === 'crypto' && !wallet_address) {
       return NextResponse.json({ 
         success: false,
         error: 'Укажите адрес криптокошелька' 
       }, { status: 400 });
     }
 
-    if (payment_method === 'card' && !card_number) {
+    if (withdrawMethod === 'card' && !card_number) {
       return NextResponse.json({ 
         success: false,
         error: 'Укажите номер карты' 
       }, { status: 400 });
     }
 
+    if (withdrawMethod === 'sbp' && !phone_number) {
+      return NextResponse.json({ 
+        success: false,
+        error: 'Укажите номер телефона для СБП' 
+      }, { status: 400 });
+    }
+
+    if (withdrawMethod === 'sbp' && !bank_name) {
+      return NextResponse.json({ 
+        success: false,
+        error: 'Выберите банк для СБП' 
+      }, { status: 400 });
+    }
+
     console.log('Creating withdrawal request:', {
       userId: user.userId,
       amount: withdrawAmount,
-      method: payment_method
+      method: withdrawMethod,
+      bank_name: bank_name
     });
 
     // Проверяем баланс пользователя
@@ -187,7 +206,7 @@ export async function POST(request: NextRequest) {
         [
           user.userId,
           withdrawAmount,
-          payment_method,
+          withdrawMethod,
           wallet_address || null,
           card_number || null,
           card_holder_name || null,

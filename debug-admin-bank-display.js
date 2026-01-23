@@ -1,110 +1,170 @@
-const { Pool } = require('pg');
-
-const pool = new Pool({
-  connectionString: 'postgresql://neondb_owner:npg_w5yC0HdchuEB@ep-bold-grass-abge4ccn-pooler.eu-west-2.aws.neon.tech/neondb?sslmode=require'
-});
+// Тест для проверки отображения реквизитов в админ панели
+const SERVER_URL = 'http://213.171.31.215:3000';
 
 async function debugAdminBankDisplay() {
+  console.log('🔍 Отладка отображения реквизитов в админ панели');
+  
   try {
-    console.log('🔍 Отладка отображения банка в админ панели...');
+    // 1. Авторизация администратора
+    console.log('\n🔐 1. Авторизация администратора...');
+    const loginResponse = await fetch(`${SERVER_URL}/api/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: 'admin',
+        password: 'X11021997x'
+      })
+    });
 
-    // Проверяем последние заявки СБП с банком
-    const result = await pool.query(
-      `SELECT 
-        id, user_id, amount, method, phone_number, 
-        account_holder_name, bank_name, status, created_at
-      FROM withdrawal_requests 
-      WHERE method = 'sbp' 
-      ORDER BY created_at DESC 
-      LIMIT 3`
-    );
+    const loginData = await loginResponse.json();
+    
+    if (!loginData.success) {
+      console.log('❌ Ошибка авторизации:', loginData.error);
+      return;
+    }
+    
+    const token = loginData.token;
+    console.log('✅ Авторизация успешна');
 
-    if (result.rows.length === 0) {
-      console.log('❌ Заявки СБП не найдены');
+    // 2. Получение заявок на вывод
+    console.log('\n📤 2. Получение заявок на вывод...');
+    const withdrawalResponse = await fetch(`${SERVER_URL}/api/admin/withdrawal-requests`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    const withdrawalData = await withdrawalResponse.json();
+    
+    if (!withdrawalData.success) {
+      console.log('❌ Ошибка получения заявок на вывод:', withdrawalData.error);
       return;
     }
 
-    console.log('📋 Последние заявки СБП в базе данных:');
-    result.rows.forEach((request, index) => {
-      console.log(`\n${index + 1}. ID: ${request.id}`);
+    const withdrawalRequests = withdrawalData.requests;
+    console.log(`📊 Всего заявок на вывод: ${withdrawalRequests.length}`);
+
+    // 3. Анализ реквизитов в заявках на вывод
+    console.log('\n💳 3. Анализ реквизитов в заявках на вывод:');
+    
+    withdrawalRequests.forEach((request, index) => {
+      console.log(`\n📋 Заявка ${index + 1} (ID: ${request.id}):`);
+      console.log(`   Пользователь: ${request.users?.full_name || 'Неизвестный'}`);
       console.log(`   Метод: ${request.method}`);
-      console.log(`   Телефон: ${request.phone_number}`);
-      console.log(`   ФИО: ${request.account_holder_name}`);
-      console.log(`   Банк в БД: "${request.bank_name}" (тип: ${typeof request.bank_name})`);
-      console.log(`   Банк пустой?: ${!request.bank_name ? 'ДА' : 'НЕТ'}`);
+      console.log(`   Сумма: $${request.amount}`);
       console.log(`   Статус: ${request.status}`);
+      
+      // Проверяем реквизиты для карт
+      if (request.card_number) {
+        console.log(`   💳 КАРТА:`);
+        console.log(`     Номер карты: ${request.card_number}`);
+        console.log(`     Владелец: ${request.card_holder_name || 'Не указан'}`);
+        console.log(`     Банк: ${request.bank_name || 'Не указан'}`);
+      }
+      
+      // Проверяем реквизиты для СБП
+      if (request.phone_number) {
+        console.log(`   📱 СБП:`);
+        console.log(`     Телефон: ${request.phone_number}`);
+        console.log(`     Владелец: ${request.account_holder_name || 'Не указан'}`);
+        console.log(`     Банк: ${request.bank_name || 'Не указан'}`);
+      }
+      
+      // Проверяем реквизиты для крипто
+      if (request.wallet_address) {
+        console.log(`   🔐 КРИПТО:`);
+        console.log(`     Адрес: ${request.wallet_address}`);
+        console.log(`     Сеть: ${request.crypto_network || 'Не указана'}`);
+      }
+      
+      // Если нет реквизитов
+      if (!request.card_number && !request.phone_number && !request.wallet_address) {
+        console.log(`   ❌ РЕКВИЗИТЫ НЕ НАЙДЕНЫ!`);
+      }
     });
 
-    // Теперь проверим, что возвращает API админ панели
-    console.log('\n🔍 Проверяем API админ панели...');
-    
-    // Имитируем запрос к API админ панели
-    const adminApiQuery = `
-      SELECT 
-        wr.id,
-        wr.user_id,
-        wr.amount,
-        wr.method,
-        wr.wallet_address,
-        wr.card_number,
-        wr.card_holder_name,
-        wr.bank_name,
-        wr.phone_number,
-        wr.account_holder_name,
-        wr.crypto_network,
-        wr.fee,
-        wr.final_amount,
-        wr.status,
-        wr.admin_comment,
-        wr.created_at,
-        wr.processed_at,
-        wr.processed_by,
-        u.full_name as user_name,
-        u.email as user_email
-      FROM withdrawal_requests wr
-      LEFT JOIN users u ON wr.user_id = u.id
-      WHERE wr.method = 'sbp'
-      ORDER BY wr.created_at DESC
-      LIMIT 3
-    `;
+    // 4. Получение заявок на пополнение
+    console.log('\n📥 4. Получение заявок на пополнение...');
+    const depositResponse = await fetch(`${SERVER_URL}/api/admin/deposit-requests`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
 
-    const adminResult = await pool.query(adminApiQuery);
+    const depositData = await depositResponse.json();
     
-    console.log('\n📊 Данные из API админ панели:');
-    adminResult.rows.forEach((request, index) => {
-      console.log(`\n${index + 1}. ID: ${request.id}`);
+    if (!depositData.success) {
+      console.log('❌ Ошибка получения заявок на пополнение:', depositData.error);
+      return;
+    }
+
+    const depositRequests = depositData.requests;
+    console.log(`📊 Всего заявок на пополнение: ${depositRequests.length}`);
+
+    // 5. Анализ реквизитов в заявках на пополнение
+    console.log('\n💰 5. Анализ реквизитов в заявках на пополнение:');
+    
+    depositRequests.forEach((request, index) => {
+      console.log(`\n📋 Заявка ${index + 1} (ID: ${request.id}):`);
+      console.log(`   Пользователь: ${request.users?.full_name || 'Неизвестный'}`);
       console.log(`   Метод: ${request.method}`);
-      console.log(`   Телефон: ${request.phone_number}`);
-      console.log(`   ФИО: ${request.account_holder_name}`);
-      console.log(`   Банк из API: "${request.bank_name}" (тип: ${typeof request.bank_name})`);
-      console.log(`   Банк null?: ${request.bank_name === null ? 'ДА' : 'НЕТ'}`);
-      console.log(`   Банк undefined?: ${request.bank_name === undefined ? 'ДА' : 'НЕТ'}`);
-      console.log(`   Банк пустая строка?: ${request.bank_name === '' ? 'ДА' : 'НЕТ'}`);
+      console.log(`   Сумма: $${request.amount}`);
+      console.log(`   Статус: ${request.status}`);
+      
+      // Проверяем payment_details
+      if (request.payment_details && typeof request.payment_details === 'object') {
+        console.log(`   📋 PAYMENT_DETAILS:`);
+        
+        if (request.payment_details.card_number) {
+          console.log(`     💳 Номер карты: ${request.payment_details.card_number}`);
+        }
+        
+        if (request.payment_details.phone_number) {
+          console.log(`     📱 Телефон: ${request.payment_details.phone_number}`);
+        }
+        
+        if (request.payment_details.wallet_address) {
+          console.log(`     🔐 Кошелек: ${request.payment_details.wallet_address}`);
+        }
+        
+        if (request.payment_details.transaction_hash) {
+          console.log(`     🔗 Хэш: ${request.payment_details.transaction_hash}`);
+        }
+      } else {
+        console.log(`   ❌ PAYMENT_DETAILS НЕ НАЙДЕНЫ!`);
+      }
     });
 
-    // Проверим конкретную заявку с банком
-    const specificResult = await pool.query(
-      `SELECT * FROM withdrawal_requests 
-       WHERE method = 'sbp' AND bank_name IS NOT NULL AND bank_name != ''
-       ORDER BY created_at DESC LIMIT 1`
+    // 6. Итоговый анализ
+    console.log('\n🎯 6. ИТОГОВЫЙ АНАЛИЗ:');
+    
+    const withdrawalWithDetails = withdrawalRequests.filter(r => 
+      r.card_number || r.phone_number || r.wallet_address
     );
-
-    if (specificResult.rows.length > 0) {
-      const request = specificResult.rows[0];
-      console.log('\n✅ Найдена заявка СБП с банком:');
-      console.log(`   ID: ${request.id}`);
-      console.log(`   Банк: "${request.bank_name}"`);
-      console.log(`   Длина строки банка: ${request.bank_name?.length || 0}`);
-      console.log(`   Банк в JSON: ${JSON.stringify(request.bank_name)}`);
+    
+    const depositWithDetails = depositRequests.filter(r => 
+      r.payment_details && typeof r.payment_details === 'object'
+    );
+    
+    console.log(`📤 Заявки на вывод с реквизитами: ${withdrawalWithDetails.length}/${withdrawalRequests.length}`);
+    console.log(`📥 Заявки на пополнение с реквизитами: ${depositWithDetails.length}/${depositRequests.length}`);
+    
+    if (withdrawalWithDetails.length === 0 && depositWithDetails.length === 0) {
+      console.log('\n❌ ПРОБЛЕМА: Реквизиты не найдены ни в одной заявке!');
+      console.log('Возможные причины:');
+      console.log('- Заявки созданы без реквизитов');
+      console.log('- API не возвращает реквизиты');
+      console.log('- Проблема с базой данных');
     } else {
-      console.log('\n❌ Не найдено заявок СБП с заполненным банком');
+      console.log('\n✅ РЕКВИЗИТЫ НАЙДЕНЫ! Админ панель должна их отображать.');
     }
 
   } catch (error) {
     console.error('❌ Ошибка отладки:', error);
-  } finally {
-    await pool.end();
   }
 }
 
+// Запуск отладки
 debugAdminBankDisplay();

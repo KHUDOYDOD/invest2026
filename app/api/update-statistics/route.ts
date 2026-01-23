@@ -1,5 +1,9 @@
 import { NextResponse } from 'next/server'
 
+// Force dynamic rendering to prevent caching
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 export async function POST() {
   try {
     console.log('🔄 Ручное обновление статистики...');

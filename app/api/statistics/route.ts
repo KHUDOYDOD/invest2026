@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server'
 import { query } from '@/server/db'
 
+// Force dynamic rendering to prevent caching
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 export async function GET() {
   try {
     console.log('📊 Statistics API called at:', new Date().toISOString());

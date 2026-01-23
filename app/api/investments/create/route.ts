@@ -161,8 +161,8 @@ export async function POST(request: NextRequest) {
       // Обновляем статистику после создания инвестиции
       try {
         console.log('🔄 Attempting to update statistics...');
-        // Динамический импорт JavaScript версии функции
-        const { updateStatistics } = require('../../../lib/update-statistics.js');
+        // Используем TypeScript версию функции
+        const { updateStatistics } = await import('@/lib/update-statistics');
         const statsResult = await updateStatistics();
         console.log('📊 Статистика обновлена:', statsResult.success ? 'Успешно' : 'Ошибка');
         if (statsResult.success) {
@@ -172,6 +172,7 @@ export async function POST(request: NextRequest) {
         }
       } catch (statsError) {
         console.error('⚠️ Ошибка обновления статистики:', statsError);
+        console.error('⚠️ Детали ошибки:', statsError);
       }
 
       return NextResponse.json({

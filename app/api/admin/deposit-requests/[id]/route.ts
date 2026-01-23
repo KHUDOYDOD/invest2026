@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { query } from '@/lib/database';
 import jwt from 'jsonwebtoken';
+import { updateStatistics } from '@/lib/update-statistics';
 
 // Функция для проверки токена и роли администратора
 function verifyAdminToken(request: NextRequest) {
@@ -129,6 +130,9 @@ export async function PATCH(
         await query('COMMIT');
         console.log('✅ Deposit request approved and balance updated');
 
+        // Обновляем статистику после одобрения депозита
+        await updateStatistics();
+
       } catch (error) {
         await query('ROLLBACK');
         throw error;
@@ -147,6 +151,9 @@ export async function PATCH(
       if (result.rows.length === 0) {
         return NextResponse.json({ error: 'Заявка не найдена' }, { status: 404 });
       }
+
+      // Обновляем статистику после изменения статуса заявки
+      await updateStatistics();
     }
 
     console.log('✅ Deposit request updated successfully');

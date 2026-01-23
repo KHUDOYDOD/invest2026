@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { query } from '@/lib/database';
 import jwt from 'jsonwebtoken';
+import { updateStatistics } from '@/lib/update-statistics';
 
 // Функция для проверки токена и роли администратора
 function verifyAdminToken(request: NextRequest) {
@@ -116,6 +117,9 @@ export async function PATCH(
       }
 
       await query('COMMIT');
+
+      // Обновляем статистику после изменения статуса заявки
+      await updateStatistics();
 
     } catch (error) {
       await query('ROLLBACK');

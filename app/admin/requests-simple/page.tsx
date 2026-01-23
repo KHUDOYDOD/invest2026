@@ -338,16 +338,21 @@ export default function SimpleRequestsPage() {
 
         {/* Диалог с полными реквизитами */}
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogContent className="bg-gradient-to-br from-slate-900 to-blue-900 border-white/20 text-white max-w-2xl">
-            <DialogHeader>
-              <DialogTitle className="text-2xl">Детали Заявки</DialogTitle>
+          <DialogContent className="bg-gradient-to-br from-slate-900 to-blue-900 border-white/20 text-white max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+            <DialogHeader className="flex-shrink-0">
+              <DialogTitle className="text-2xl flex items-center gap-2">
+                Детали Заявки
+                <div className="text-sm bg-white/10 px-2 py-1 rounded-full text-white/70">
+                  📜 Прокручиваемо
+                </div>
+              </DialogTitle>
               <DialogDescription className="text-white/70">
                 Полная информация о заявке и реквизиты пользователя
               </DialogDescription>
             </DialogHeader>
 
             {selectedRequest && (
-              <div className="space-y-6">
+              <div className="flex-1 overflow-y-auto pr-2 space-y-6 custom-scrollbar">
                 {/* Информация о пользователе */}
                 <Card className="bg-white/5 border-white/10">
                   <CardHeader>
@@ -944,7 +949,7 @@ export default function SimpleRequestsPage() {
               </div>
             )}
 
-            <DialogFooter className="gap-2">
+            <DialogFooter className="flex-shrink-0 gap-2 pt-4 border-t border-white/10">
               <Button
                 onClick={() => setIsDialogOpen(false)}
                 variant="outline"

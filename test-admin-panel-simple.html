@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест Админ Панели</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        .request-item {
+            border: 1px solid #ddd;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 4px;
+            background: #f9f9f9;
+        }
+        .request-header {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .request-details {
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Тест Админ Панели</h1>
+        
+        <div id="status" class="status info">
+            Готов к тестированию...
+        </div>
+
+        <div>
+            <button onclick="testLogin()">1. Тест Входа</button>
+            <button onclick="testRequests()">2. Тест Заявок</button>
+            <button onclick="testFullFlow()">3. Полный Тест</button>
+        </div>
+
+        <div id="results"></div>
+    </div>
+
+    <script>
+        let authToken = null;
+
+        function updateStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = message;
+            statusDiv.className = `status ${type}`;
+        }
+
+        function addResult(title, content) {
+            const resultsDiv = document.getElementById('results');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = 'request-item';
+            resultDiv.innerHTML = `
+                <div class="request-header">${title}</div>
+                <div class="request-details">${content}</div>
+            `;
+            resultsDiv.appendChild(resultDiv);
+        }
+
+        async function testLogin() {
+            updateStatus('Тестируем вход админа...', 'info');
+            
+            try {
+                const response = await fetch('http://213.171.31.215/api/admin/auth', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: 'admin',
+                        password: 'X11021997x'
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    authToken = data.token;
+                    updateStatus('✅ Вход успешен!', 'success');
+                    addResult('Успешный вход', `
+                        Пользователь: ${data.user.name}<br>
+                        Email: ${data.user.email}<br>
+                        Роль: ${data.user.role}<br>
+                        Токен получен: ${authToken ? 'Да' : 'Нет'}
+                    `);
+                } else {
+                    updateStatus('❌ Ошибка входа: ' + data.error, 'error');
+                }
+            } catch (error) {
+                updateStatus('❌ Ошибка сети: ' + error.message, 'error');
+            }
+        }
+
+        async function testRequests() {
+            if (!authToken) {
+                updateStatus('❌ Сначала выполните вход!', 'error');
+                return;
+            }
+
+            updateStatus('Загружаем заявки...', 'info');
+
+            try {
+                // Тест заявок на вывод
+                const withdrawalResponse = await fetch('http://213.171.31.215/api/admin/withdrawal-requests', {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+
+                if (withdrawalResponse.ok) {
+                    const withdrawalData = await withdrawalResponse.json();
+                    addResult('Заявки на вывод', `
+                        Количество: ${withdrawalData.requests?.length || 0}<br>
+                        Статус API: ✅ Работает
+                    `);
+                } else {
+                    addResult('Заявки на вывод', `❌ Ошибка: ${withdrawalResponse.status}`);
+                }
+
+                // Тест заявок на пополнение
+                const depositResponse = await fetch('http://213.171.31.215/api/admin/deposit-requests', {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+
+                if (depositResponse.ok) {
+                    const depositData = await depositResponse.json();
+                    addResult('Заявки на пополнение', `
+                        Количество: ${depositData.requests?.length || 0}<br>
+                        Статус API: ✅ Работает
+                    `);
+                } else {
+                    addResult('Заявки на пополнение', `❌ Ошибка: ${depositResponse.status}`);
+                }
+
+                updateStatus('✅ Тест заявок завершен!', 'success');
+
+            } catch (error) {
+                updateStatus('❌ Ошибка при загрузке заявок: ' + error.message, 'error');
+            }
+        }
+
+        async function testFullFlow() {
+            updateStatus('Запускаем полный тест...', 'info');
+            document.getElementById('results').innerHTML = '';
+            
+            await testLogin();
+            
+            if (authToken) {
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                await testRequests();
+            }
+        }
+
+        // Автоматический запуск при загрузке
+        window.onload = function() {
+            updateStatus('Страница загружена. Нажмите кнопку для тестирования.', 'info');
+        };
+    </script>
+</body>
+</html>

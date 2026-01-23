@@ -410,76 +410,168 @@ export default function SimpleRequestsPage() {
                   </CardHeader>
                   <CardContent className="space-y-3">
                     {/* Способ оплаты */}
-                    <div className="flex justify-between items-center p-3 bg-white/90 rounded-lg">
-                      <span className="text-gray-700 font-medium">Способ оплаты:</span>
-                      <div className="flex items-center gap-2">
-                        <span className="text-gray-900 font-bold">{selectedRequest.method}</span>
-                      </div>
+                    <div className="flex justify-between items-center p-4 bg-white/95 rounded-lg border border-gray-200">
+                      <span className="text-gray-700 font-semibold text-lg">💳 Способ оплаты:</span>
+                      <span className="text-gray-900 font-bold text-lg">{selectedRequest.method}</span>
                     </div>
 
                     {/* Реквизиты из payment_details (для пополнений) */}
                     {selectedRequest.payment_details && typeof selectedRequest.payment_details === 'object' && (
                       <>
+                        {/* Банковская карта из payment_details */}
                         {selectedRequest.payment_details.card_number && (
-                          <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg border border-blue-200">
-                            <span className="text-gray-700 font-medium">💳 Номер карты:</span>
-                            <div className="flex items-center gap-2">
-                              <span className="text-gray-900 font-mono text-sm font-bold">{selectedRequest.payment_details.card_number}</span>
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                onClick={() => copyToClipboard(selectedRequest.payment_details.card_number)}
-                                className="h-8 w-8 p-0 hover:bg-blue-100"
-                              >
-                                <Copy className="w-4 h-4 text-blue-600" />
-                              </Button>
+                          <>
+                            <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 space-y-3">
+                              <h4 className="text-blue-800 font-bold text-lg flex items-center gap-2">
+                                💳 Банковская карта
+                              </h4>
+                              <div className="flex justify-between items-center">
+                                <span className="text-gray-700 font-medium">Номер карты:</span>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-gray-900 font-mono text-lg font-bold bg-white px-3 py-1 rounded border">
+                                    {selectedRequest.payment_details.card_number}
+                                  </span>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    onClick={() => copyToClipboard(selectedRequest.payment_details.card_number)}
+                                    className="h-8 w-8 p-0 hover:bg-blue-100"
+                                  >
+                                    <Copy className="w-4 h-4 text-blue-600" />
+                                  </Button>
+                                </div>
+                              </div>
+                              {selectedRequest.payment_details.card_holder_name && (
+                                <div className="flex justify-between items-center">
+                                  <span className="text-gray-700 font-medium">Владелец карты:</span>
+                                  <span className="text-gray-900 font-semibold text-lg">{selectedRequest.payment_details.card_holder_name}</span>
+                                </div>
+                              )}
+                              {selectedRequest.payment_details.bank_name && (
+                                <div className="flex justify-between items-center">
+                                  <span className="text-gray-700 font-medium">Банк:</span>
+                                  <span className="text-gray-900 font-semibold text-lg">{selectedRequest.payment_details.bank_name}</span>
+                                </div>
+                              )}
                             </div>
-                          </div>
+                          </>
                         )}
+
+                        {/* СБП из payment_details */}
                         {selectedRequest.payment_details.phone_number && (
-                          <div className="flex justify-between items-center p-3 bg-purple-50 rounded-lg border border-purple-200">
-                            <span className="text-gray-700 font-medium">📱 Телефон (СБП):</span>
-                            <div className="flex items-center gap-2">
-                              <span className="text-gray-900 font-mono text-sm font-bold">{selectedRequest.payment_details.phone_number}</span>
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                onClick={() => copyToClipboard(selectedRequest.payment_details.phone_number)}
-                                className="h-8 w-8 p-0 hover:bg-blue-100"
-                              >
-                                <Copy className="w-4 h-4 text-blue-600" />
-                              </Button>
+                          <>
+                            <div className="bg-purple-50 p-4 rounded-lg border border-purple-200 space-y-3">
+                              <h4 className="text-purple-800 font-bold text-lg flex items-center gap-2">
+                                📱 Система быстрых платежей (СБП)
+                              </h4>
+                              <div className="flex justify-between items-center">
+                                <span className="text-gray-700 font-medium">Номер телефона:</span>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-gray-900 font-mono text-lg font-bold bg-white px-3 py-1 rounded border">
+                                    {selectedRequest.payment_details.phone_number}
+                                  </span>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    onClick={() => copyToClipboard(selectedRequest.payment_details.phone_number)}
+                                    className="h-8 w-8 p-0 hover:bg-purple-100"
+                                  >
+                                    <Copy className="w-4 h-4 text-purple-600" />
+                                  </Button>
+                                </div>
+                              </div>
+                              {selectedRequest.payment_details.account_holder_name && (
+                                <div className="flex justify-between items-center">
+                                  <span className="text-gray-700 font-medium">Владелец счета:</span>
+                                  <span className="text-gray-900 font-semibold text-lg">{selectedRequest.payment_details.account_holder_name}</span>
+                                </div>
+                              )}
+                              {selectedRequest.payment_details.bank_name && (
+                                <div className="flex justify-between items-center">
+                                  <span className="text-gray-700 font-medium">Банк СБП:</span>
+                                  <span className="text-gray-900 font-semibold text-lg">{selectedRequest.payment_details.bank_name}</span>
+                                </div>
+                              )}
                             </div>
-                          </div>
+                          </>
                         )}
+
+                        {/* Криптовалюта из payment_details */}
                         {selectedRequest.payment_details.wallet_address && (
-                          <div className="flex justify-between items-center p-3 bg-orange-50 rounded-lg border border-orange-200">
-                            <span className="text-gray-700 font-medium">🔐 Адрес кошелька:</span>
-                            <div className="flex items-center gap-2">
-                              <span className="text-gray-900 font-mono text-xs font-bold break-all">{selectedRequest.payment_details.wallet_address}</span>
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                onClick={() => copyToClipboard(selectedRequest.payment_details.wallet_address)}
-                                className="h-8 w-8 p-0 hover:bg-blue-100"
-                              >
-                                <Copy className="w-4 h-4 text-blue-600" />
-                              </Button>
+                          <>
+                            <div className="bg-orange-50 p-4 rounded-lg border border-orange-200 space-y-3">
+                              <h4 className="text-orange-800 font-bold text-lg flex items-center gap-2">
+                                🔐 Криптовалюта
+                              </h4>
+                              {selectedRequest.payment_details.crypto_network && (
+                                <div className="flex justify-between items-center">
+                                  <span className="text-gray-700 font-medium">Сеть:</span>
+                                  <span className="text-gray-900 font-semibold text-lg uppercase bg-white px-3 py-1 rounded border">
+                                    {selectedRequest.payment_details.crypto_network}
+                                  </span>
+                                </div>
+                              )}
+                              <div className="flex justify-between items-center">
+                                <span className="text-gray-700 font-medium">Адрес кошелька:</span>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-gray-900 font-mono text-sm font-bold bg-white px-3 py-1 rounded border break-all max-w-xs">
+                                    {selectedRequest.payment_details.wallet_address}
+                                  </span>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    onClick={() => copyToClipboard(selectedRequest.payment_details.wallet_address)}
+                                    className="h-8 w-8 p-0 hover:bg-orange-100"
+                                  >
+                                    <Copy className="w-4 h-4 text-orange-600" />
+                                  </Button>
+                                </div>
+                              </div>
+                              {selectedRequest.payment_details.transaction_hash && (
+                                <div className="flex justify-between items-center">
+                                  <span className="text-gray-700 font-medium">Хэш транзакции:</span>
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-gray-900 font-mono text-sm font-bold bg-white px-3 py-1 rounded border break-all max-w-xs">
+                                      {selectedRequest.payment_details.transaction_hash}
+                                    </span>
+                                    <Button
+                                      size="sm"
+                                      variant="ghost"
+                                      onClick={() => copyToClipboard(selectedRequest.payment_details.transaction_hash)}
+                                      className="h-8 w-8 p-0 hover:bg-orange-100"
+                                    >
+                                      <Copy className="w-4 h-4 text-orange-600" />
+                                    </Button>
+                                  </div>
+                                </div>
+                              )}
                             </div>
-                          </div>
+                          </>
                         )}
-                        {selectedRequest.payment_details.transaction_hash && (
-                          <div className="flex justify-between items-center p-3 bg-orange-50 rounded-lg border border-orange-200">
-                            <span className="text-gray-700 font-medium">🔗 Хэш транзакции:</span>
-                            <div className="flex items-center gap-2">
-                              <span className="text-gray-900 font-mono text-xs font-bold break-all">{selectedRequest.payment_details.transaction_hash}</span>
+
+                        {/* Чек/скриншот */}
+                        {selectedRequest.payment_details.receipt && (
+                          <div className="bg-green-50 p-4 rounded-lg border border-green-200 space-y-3">
+                            <h4 className="text-green-800 font-bold text-lg flex items-center gap-2">
+                              📄 Чек об оплате
+                            </h4>
+                            <div className="flex justify-between items-center">
+                              <span className="text-gray-700 font-medium">Файл чека:</span>
+                              <span className="text-gray-900 font-semibold">
+                                {selectedRequest.payment_details.receipt_filename || 'Чек загружен'}
+                              </span>
+                            </div>
+                            <div className="text-center">
                               <Button
-                                size="sm"
-                                variant="ghost"
-                                onClick={() => copyToClipboard(selectedRequest.payment_details.transaction_hash)}
-                                className="h-8 w-8 p-0 hover:bg-blue-100"
+                                onClick={() => {
+                                  const link = document.createElement('a');
+                                  link.href = selectedRequest.payment_details.receipt;
+                                  link.download = selectedRequest.payment_details.receipt_filename || 'receipt.png';
+                                  link.click();
+                                }}
+                                className="bg-green-600 hover:bg-green-700 text-white"
                               >
-                                <Copy className="w-4 h-4 text-blue-600" />
+                                📥 Скачать чек
                               </Button>
                             </div>
                           </div>
@@ -489,11 +581,16 @@ export default function SimpleRequestsPage() {
 
                     {/* Реквизиты для банковской карты (для выводов) */}
                     {selectedRequest.card_number && (
-                      <>
-                        <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg border border-blue-200">
-                          <span className="text-gray-700 font-medium">💳 Номер карты:</span>
+                      <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 space-y-3">
+                        <h4 className="text-blue-800 font-bold text-lg flex items-center gap-2">
+                          💳 Банковская карта (вывод)
+                        </h4>
+                        <div className="flex justify-between items-center">
+                          <span className="text-gray-700 font-medium">Номер карты:</span>
                           <div className="flex items-center gap-2">
-                            <span className="text-gray-900 font-mono text-sm font-bold">{selectedRequest.card_number}</span>
+                            <span className="text-gray-900 font-mono text-lg font-bold bg-white px-3 py-1 rounded border">
+                              {selectedRequest.card_number}
+                            </span>
                             <Button
                               size="sm"
                               variant="ghost"
@@ -505,76 +602,88 @@ export default function SimpleRequestsPage() {
                           </div>
                         </div>
                         {selectedRequest.card_holder_name && (
-                          <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg border border-blue-200">
-                            <span className="text-gray-700 font-medium">👤 Владелец карты:</span>
-                            <span className="text-gray-900 font-semibold">{selectedRequest.card_holder_name}</span>
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-700 font-medium">Владелец карты:</span>
+                            <span className="text-gray-900 font-semibold text-lg">{selectedRequest.card_holder_name}</span>
                           </div>
                         )}
                         {selectedRequest.bank_name && (
-                          <div className="flex justify-between items-center p-3 bg-blue-50 rounded-lg border border-blue-200">
-                            <span className="text-gray-700 font-medium">🏦 Банк:</span>
-                            <span className="text-gray-900 font-semibold">{selectedRequest.bank_name}</span>
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-700 font-medium">Банк:</span>
+                            <span className="text-gray-900 font-semibold text-lg">{selectedRequest.bank_name}</span>
                           </div>
                         )}
-                      </>
+                      </div>
                     )}
 
-                    {/* Реквизиты для СБП */}
+                    {/* Реквизиты для СБП (для выводов) */}
                     {selectedRequest.phone_number && (
-                      <>
-                        <div className="flex justify-between items-center p-3 bg-purple-50 rounded-lg border border-purple-200">
-                          <span className="text-gray-700 font-medium">📱 Телефон (СБП):</span>
+                      <div className="bg-purple-50 p-4 rounded-lg border border-purple-200 space-y-3">
+                        <h4 className="text-purple-800 font-bold text-lg flex items-center gap-2">
+                          📱 СБП (вывод)
+                        </h4>
+                        <div className="flex justify-between items-center">
+                          <span className="text-gray-700 font-medium">Номер телефона:</span>
                           <div className="flex items-center gap-2">
-                            <span className="text-gray-900 font-mono text-sm font-bold">{selectedRequest.phone_number}</span>
+                            <span className="text-gray-900 font-mono text-lg font-bold bg-white px-3 py-1 rounded border">
+                              {selectedRequest.phone_number}
+                            </span>
                             <Button
                               size="sm"
                               variant="ghost"
                               onClick={() => copyToClipboard(selectedRequest.phone_number)}
-                              className="h-8 w-8 p-0 hover:bg-blue-100"
+                              className="h-8 w-8 p-0 hover:bg-purple-100"
                             >
-                              <Copy className="w-4 h-4 text-blue-600" />
+                              <Copy className="w-4 h-4 text-purple-600" />
                             </Button>
                           </div>
                         </div>
                         {selectedRequest.account_holder_name && (
-                          <div className="flex justify-between items-center p-3 bg-purple-50 rounded-lg border border-purple-200">
-                            <span className="text-gray-700 font-medium">👤 Владелец:</span>
-                            <span className="text-gray-900 font-semibold">{selectedRequest.account_holder_name}</span>
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-700 font-medium">Владелец счета:</span>
+                            <span className="text-gray-900 font-semibold text-lg">{selectedRequest.account_holder_name}</span>
                           </div>
                         )}
                         {selectedRequest.bank_name && (
-                          <div className="flex justify-between items-center p-3 bg-purple-50 rounded-lg border border-purple-200">
-                            <span className="text-gray-700 font-medium">🏦 Банк СБП:</span>
-                            <span className="text-gray-900 font-semibold">{selectedRequest.bank_name}</span>
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-700 font-medium">Банк СБП:</span>
+                            <span className="text-gray-900 font-semibold text-lg">{selectedRequest.bank_name}</span>
                           </div>
                         )}
-                      </>
+                      </div>
                     )}
 
-                    {/* Реквизиты для криптовалюты */}
+                    {/* Реквизиты для криптовалюты (для выводов) */}
                     {selectedRequest.wallet_address && (
-                      <>
+                      <div className="bg-orange-50 p-4 rounded-lg border border-orange-200 space-y-3">
+                        <h4 className="text-orange-800 font-bold text-lg flex items-center gap-2">
+                          🔐 Криптовалюта (вывод)
+                        </h4>
                         {selectedRequest.crypto_network && (
-                          <div className="flex justify-between items-center p-3 bg-orange-50 rounded-lg border border-orange-200">
-                            <span className="text-gray-700 font-medium">🌐 Сеть:</span>
-                            <span className="text-gray-900 font-semibold uppercase">{selectedRequest.crypto_network}</span>
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-700 font-medium">Сеть:</span>
+                            <span className="text-gray-900 font-semibold text-lg uppercase bg-white px-3 py-1 rounded border">
+                              {selectedRequest.crypto_network}
+                            </span>
                           </div>
                         )}
-                        <div className="flex justify-between items-center p-3 bg-orange-50 rounded-lg border border-orange-200">
-                          <span className="text-gray-700 font-medium">🔐 Адрес кошелька:</span>
+                        <div className="flex justify-between items-center">
+                          <span className="text-gray-700 font-medium">Адрес кошелька:</span>
                           <div className="flex items-center gap-2">
-                            <span className="text-gray-900 font-mono text-xs font-bold break-all">{selectedRequest.wallet_address}</span>
+                            <span className="text-gray-900 font-mono text-sm font-bold bg-white px-3 py-1 rounded border break-all max-w-xs">
+                              {selectedRequest.wallet_address}
+                            </span>
                             <Button
                               size="sm"
                               variant="ghost"
                               onClick={() => copyToClipboard(selectedRequest.wallet_address)}
-                              className="h-8 w-8 p-0 hover:bg-blue-100"
+                              className="h-8 w-8 p-0 hover:bg-orange-100"
                             >
-                              <Copy className="w-4 h-4 text-blue-600" />
+                              <Copy className="w-4 h-4 text-orange-600" />
                             </Button>
                           </div>
                         </div>
-                      </>
+                      </div>
                     )}
 
                     {/* Если нет реквизитов */}
@@ -586,8 +695,10 @@ export default function SimpleRequestsPage() {
                       (!selectedRequest.payment_details.card_number && 
                        !selectedRequest.payment_details.phone_number && 
                        !selectedRequest.payment_details.wallet_address)) && (
-                      <div className="text-center py-4 text-gray-600 bg-white/50 rounded-lg">
-                        Реквизиты не указаны
+                      <div className="text-center py-8 text-gray-600 bg-gray-100 rounded-lg border-2 border-dashed border-gray-300">
+                        <div className="text-4xl mb-2">❌</div>
+                        <div className="text-lg font-semibold">Реквизиты не указаны</div>
+                        <div className="text-sm text-gray-500 mt-1">Пользователь не предоставил платежные данные</div>
                       </div>
                     )}
                   </CardContent>

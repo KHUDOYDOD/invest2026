@@ -143,6 +143,14 @@ const navCategories: NavCategory[] = [
     color: "from-pink-500 to-rose-500",
     items: [
       {
+        label: "Запуски проектов",
+        href: "/admin/project-launches",
+        icon: <Rocket className="h-4 w-4" />,
+        badge: "Новое",
+        badgeColor: "green",
+        description: "Обратный отсчет до запусков"
+      },
+      {
         label: "Статистика сайта",
         href: "/admin/statistics",
         icon: <TrendingUp className="h-4 w-4" />,

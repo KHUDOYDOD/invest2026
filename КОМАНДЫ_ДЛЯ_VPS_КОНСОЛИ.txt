@@ -1,0 +1,61 @@
+═══════════════════════════════════════════════════════
+  КОМАНДЫ ДЛЯ ДОБАВЛЕНИЯ SSH КЛЮЧА НА VPS
+═══════════════════════════════════════════════════════
+
+Скопируйте и вставьте эти команды в консоль VPS:
+
+───────────────────────────────────────────────────────
+КОМАНДА 1: Создать папку для ключей
+───────────────────────────────────────────────────────
+mkdir -p ~/.ssh && chmod 700 ~/.ssh
+
+
+───────────────────────────────────────────────────────
+КОМАНДА 2: Добавить публичный ключ (ОДНОЙ СТРОКОЙ!)
+───────────────────────────────────────────────────────
+echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCyo99tia5JCLg0KNZqe4I80ZibOt9Rhcq/lizo/G9komooXXDa0wo1/V7lIl9KpBdd62OX3/DxlEAWDPBg9Hoy6/7bXv9PdaDSnFZ0hUO6Y3UPMGBcAraJEmb7YyFSeiFYFZDBpAoy5PKk0x2wmRKADQfNGdrhH8cm3u81kYsDRK+gSOH4UoxPA6lRR4XZ8E6EWEHKL0/DXcUFEJwPJ9igN6a+2/AYvdNIzlo2ErxBh5RfeW9ecOK3UBd4pj81LC3r71tkXWiusQV/r2F06D+YpxDWfOLJqO1G/JN50sekGy1zjTPyQ5K+momOhTxYfqIhl4t55QqZhC7Vd2fmGOMe57e8VaXXC0oWecgzPc13TqSaaTYRofhCb3AhRKP0pfAdzPeDeQn4AgW80DT3IRs6Jk8+Q4QAr/zXohPD8rTjHkZGrDxiYiffBN0GgKgCYGTBSqPT7wlcsayxvBj50EZFpGq1Zdhhs/0XBwrIaLWBcW7MX7cmpGKRCOsAl++Us7BjGObgtm3djAhRgdW/QS22wUM+u17s3LWklozqjEi45ohwOxHcqscaraHHTyqeppqXe1c/agAr2cgV6alYeEHluPy0CLXb4MMVhgiPmEs8pYRAFyC4oy8Z1VCsJwE1ufYXthR50ql3g97h3twMFBQlnqq04Jcgft5sUdbGGlVP5Q== kiro-ai-access" >> ~/.ssh/authorized_keys
+
+
+───────────────────────────────────────────────────────
+КОМАНДА 3: Установить правильные права
+───────────────────────────────────────────────────────
+chmod 600 ~/.ssh/authorized_keys
+
+
+───────────────────────────────────────────────────────
+КОМАНДА 4: Проверить, что ключ добавлен
+───────────────────────────────────────────────────────
+cat ~/.ssh/authorized_keys | grep kiro-ai-access
+
+
+═══════════════════════════════════════════════════════
+  ПОСЛЕ ВЫПОЛНЕНИЯ КОМАНД
+═══════════════════════════════════════════════════════
+
+Если в последней команде вы видите строку с "kiro-ai-access",
+значит ключ успешно добавлен!
+
+Напишите мне: "готово" или "ключ добавлен"
+
+И я автоматически обновлю сервер!
+
+
+═══════════════════════════════════════════════════════
+  АЛЬТЕРНАТИВНЫЙ СПОСОБ (если команды не работают)
+═══════════════════════════════════════════════════════
+
+1. Откройте редактор:
+   nano ~/.ssh/authorized_keys
+
+2. Вставьте весь текст из файла kiro_vps_key.pub
+
+3. Сохраните: Ctrl+X, затем Y, затем Enter
+
+4. Установите права:
+   chmod 600 ~/.ssh/authorized_keys
+
+
+═══════════════════════════════════════════════════════
+Сервер: 213.171.31.215
+Ключ: kiro_vps_key.pub
+═══════════════════════════════════════════════════════

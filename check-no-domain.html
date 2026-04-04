@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✅ Сайт работает только по IP</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            text-align: center;
+        }
+        .container {
+            background: rgba(255,255,255,0.1);
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        .success {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        .info {
+            background: rgba(255,255,255,0.2);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        .test-links {
+            margin: 30px 0;
+        }
+        .test-links a {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 15px 25px;
+            margin: 10px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .test-links a:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="success">🎉</div>
+        <h1>САЙТ РАБОТАЕТ ТОЛЬКО ПО IP АДРЕСУ!</h1>
+        <h2>Домен tradepo.ru полностью удален</h2>
+        
+        <div class="info">
+            <h3>📍 Информация о подключении:</h3>
+            <p><strong>Текущий URL:</strong> <span id="currentUrl"></span></p>
+            <p><strong>Хост:</strong> <span id="host"></span></p>
+            <p><strong>Протокол:</strong> <span id="protocol"></span></p>
+            <p><strong>Порт:</strong> <span id="port"></span></p>
+        </div>
+
+        <div class="info">
+            <h3>✅ Что исправлено:</h3>
+            <ul>
+                <li>Удалены все nginx конфигурации с доменом</li>
+                <li>Отключен nginx сервер</li>
+                <li>Настроены переменные окружения только для IP</li>
+                <li>Приложение запущено с явным указанием IP адреса</li>
+                <li>Убраны все перенаправления на домен</li>
+            </ul>
+        </div>
+
+        <div class="test-links">
+            <h3>🔗 Тестовые ссылки:</h3>
+            <a href="http://213.171.31.215/">Главная страница</a>
+            <a href="http://213.171.31.215/api/site-status">API статуса</a>
+            <a href="http://213.171.31.215/admin/project-launches">Админ панель</a>
+        </div>
+
+        <div class="info">
+            <h3>🎮 Данные для входа в админку:</h3>
+            <p><strong>Email:</strong> admin@example.com</p>
+            <p><strong>Пароль:</strong> X11021997x</p>
+        </div>
+
+        <div class="info">
+            <h3>🔒 Текущие ограничения:</h3>
+            <p id="restrictions">Загружаем...</p>
+        </div>
+    </div>
+
+    <script>
+        // Показываем информацию о текущем URL
+        document.getElementById('currentUrl').textContent = window.location.href;
+        document.getElementById('host').textContent = window.location.hostname;
+        document.getElementById('protocol').textContent = window.location.protocol;
+        document.getElementById('port').textContent = window.location.port || (window.location.protocol === 'https:' ? '443' : '80');
+
+        // Проверяем статус ограничений
+        fetch('/api/site-status')
+            .then(response => response.json())
+            .then(data => {
+                const restrictions = [];
+                if (!data.registration_enabled) restrictions.push('Регистрация отключена');
+                if (!data.investments_enabled) restrictions.push('Инвестиции отключены');
+                if (!data.deposits_enabled) restrictions.push('Пополнение отключено');
+                if (!data.withdrawals_enabled) restrictions.push('Вывод отключен');
+                
+                document.getElementById('restrictions').textContent = 
+                    restrictions.length > 0 ? restrictions.join(', ') : 'Все функции включены';
+            })
+            .catch(error => {
+                document.getElementById('restrictions').textContent = 'Ошибка загрузки статуса';
+            });
+
+        // Проверяем, что мы действительно на IP адресе
+        if (window.location.hostname === '213.171.31.215') {
+            console.log('✅ Успешно! Сайт работает по IP адресу без перенаправлений');
+        } else {
+            console.log('⚠️ Внимание: произошло перенаправление на', window.location.hostname);
+        }
+    </script>
+</body>
+</html>

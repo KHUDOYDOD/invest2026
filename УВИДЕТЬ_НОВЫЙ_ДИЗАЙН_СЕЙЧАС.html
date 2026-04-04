@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎨 СУПЕР ЯРКИЙ ДИЗАЙН ГЛАВНОЙ СТРАНИЦЫ! 🚀</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #ec4899, #8b5cf6, #3b82f6);
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #fbbf24, #f472b6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        .loading {
+            font-size: 1.5em;
+            margin: 20px 0;
+            animation: pulse 1s infinite;
+        }
+        .countdown {
+            font-size: 2em;
+            font-weight: bold;
+            color: #fbbf24;
+            margin: 20px 0;
+        }
+        .links {
+            margin-top: 30px;
+        }
+        .link {
+            display: inline-block;
+            margin: 10px;
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #fbbf24, #f97316);
+            color: white;
+            text-decoration: none;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1.2em;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        .link:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+        .update {
+            background: linear-gradient(45deg, #10b981, #06b6d4);
+            animation: pulse 1s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 СУПЕР ЯРКИЙ ДИЗАЙН ГЛАВНОЙ СТРАНИЦЫ! 🚀</h1>
+        <div class="loading">✨ Секция "Запуски проектов" теперь СУПЕР ЯРКАЯ! ✨</div>
+        <div class="countdown" id="countdown">5</div>
+        <p>🌈 Автоматическое перенаправление на ГЛАВНУЮ СТРАНИЦУ с НОВЫМ ЯРКИМ ДИЗАЙНОМ!</p>
+        
+        <div class="links">
+            <a href="http://213.171.31.215?cache_bust=1737648000000&force_refresh=true" class="link update" onclick="clearCache()">
+                🏠 ГЛАВНАЯ СТРАНИЦА (СУПЕР ЯРКАЯ!)
+            </a>
+            <a href="http://213.171.31.215/admin/project-launches?cache_bust=1737648000000&force_refresh=true" class="link" onclick="clearCache()">
+                🎨 АДМИН ПАНЕЛЬ (ТОЖЕ ЯРКАЯ!)
+            </a>
+        </div>
+        
+        <div style="margin-top: 30px; padding: 20px; background: rgba(255, 255, 255, 0.1); border-radius: 15px;">
+            <h3 style="color: #fbbf24; margin-bottom: 15px;">🎯 ЧТО ИЗМЕНЕНО:</h3>
+            <ul style="text-align: left; font-size: 1.1em; line-height: 1.6;">
+                <li>🌈 <strong>Розово-фиолетово-синий градиент</strong> фон</li>
+                <li>✨ <strong>Супер яркие заголовки</strong> с эмодзи и анимациями</li>
+                <li>🎨 <strong>Цветные карточки</strong> с bounce анимациями</li>
+                <li>⏰ <strong>Магический обратный отсчет</strong> с яркими цветами</li>
+                <li>🚀 <strong>Анимированные фоновые элементы</strong></li>
+                <li>💫 <strong>Увеличенные размеры</strong> и яркость</li>
+            </ul>
+        </div>
+        
+        <p style="margin-top: 30px; font-size: 0.9em; opacity: 0.8;">
+            💡 Если дизайн все еще старый - нажмите Ctrl+F5 или откройте в приватном окне
+        </p>
+    </div>
+
+    <script>
+        // Принудительная очистка кэша
+        function clearCache() {
+            // Очищаем localStorage
+            if (typeof(Storage) !== "undefined") {
+                localStorage.clear();
+                sessionStorage.clear();
+            }
+            
+            // Принудительно обновляем все CSS файлы
+            const links = document.querySelectorAll('link[rel="stylesheet"]');
+            links.forEach(link => {
+                const href = link.href;
+                link.href = href + (href.includes('?') ? '&' : '?') + 'v=' + Date.now();
+            });
+        }
+
+        // Обратный отсчет и автоматическое перенаправление
+        let countdown = 5;
+        const countdownElement = document.getElementById('countdown');
+        
+        const timer = setInterval(() => {
+            countdown--;
+            countdownElement.textContent = countdown;
+            
+            if (countdown <= 0) {
+                clearInterval(timer);
+                clearCache();
+                // Перенаправляем на главную страницу с принудительным обновлением
+                window.location.href = 'http://213.171.31.215?cache_bust=' + Date.now() + '&force_refresh=true';
+            }
+        }, 1000);
+
+        // Принудительно очищаем кэш при загрузке
+        window.onload = function() {
+            clearCache();
+        };
+    </script>
+</body>
+</html>

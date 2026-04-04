@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Project Launches Component</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Testing Project Launches Component</h1>
+    <p>Opening site in 3 seconds...</p>
+    <script>
+        setTimeout(() => {
+            window.location.href = 'http://213.171.31.215/';
+        }, 3000);
+    </script>
+    
+    <h2>Instructions:</h2>
+    <ol>
+        <li>The page will open automatically</li>
+        <li>Press Ctrl+Shift+R to hard refresh (clear cache)</li>
+        <li>Scroll down after the Hero Section</li>
+        <li>You should see a green gradient section with "🎉 Проект запущен!"</li>
+    </ol>
+    
+    <h2>If you don't see the component:</h2>
+    <ul>
+        <li>Open browser DevTools (F12)</li>
+        <li>Go to Console tab</li>
+        <li>Look for any errors related to "ProjectLaunches" or "Server Action"</li>
+        <li>Check Network tab to see if /api/admin/project-launches returns data</li>
+    </ul>
+</body>
+</html>

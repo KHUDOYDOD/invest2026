@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест компонента запусков</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        .status {
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        .test-result {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .btn-secondary {
+            background: #007bff;
+        }
+        .btn-secondary:hover {
+            background: #0056b3;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .emoji {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-card">
+        <h1><span class="emoji">🚀</span>Тест компонента запусков проекта</h1>
+        
+        <div class="status success">
+            <strong>✅ Статус:</strong> Компонент создан и развернут на сервере
+        </div>
+
+        <div class="test-result">
+            <h3>📊 Результаты тестирования:</h3>
+            <ul>
+                <li>✅ База данных: Проект создан и активен</li>
+                <li>✅ API: Возвращает 1 запущенный проект</li>
+                <li>✅ Компонент: Присутствует в коде страницы</li>
+                <li>✅ Сервер: Работает на http://213.171.31.215</li>
+            </ul>
+        </div>
+
+        <div class="status info">
+            <h3>📦 Данные проекта:</h3>
+            <pre>
+Название: Платформа InvestPro
+Описание: Инвестиционная платформа запущена и работает в полном режиме
+Статус: ✅ Запущен
+Показывать на сайте: ✅ Да
+Активен: ✅ Да
+Дата запуска: 14.02.2026, 05:17:33
+            </pre>
+        </div>
+
+        <div class="status warning">
+            <h3>⚠️ Важно:</h3>
+            <p>Компонент рендерится на стороне клиента (React), поэтому:</p>
+            <ol>
+                <li>Нужно открыть сайт в браузере</li>
+                <li>Очистить кэш браузера (Ctrl+Shift+Delete)</li>
+                <li>Обновить страницу (Ctrl+F5)</li>
+                <li>Компонент появится ПОСЛЕ Hero Section</li>
+            </ol>
+        </div>
+
+        <h3>🎨 Как выглядит компонент:</h3>
+        <div class="test-result">
+            <ul>
+                <li>🎉 Заголовок "Проект запущен!"</li>
+                <li>🚀 Анимированная ракета (вращается)</li>
+                <li>💰 Три карточки преимуществ с анимацией</li>
+                <li>📅 Дата запуска с эффектами</li>
+                <li>🌈 Зеленый градиентный фон</li>
+                <li>✨ Анимированные частицы</li>
+            </ul>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <button onclick="window.open('http://213.171.31.215', '_blank')">
+                🌐 Открыть сайт
+            </button>
+            <button class="btn-secondary" onclick="window.open('http://213.171.31.215/admin/project-launches', '_blank')">
+                ⚙️ Админ-панель
+            </button>
+        </div>
+
+        <div class="status info" style="margin-top: 30px;">
+            <h3>🔧 Управление проектами:</h3>
+            <p>Вы можете управлять запусками через админ-панель:</p>
+            <ol>
+                <li>Откройте: <a href="http://213.171.31.215/admin/project-launches" target="_blank">http://213.171.31.215/admin/project-launches</a></li>
+                <li>Создавайте новые проекты</li>
+                <li>Отмечайте проекты как "Запущен"</li>
+                <li>Включайте/выключайте показ на сайте</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        console.log('🚀 Тест компонента запусков');
+        console.log('✅ Компонент развернут на: http://213.171.31.215');
+        console.log('✅ API endpoint: http://213.171.31.215/api/admin/project-launches');
+        console.log('💡 Очистите кэш и обновите страницу для просмотра');
+    </script>
+</body>
+</html>

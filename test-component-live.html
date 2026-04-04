@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест компонента в реальном времени</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #333;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            max-height: 400px;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        #result {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-card">
+        <h2>🔍 Тест компонента запусков в реальном времени</h2>
+        
+        <div class="status info">
+            <strong>Этот тест проверяет:</strong>
+            <ul>
+                <li>Загружается ли API</li>
+                <li>Возвращает ли API данные</li>
+                <li>Правильно ли фильтруются проекты</li>
+            </ul>
+        </div>
+
+        <button onclick="testAPI()">🧪 Тестировать API</button>
+        <button onclick="openSite()">🌐 Открыть сайт</button>
+        <button onclick="openConsole()">🔧 Инструкция по консоли</button>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        async function testAPI() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<div class="status info">⏳ Загрузка...</div>';
+
+            try {
+                // Тест 1: Проверяем API
+                const response = await fetch('http://213.171.31.215/api/admin/project-launches');
+                const data = await response.json();
+
+                let html = '<div class="test-card">';
+                html += '<h3>✅ API работает!</h3>';
+                html += `<p><strong>Статус:</strong> ${response.status}</p>`;
+                html += `<p><strong>Всего проектов:</strong> ${data.length}</p>`;
+
+                // Фильтруем как в компоненте
+                const launchedProjects = data.filter(p => 
+                    p.is_launched === true && 
+                    p.show_on_site === true && 
+                    p.is_active === true
+                );
+
+                html += `<p><strong>Запущенных проектов:</strong> ${launchedProjects.length}</p>`;
+
+                if (launchedProjects.length > 0) {
+                    html += '<div class="status success">';
+                    html += '<strong>✅ Компонент ДОЛЖЕН показаться!</strong><br>';
+                    html += 'Найдены запущенные проекты для показа.';
+                    html += '</div>';
+
+                    html += '<h4>📦 Данные проектов:</h4>';
+                    launchedProjects.forEach(project => {
+                        html += `<div class="status info">`;
+                        html += `<strong>Название:</strong> ${project.title}<br>`;
+                        html += `<strong>Запущен:</strong> ${project.is_launched ? '✅' : '❌'}<br>`;
+                        html += `<strong>Показывать:</strong> ${project.show_on_site ? '✅' : '❌'}<br>`;
+                        html += `<strong>Активен:</strong> ${project.is_active ? '✅' : '❌'}<br>`;
+                        html += `<strong>Дата:</strong> ${new Date(project.launch_date).toLocaleString('ru-RU')}`;
+                        html += `</div>`;
+                    });
+
+                    html += '<h4>🔍 Что проверить на сайте:</h4>';
+                    html += '<ol>';
+                    html += '<li>Откройте http://213.171.31.215</li>';
+                    html += '<li>Нажмите F12 (открыть консоль)</li>';
+                    html += '<li>Перейдите на вкладку Console</li>';
+                    html += '<li>Обновите страницу (Ctrl+F5)</li>';
+                    html += '<li>Проверьте есть ли ошибки (красный текст)</li>';
+                    html += '<li>Прокрутите страницу вниз после Hero Section</li>';
+                    html += '</ol>';
+
+                } else {
+                    html += '<div class="status error">';
+                    html += '<strong>❌ Нет запущенных проектов для показа</strong><br>';
+                    html += 'Компонент не покажется, так как нет проектов с is_launched=true, show_on_site=true, is_active=true';
+                    html += '</div>';
+
+                    if (data.length > 0) {
+                        html += '<h4>📊 Все проекты в БД:</h4>';
+                        html += '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                    }
+                }
+
+                html += '</div>';
+                resultDiv.innerHTML = html;
+
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="status error">
+                        <strong>❌ Ошибка:</strong> ${error.message}<br>
+                        <p>Возможные причины:</p>
+                        <ul>
+                            <li>Сервер не отвечает</li>
+                            <li>CORS блокирует запрос</li>
+                            <li>API недоступен</li>
+                        </ul>
+                    </div>
+                `;
+            }
+        }
+
+        function openSite() {
+            window.open('http://213.171.31.215', '_blank');
+        }
+
+        function openConsole() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `
+                <div class="test-card">
+                    <h3>🔧 Как проверить консоль браузера</h3>
+                    <ol>
+                        <li><strong>Откройте сайт:</strong> http://213.171.31.215</li>
+                        <li><strong>Откройте консоль:</strong> Нажмите F12</li>
+                        <li><strong>Перейдите на вкладку Console</strong></li>
+                        <li><strong>Очистите консоль:</strong> Нажмите на иконку 🚫 или Ctrl+L</li>
+                        <li><strong>Обновите страницу:</strong> Ctrl+F5 (жесткая перезагрузка)</li>
+                        <li><strong>Проверьте ошибки:</strong> Ищите красный текст</li>
+                    </ol>
+
+                    <h4>🔍 Что искать:</h4>
+                    <ul>
+                        <li>❌ Ошибки загрузки (Failed to load, 404, 500)</li>
+                        <li>❌ JavaScript ошибки (Uncaught, TypeError, ReferenceError)</li>
+                        <li>❌ React ошибки (Hydration, Component)</li>
+                        <li>✅ Успешные запросы к API</li>
+                    </ul>
+
+                    <h4>📸 Сделайте скриншот консоли если есть ошибки</h4>
+                </div>
+            `;
+        }
+
+        // Автоматический тест при загрузке
+        window.onload = function() {
+            testAPI();
+        };
+    </script>
+</body>
+</html>

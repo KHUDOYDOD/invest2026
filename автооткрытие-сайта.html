@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎨 АВТООТКРЫТИЕ НОВОГО ДИЗАЙНА</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #831843, #7c2d92, #0891b2);
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .title {
+            font-size: 3rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #f472b6, #a855f7, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: pulse 2s infinite;
+            margin-bottom: 2rem;
+        }
+        .button {
+            background: linear-gradient(45deg, #f472b6, #a855f7, #06b6d4);
+            color: white;
+            padding: 20px 40px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            animation: bounce 2s infinite;
+            margin: 15px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .status {
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid #22c55e;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 600px;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+        .countdown {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #f472b6;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="title">🎨 НОВЫЙ ДИЗАЙН 2026! 🚀</h1>
+    
+    <div class="status">
+        <h2>✅ АВТОМАТИЧЕСКОЕ ОТКРЫТИЕ</h2>
+        <p>🚀 Сайт откроется автоматически через <span class="countdown" id="countdown">3</span> секунд</p>
+        <p>🌈 С принудительной очисткой кэша!</p>
+    </div>
+
+    <div>
+        <a href="javascript:openSite()" class="button">
+            🏠 ГЛАВНАЯ СТРАНИЦА
+        </a>
+        
+        <a href="javascript:openAdmin()" class="button">
+            🔧 АДМИН-ПАНЕЛЬ
+        </a>
+    </div>
+
+    <div class="status">
+        <h3>🎯 ЧТО ВЫ УВИДИТЕ:</h3>
+        <p>🌈 <strong>РОЗОВО-ФИОЛЕТОВО-ГОЛУБОЙ</strong> фон</p>
+        <p>✨ Заголовок <strong>"НОВЫЙ ДИЗАЙН 2026!"</strong></p>
+        <p>💫 <strong>Анимации пульсации</strong> и bounce</p>
+        <p>🎪 <strong>Яркие цветные карточки</strong></p>
+    </div>
+
+    <script>
+        let countdown = 3;
+        const countdownElement = document.getElementById('countdown');
+        
+        const timer = setInterval(() => {
+            countdown--;
+            countdownElement.textContent = countdown;
+            
+            if (countdown <= 0) {
+                clearInterval(timer);
+                openSite();
+            }
+        }, 1000);
+
+        function openSite() {
+            // Добавляем случайный параметр для принудительного обновления
+            const timestamp = new Date().getTime();
+            const url = `http://213.171.31.215?nocache=${timestamp}`;
+            window.open(url, '_blank');
+        }
+
+        function openAdmin() {
+            // Добавляем случайный параметр для принудительного обновления
+            const timestamp = new Date().getTime();
+            const url = `http://213.171.31.215/admin/project-launches?nocache=${timestamp}`;
+            window.open(url, '_blank');
+        }
+
+        // Автоматически открываем админ-панель через 5 секунд
+        setTimeout(() => {
+            openAdmin();
+        }, 5000);
+    </script>
+</body>
+</html>

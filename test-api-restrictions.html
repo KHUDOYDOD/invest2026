@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест ограничений API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            margin-bottom: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            border-left: 5px solid #ff6b6b;
+        }
+        .test-section.success {
+            border-left-color: #51cf66;
+        }
+        .test-section.blocked {
+            border-left-color: #ff6b6b;
+        }
+        button {
+            background: white;
+            color: black;
+            border: 3px solid black;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 10px;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #f0f0f0;
+            transform: scale(1.05);
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .result {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin: 5px;
+        }
+        .status.enabled {
+            background: #51cf66;
+            color: white;
+        }
+        .status.disabled {
+            background: #ff6b6b;
+            color: white;
+        }
+        input, select {
+            padding: 10px;
+            margin: 5px;
+            border: 2px solid black;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Тест ограничений API</h1>
+        <p>Эта страница тестирует работу ограничений функций сайта через API.</p>
+        
+        <button onclick="checkStatus()">🔍 Проверить статус функций</button>
+        <button onclick="runAllTests()">🚀 Запустить все тесты</button>
+        
+        <div class="result" id="status-result">
+            Нажмите "Проверить статус функций" для получения информации...
+        </div>
+    </div>
+
+    <div class="test-section" id="registration-section">
+        <h3>🚫 Тест регистрации</h3>
+        <div>
+            <input type="email" id="test-email" placeholder="test@example.com" value="test@example.com">
+            <input type="password" id="test-password" placeholder="password" value="123456">
+            <input type="text" id="test-name" placeholder="Тест Пользователь" value="Тест Пользователь">
+        </div>
+        <button onclick="testRegistration()">Попробовать зарегистрироваться</button>
+        <div class="result" id="registration-result"></div>
+    </div>
+
+    <div class="test-section" id="investment-section">
+        <h3>📈 Тест инвестиций</h3>
+        <div>
+            <input type="number" id="investment-amount" placeholder="100" value="100">
+            <select id="investment-plan">
+                <option value="1">План 1</option>
+                <option value="2">План 2</option>
+                <option value="3">План 3</option>
+            </select>
+        </div>
+        <button onclick="testInvestment()">Попробовать создать инвестицию</button>
+        <div class="result" id="investment-result"></div>
+    </div>
+
+    <div class="test-section" id="deposit-section">
+        <h3>💰 Тест пополнения</h3>
+        <div>
+            <input type="number" id="deposit-amount" placeholder="50" value="50">
+            <select id="deposit-method">
+                <option value="card">Банковская карта</option>
+                <option value="crypto">USDT TRC-20</option>
+                <option value="sbp">СБП</option>
+            </select>
+        </div>
+        <button onclick="testDeposit()">Попробовать пополнить</button>
+        <div class="result" id="deposit-result"></div>
+    </div>
+
+    <div class="test-section" id="withdrawal-section">
+        <h3>💸 Тест вывода</h3>
+        <div>
+            <input type="number" id="withdrawal-amount" placeholder="25" value="25">
+            <select id="withdrawal-method">
+                <option value="card">Банковская карта</option>
+                <option value="crypto">USDT TRC-20</option>
+                <option value="sbp">СБП</option>
+            </select>
+        </div>
+        <button onclick="testWithdrawal()">Попробовать вывести</button>
+        <div class="result" id="withdrawal-result"></div>
+    </div>
+
+    <script>
+        let testToken = null;
+        
+        function log(elementId, message) {
+            const element = document.getElementById(elementId);
+            element.innerHTML += message + '\n';
+            console.log(message);
+        }
+        
+        function clearLog(elementId) {
+            document.getElementById(elementId).innerHTML = '';
+        }
+        
+        async function checkStatus() {
+            clearLog('status-result');
+            log('status-result', '🔍 Проверяем статус функций сайта...');
+            
+            try {
+                const response = await fetch('/api/site-status');
+                const data = await response.json();
+                
+                log('status-result', '✅ Статус получен:');
+                log('status-result', `🚫 Регистрация: ${data.registration_enabled ? 'ВКЛЮЧЕНА' : 'ОТКЛЮЧЕНА'}`);
+                log('status-result', `📈 Инвестиции: ${data.investments_enabled ? 'ВКЛЮЧЕНЫ' : 'ОТКЛЮЧЕНЫ'}`);
+                log('status-result', `💰 Пополнение: ${data.deposits_enabled ? 'ВКЛЮЧЕНО' : 'ОТКЛЮЧЕНО'}`);
+                log('status-result', `💸 Вывод: ${data.withdrawals_enabled ? 'ВКЛЮЧЕН' : 'ОТКЛЮЧЕН'}`);
+                log('status-result', `📝 Сообщение: ${data.message}`);
+                
+                // Обновляем статусы секций
+                updateSectionStatus('registration-section', data.registration_enabled);
+                updateSectionStatus('investment-section', data.investments_enabled);
+                updateSectionStatus('deposit-section', data.deposits_enabled);
+                updateSectionStatus('withdrawal-section', data.withdrawals_enabled);
+                
+            } catch (error) {
+                log('status-result', `❌ Ошибка: ${error.message}`);
+            }
+        }
+        
+        function updateSectionStatus(sectionId, enabled) {
+            const section = document.getElementById(sectionId);
+            section.className = 'test-section ' + (enabled ? 'success' : 'blocked');
+        }
+        
+        async function testRegistration() {
+            clearLog('registration-result');
+            log('registration-result', '🧪 Тестируем регистрацию...');
+            
+            const email = document.getElementById('test-email').value;
+            const password = document.getElementById('test-password').value;
+            const fullName = document.getElementById('test-name').value;
+            
+            try {
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password,
+                        fullName: fullName,
+                        country: 'Россия'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.status === 403 && data.disabled) {
+                    log('registration-result', '✅ ОГРАНИЧЕНИЕ РАБОТАЕТ!');
+                    log('registration-result', `🚫 Статус: ${response.status}`);
+                    log('registration-result', `📝 Сообщение: ${data.error}`);
+                } else if (response.ok) {
+                    log('registration-result', '⚠️ Регистрация прошла успешно (ограничение не работает)');
+                    log('registration-result', `✅ Пользователь создан: ${data.user?.email}`);
+                    testToken = data.token; // Сохраняем токен для других тестов
+                } else {
+                    log('registration-result', `❌ Ошибка: ${data.error}`);
+                }
+                
+            } catch (error) {
+                log('registration-result', `❌ Ошибка запроса: ${error.message}`);
+            }
+        }
+        
+        async function testInvestment() {
+            clearLog('investment-result');
+            log('investment-result', '🧪 Тестируем создание инвестиции...');
+            
+            if (!testToken) {
+                log('investment-result', '⚠️ Нет токена авторизации. Сначала попробуйте зарегистрироваться или войти.');
+                return;
+            }
+            
+            const amount = document.getElementById('investment-amount').value;
+            const planId = document.getElementById('investment-plan').value;
+            
+            try {
+                const response = await fetch('/api/investments/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${testToken}`
+                    },
+                    body: JSON.stringify({
+                        planId: planId,
+                        amount: parseFloat(amount)
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.status === 403 && data.disabled) {
+                    log('investment-result', '✅ ОГРАНИЧЕНИЕ РАБОТАЕТ!');
+                    log('investment-result', `🚫 Статус: ${response.status}`);
+                    log('investment-result', `📝 Сообщение: ${data.error}`);
+                } else if (response.ok) {
+                    log('investment-result', '⚠️ Инвестиция создана успешно (ограничение не работает)');
+                    log('investment-result', `✅ Инвестиция: ${data.investment?.amount}$`);
+                } else {
+                    log('investment-result', `❌ Ошибка: ${data.error}`);
+                }
+                
+            } catch (error) {
+                log('investment-result', `❌ Ошибка запроса: ${error.message}`);
+            }
+        }
+        
+        async function testDeposit() {
+            clearLog('deposit-result');
+            log('deposit-result', '🧪 Тестируем пополнение...');
+            
+            if (!testToken) {
+                log('deposit-result', '⚠️ Нет токена авторизации. Сначала попробуйте зарегистрироваться или войти.');
+                return;
+            }
+            
+            const amount = document.getElementById('deposit-amount').value;
+            const method = document.getElementById('deposit-method').value;
+            
+            try {
+                const response = await fetch('/api/deposit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${testToken}`
+                    },
+                    body: JSON.stringify({
+                        amount: parseFloat(amount),
+                        payment_method: method,
+                        card_number: method === 'card' ? '1234567890123456' : null,
+                        wallet_address: method === 'crypto' ? 'TTest123456789' : null,
+                        phone_number: method === 'sbp' ? '+79001234567' : null
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.status === 403 && data.disabled) {
+                    log('deposit-result', '✅ ОГРАНИЧЕНИЕ РАБОТАЕТ!');
+                    log('deposit-result', `🚫 Статус: ${response.status}`);
+                    log('deposit-result', `📝 Сообщение: ${data.error}`);
+                } else if (response.ok) {
+                    log('deposit-result', '⚠️ Заявка на пополнение создана (ограничение не работает)');
+                    log('deposit-result', `✅ Заявка: ${data.transaction?.amount}$`);
+                } else {
+                    log('deposit-result', `❌ Ошибка: ${data.error}`);
+                }
+                
+            } catch (error) {
+                log('deposit-result', `❌ Ошибка запроса: ${error.message}`);
+            }
+        }
+        
+        async function testWithdrawal() {
+            clearLog('withdrawal-result');
+            log('withdrawal-result', '🧪 Тестируем вывод средств...');
+            
+            if (!testToken) {
+                log('withdrawal-result', '⚠️ Нет токена авторизации. Сначала попробуйте зарегистрироваться или войти.');
+                return;
+            }
+            
+            const amount = document.getElementById('withdrawal-amount').value;
+            const method = document.getElementById('withdrawal-method').value;
+            
+            try {
+                const response = await fetch('/api/withdraw', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${testToken}`
+                    },
+                    body: JSON.stringify({
+                        amount: parseFloat(amount),
+                        method: method,
+                        card_number: method === 'card' ? '1234567890123456' : null,
+                        card_holder_name: method === 'card' ? 'Test User' : null,
+                        wallet_address: method === 'crypto' ? 'TTest123456789' : null,
+                        phone_number: method === 'sbp' ? '+79001234567' : null,
+                        bank_name: method === 'sbp' ? 'Сбербанк' : null
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.status === 403 && data.disabled) {
+                    log('withdrawal-result', '✅ ОГРАНИЧЕНИЕ РАБОТАЕТ!');
+                    log('withdrawal-result', `🚫 Статус: ${response.status}`);
+                    log('withdrawal-result', `📝 Сообщение: ${data.error}`);
+                } else if (response.ok) {
+                    log('withdrawal-result', '⚠️ Заявка на вывод создана (ограничение не работает)');
+                    log('withdrawal-result', `✅ Заявка: ${data.transaction?.amount}$`);
+                } else {
+                    log('withdrawal-result', `❌ Ошибка: ${data.error}`);
+                }
+                
+            } catch (error) {
+                log('withdrawal-result', `❌ Ошибка запроса: ${error.message}`);
+            }
+        }
+        
+        async function runAllTests() {
+            await checkStatus();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            await testRegistration();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            await testInvestment();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            await testDeposit();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            await testWithdrawal();
+        }
+        
+        // Автоматически проверяем статус при загрузке
+        window.onload = checkStatus;
+    </script>
+</body>
+</html>

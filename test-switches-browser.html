@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест переключателей Project Launches</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        .switch-group {
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            color: black;
+        }
+        .switch {
+            margin: 10px 0;
+        }
+        label {
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        button {
+            background: white;
+            color: black;
+            border: 3px solid black;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 10px;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #f0f0f0;
+            transform: scale(1.05);
+        }
+        .result {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-family: monospace;
+        }
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Тест переключателей Project Launches</h1>
+        
+        <div class="switch-group">
+            <h3>🔧 Управление функциями сайта</h3>
+            
+            <div class="switch">
+                <input type="checkbox" id="disable_registration">
+                <label for="disable_registration">🚫 Отключить регистрацию</label>
+            </div>
+            
+            <div class="switch">
+                <input type="checkbox" id="disable_investments">
+                <label for="disable_investments">📈 Отключить инвестиции</label>
+            </div>
+            
+            <div class="switch">
+                <input type="checkbox" id="disable_deposits">
+                <label for="disable_deposits">💰 Отключить пополнение</label>
+            </div>
+            
+            <div class="switch">
+                <input type="checkbox" id="disable_withdrawals">
+                <label for="disable_withdrawals">💸 Отключить вывод средств</label>
+            </div>
+        </div>
+        
+        <button onclick="loadCurrentData()">📥 Загрузить текущие данные</button>
+        <button onclick="saveData()">💾 Сохранить изменения</button>
+        <button onclick="testAPI()">🧪 Тест API</button>
+        
+        <div class="result" id="result">
+            Результаты появятся здесь...
+        </div>
+    </div>
+
+    <script>
+        let currentProjectId = null;
+        
+        function log(message) {
+            const result = document.getElementById('result');
+            result.innerHTML += message + '<br>';
+            console.log(message);
+        }
+        
+        function clearLog() {
+            document.getElementById('result').innerHTML = '';
+        }
+        
+        async function loadCurrentData() {
+            clearLog();
+            log('📥 Загружаем данные project launches...');
+            
+            try {
+                const response = await fetch('/api/admin/project-launches');
+                const data = await response.json();
+                
+                if (data.length > 0) {
+                    const project = data[0];
+                    currentProjectId = project.id;
+                    
+                    log(`✅ Загружен проект: ${project.title}`);
+                    log(`ID: ${project.id}`);
+                    
+                    // Устанавливаем значения переключателей
+                    document.getElementById('disable_registration').checked = project.disable_registration || false;
+                    document.getElementById('disable_investments').checked = project.disable_investments || false;
+                    document.getElementById('disable_deposits').checked = project.disable_deposits || false;
+                    document.getElementById('disable_withdrawals').checked = project.disable_withdrawals || false;
+                    
+                    log('🔧 Текущие настройки:');
+                    log(`- Регистрация отключена: ${project.disable_registration}`);
+                    log(`- Инвестиции отключены: ${project.disable_investments}`);
+                    log(`- Пополнение отключено: ${project.disable_deposits}`);
+                    log(`- Вывод отключен: ${project.disable_withdrawals}`);
+                } else {
+                    log('❌ Нет проектов в базе данных');
+                }
+            } catch (error) {
+                log(`❌ Ошибка загрузки: ${error.message}`);
+            }
+        }
+        
+        async function saveData() {
+            if (!currentProjectId) {
+                log('❌ Сначала загрузите данные проекта');
+                return;
+            }
+            
+            log('💾 Сохраняем изменения...');
+            
+            const updateData = {
+                id: currentProjectId,
+                name: 'test-project',
+                title: 'Тестовый проект',
+                description: 'Тест переключателей',
+                launch_date: new Date().toISOString(),
+                countdown_end: new Date(Date.now() + 24*60*60*1000).toISOString(),
+                is_launched: false,
+                show_countdown: true,
+                icon_type: 'rocket',
+                color_scheme: 'blue',
+                position: 1,
+                disable_registration: document.getElementById('disable_registration').checked,
+                disable_investments: document.getElementById('disable_investments').checked,
+                disable_deposits: document.getElementById('disable_deposits').checked,
+                disable_withdrawals: document.getElementById('disable_withdrawals').checked
+            };
+            
+            log('📤 Отправляем данные:');
+            log(`- disable_registration: ${updateData.disable_registration}`);
+            log(`- disable_investments: ${updateData.disable_investments}`);
+            log(`- disable_deposits: ${updateData.disable_deposits}`);
+            log(`- disable_withdrawals: ${updateData.disable_withdrawals}`);
+            
+            try {
+                const response = await fetch('/api/admin/project-launches', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(updateData)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    log('✅ Данные успешно сохранены!');
+                    log('📋 Результат:');
+                    log(`- disable_registration: ${result.disable_registration}`);
+                    log(`- disable_investments: ${result.disable_investments}`);
+                    log(`- disable_deposits: ${result.disable_deposits}`);
+                    log(`- disable_withdrawals: ${result.disable_withdrawals}`);
+                } else {
+                    log(`❌ Ошибка сохранения: ${result.error}`);
+                }
+            } catch (error) {
+                log(`❌ Ошибка запроса: ${error.message}`);
+            }
+        }
+        
+        async function testAPI() {
+            clearLog();
+            log('🧪 Тестируем API...');
+            
+            // Сначала загружаем данные
+            await loadCurrentData();
+            
+            // Затем включаем все переключатели
+            log('🔄 Включаем все переключатели...');
+            document.getElementById('disable_registration').checked = true;
+            document.getElementById('disable_investments').checked = true;
+            document.getElementById('disable_deposits').checked = true;
+            document.getElementById('disable_withdrawals').checked = true;
+            
+            // Сохраняем
+            await saveData();
+            
+            // Перезагружаем для проверки
+            log('🔄 Перезагружаем для проверки...');
+            await loadCurrentData();
+        }
+        
+        // Автоматически загружаем данные при открытии страницы
+        window.onload = loadCurrentData;
+    </script>
+</body>
+</html>

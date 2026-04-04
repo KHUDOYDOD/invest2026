@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Очистка URL</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        button {
+            background: white;
+            color: black;
+            border: 3px solid black;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 10px;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #f0f0f0;
+            transform: scale(1.05);
+        }
+        .info {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧹 Очистка URL от cache_bust</h1>
+        
+        <div class="info" id="current-url">
+            Текущий URL: <span id="url-display"></span>
+        </div>
+        
+        <p>Если в URL есть параметр <code>?cache_bust=</code> или <code>&cache_bust=</code>, 
+        это может вызывать проблемы в некоторых браузерах.</p>
+        
+        <button onclick="cleanURL()">🧹 Очистить URL</button>
+        <button onclick="goHome()">🏠 На главную</button>
+        <button onclick="goAdmin()">⚙️ Админ панель</button>
+        
+        <div class="info" id="result" style="display: none;">
+            <p id="result-text"></p>
+        </div>
+    </div>
+
+    <script>
+        function updateURLDisplay() {
+            document.getElementById('url-display').textContent = window.location.href;
+        }
+        
+        function cleanURL() {
+            const currentUrl = window.location.href;
+            const url = new URL(currentUrl);
+            
+            // Удаляем cache_bust параметр
+            url.searchParams.delete('cache_bust');
+            
+            // Удаляем параметры версионирования стилей
+            url.searchParams.delete('v');
+            
+            const cleanedUrl = url.toString();
+            
+            if (currentUrl !== cleanedUrl) {
+                window.history.replaceState({}, '', cleanedUrl);
+                document.getElementById('result').style.display = 'block';
+                document.getElementById('result-text').innerHTML = 
+                    '✅ URL очищен!<br>Старый: ' + currentUrl + '<br>Новый: ' + cleanedUrl;
+                updateURLDisplay();
+            } else {
+                document.getElementById('result').style.display = 'block';
+                document.getElementById('result-text').textContent = '✅ URL уже чистый, изменений не требуется.';
+            }
+        }
+        
+        function goHome() {
+            window.location.href = '/';
+        }
+        
+        function goAdmin() {
+            window.location.href = '/admin/project-launches';
+        }
+        
+        // Обновляем отображение URL при загрузке
+        updateURLDisplay();
+        
+        // Автоматически очищаем URL если есть cache_bust
+        if (window.location.href.includes('cache_bust=')) {
+            setTimeout(() => {
+                cleanURL();
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

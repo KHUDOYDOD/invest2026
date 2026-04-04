@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Component in Browser</title>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        iframe { width: 100%; height: 600px; border: 2px solid #ccc; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Тест компонента ProjectLaunches</h1>
+    <div id="status"></div>
+    
+    <h2>Инструкция:</h2>
+    <ol>
+        <li>Сайт загружается ниже в iframe</li>
+        <li>Через 3 секунды проверим наличие компонента</li>
+        <li>Если не видно - откроем в новой вкладке</li>
+    </ol>
+    
+    <button onclick="openInNewTab()" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">
+        🚀 Открыть в новой вкладке
+    </button>
+    
+    <button onclick="checkComponent()" style="padding: 10px 20px; font-size: 16px; cursor: pointer; margin-left: 10px;">
+        🔄 Проверить снова
+    </button>
+    
+    <iframe id="siteFrame" src="http://213.171.31.215/"></iframe>
+    
+    <script>
+        function addStatus(message, type) {
+            const div = document.createElement('div');
+            div.className = 'status ' + type;
+            div.innerHTML = message;
+            document.getElementById('status').appendChild(div);
+        }
+        
+        function openInNewTab() {
+            window.open('http://213.171.31.215/', '_blank');
+            addStatus('✅ Открыто в новой вкладке. Нажмите Ctrl+Shift+R для очистки кэша!', 'info');
+        }
+        
+        function checkComponent() {
+            addStatus('🔍 Проверяю компонент...', 'info');
+            
+            try {
+                const iframe = document.getElementById('siteFrame');
+                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                const body = iframeDoc.body.innerHTML;
+                
+                if (body.includes('Проект запущен')) {
+                    addStatus('✅ КОМПОНЕНТ НАЙДЕН! Текст "Проект запущен" присутствует на странице!', 'success');
+                } else if (body.includes('ProjectLaunches')) {
+                    addStatus('⚠️ Компонент ProjectLaunches есть в коде, но текст не рендерится. Возможно проблема с клиентским рендерингом.', 'error');
+                } else {
+                    addStatus('❌ Компонент не найден вообще', 'error');
+                }
+                
+                // Проверим консоль на ошибки
+                addStatus('💡 Откройте DevTools (F12) и проверьте Console на ошибки', 'info');
+                
+            } catch (e) {
+                addStatus('❌ Не могу проверить iframe из-за CORS. Откройте в новой вкладке.', 'error');
+                addStatus('Ошибка: ' + e.message, 'error');
+            }
+        }
+        
+        // Автоматическая проверка через 5 секунд
+        setTimeout(() => {
+            addStatus('⏰ Автоматическая проверка через 5 секунд...', 'info');
+            setTimeout(checkComponent, 5000);
+        }, 1000);
+    </script>
+</body>
+</html>

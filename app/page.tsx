@@ -23,10 +23,9 @@ import { CTASection } from "@/components/cta-section"
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen relative overflow-hidden">
+    <div className="min-h-screen relative overflow-hidden bg-slate-950">
       <Header />
 
-      {/* Project Launches - positioned below header */}
       <ProjectLaunches />
 
       {/* Hero Section */}

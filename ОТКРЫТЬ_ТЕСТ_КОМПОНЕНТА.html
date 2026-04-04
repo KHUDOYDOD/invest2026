@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Тест компонента запусков</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #333;
+            margin-top: 0;
+        }
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            margin: 10px 5px;
+            background: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+        }
+        .btn:hover {
+            background: #45a049;
+        }
+        .btn-secondary {
+            background: #2196F3;
+        }
+        .btn-secondary:hover {
+            background: #0b7dda;
+        }
+        .info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            border-left: 4px solid #2196F3;
+        }
+        .countdown {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4CAF50;
+            text-align: center;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>🧪 Тест компонента "Проект запущен"</h1>
+        
+        <div class="info">
+            <strong>Что это:</strong> Тестовая страница для проверки работы компонента ProjectLaunches
+        </div>
+        
+        <div class="countdown" id="countdown">Открытие через 3 секунды...</div>
+        
+        <div style="text-align: center;">
+            <a href="http://213.171.31.215/test-launches" target="_blank" class="btn">
+                🚀 Открыть тестовую страницу
+            </a>
+            <a href="http://213.171.31.215/" target="_blank" class="btn btn-secondary">
+                🏠 Открыть главную страницу
+            </a>
+        </div>
+        
+        <div class="info" style="margin-top: 30px;">
+            <strong>Что должно быть на тестовой странице:</strong>
+            <ul>
+                <li>✅ Заголовок "🧪 Test Project Launches"</li>
+                <li>✅ Информация "Total projects: 1"</li>
+                <li>✅ Информация "Launched projects: 1"</li>
+                <li>✅ JSON с данными проекта</li>
+                <li>✅ Зеленая карточка "🎉 Платформа InvestPro"</li>
+            </ul>
+        </div>
+        
+        <div class="info" style="background: #fff3cd; border-left-color: #ffc107;">
+            <strong>Если компонент не работает на главной странице:</strong>
+            <ol>
+                <li>Откройте главную страницу (http://213.171.31.215/)</li>
+                <li>Нажмите F12 (откроется DevTools)</li>
+                <li>Перейдите на вкладку Console</li>
+                <li>Найдите ошибки с текстом "ProjectLaunches"</li>
+                <li>Скопируйте ошибку и отправьте мне</li>
+            </ol>
+        </div>
+    </div>
+    
+    <script>
+        let seconds = 3;
+        const countdownEl = document.getElementById('countdown');
+        
+        const timer = setInterval(() => {
+            seconds--;
+            if (seconds > 0) {
+                countdownEl.textContent = `Открытие через ${seconds} ${seconds === 1 ? 'секунду' : 'секунды'}...`;
+            } else {
+                countdownEl.textContent = '🚀 Открываю...';
+                clearInterval(timer);
+                window.open('http://213.171.31.215/test-launches', '_blank');
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

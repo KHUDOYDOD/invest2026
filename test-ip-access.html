@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест доступа по IP</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .container {
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        .test-button {
+            background: #4CAF50;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+            display: inline-block;
+            text-decoration: none;
+        }
+        .test-button:hover {
+            background: #45a049;
+        }
+        .result {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 8px;
+            background: rgba(0,0,0,0.2);
+        }
+        .success { border-left: 5px solid #4CAF50; }
+        .error { border-left: 5px solid #f44336; }
+        .info { border-left: 5px solid #2196F3; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Тест доступа к сайту по IP адресу</h1>
+        
+        <div class="result info">
+            <h3>📍 Информация:</h3>
+            <p><strong>Текущий URL:</strong> <span id="currentUrl"></span></p>
+            <p><strong>Протокол:</strong> <span id="protocol"></span></p>
+            <p><strong>Хост:</strong> <span id="host"></span></p>
+            <p><strong>Порт:</strong> <span id="port"></span></p>
+        </div>
+
+        <h3>🧪 Тесты доступности:</h3>
+        
+        <button class="test-button" onclick="testCurrentPage()">Тест текущей страницы</button>
+        <button class="test-button" onclick="testAPI()">Тест API</button>
+        <button class="test-button" onclick="testAdmin()">Тест админ панели</button>
+        
+        <div id="results"></div>
+
+        <div class="result info">
+            <h3>💡 Инструкции:</h3>
+            <p>1. Если вы видите эту страницу, значит сайт работает по IP адресу</p>
+            <p>2. Попробуйте очистить кэш браузера (Ctrl+F5 или Ctrl+Shift+R)</p>
+            <p>3. Попробуйте открыть в режиме инкогнито</p>
+            <p>4. Если проблема остается, возможно DNS кэширует старые записи</p>
+        </div>
+
+        <div class="result success">
+            <h3>✅ Прямые ссылки для тестирования:</h3>
+            <p><a href="http://213.171.31.215/" style="color: #90EE90;">http://213.171.31.215/</a></p>
+            <p><a href="http://213.171.31.215/api/site-status" style="color: #90EE90;">http://213.171.31.215/api/site-status</a></p>
+            <p><a href="http://213.171.31.215/admin/project-launches" style="color: #90EE90;">http://213.171.31.215/admin/project-launches</a></p>
+        </div>
+    </div>
+
+    <script>
+        // Показываем информацию о текущем URL
+        document.getElementById('currentUrl').textContent = window.location.href;
+        document.getElementById('protocol').textContent = window.location.protocol;
+        document.getElementById('host').textContent = window.location.hostname;
+        document.getElementById('port').textContent = window.location.port || (window.location.protocol === 'https:' ? '443' : '80');
+
+        function addResult(message, type = 'info') {
+            const results = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = `result ${type}`;
+            div.innerHTML = `<p>${new Date().toLocaleTimeString()}: ${message}</p>`;
+            results.appendChild(div);
+        }
+
+        async function testCurrentPage() {
+            addResult('🔄 Тестируем текущую страницу...', 'info');
+            try {
+                const response = await fetch(window.location.href, { 
+                    method: 'HEAD',
+                    cache: 'no-cache'
+                });
+                if (response.ok) {
+                    addResult(`✅ Текущая страница работает! Статус: ${response.status}`, 'success');
+                } else {
+                    addResult(`❌ Ошибка: ${response.status} ${response.statusText}`, 'error');
+                }
+            } catch (error) {
+                addResult(`❌ Ошибка сети: ${error.message}`, 'error');
+            }
+        }
+
+        async function testAPI() {
+            addResult('🔄 Тестируем API...', 'info');
+            try {
+                const response = await fetch('/api/site-status', {
+                    cache: 'no-cache'
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    addResult(`✅ API работает! Данные: ${JSON.stringify(data)}`, 'success');
+                } else {
+                    addResult(`❌ API ошибка: ${response.status} ${response.statusText}`, 'error');
+                }
+            } catch (error) {
+                addResult(`❌ API недоступен: ${error.message}`, 'error');
+            }
+        }
+
+        async function testAdmin() {
+            addResult('🔄 Тестируем админ панель...', 'info');
+            try {
+                const response = await fetch('/admin/project-launches', { 
+                    method: 'HEAD',
+                    cache: 'no-cache'
+                });
+                if (response.ok) {
+                    addResult(`✅ Админ панель доступна! Статус: ${response.status}`, 'success');
+                } else {
+                    addResult(`❌ Админ панель ошибка: ${response.status} ${response.statusText}`, 'error');
+                }
+            } catch (error) {
+                addResult(`❌ Админ панель недоступна: ${error.message}`, 'error');
+            }
+        }
+
+        // Автоматический тест при загрузке
+        window.onload = function() {
+            addResult('🚀 Страница загружена успешно!', 'success');
+            
+            // Проверяем, есть ли перенаправление
+            if (window.location.hostname !== '213.171.31.215') {
+                addResult(`⚠️ ВНИМАНИЕ: Произошло перенаправление с IP на домен ${window.location.hostname}`, 'error');
+            } else {
+                addResult('✅ Доступ по IP адресу работает корректно', 'success');
+            }
+        };
+    </script>
+</body>
+</html>

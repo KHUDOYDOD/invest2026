@@ -118,8 +118,78 @@ export function ProjectLaunches() {
   const activeLaunches = launches.filter(launch => !launch.is_launched)
   const launchedProjects = launches.filter(launch => launch.is_launched)
 
-  // Если есть только запущенные проекты или нет запусков - не показываем ничего
-  if (activeLaunches.length === 0) {
+  // Если есть только запущенные проекты - показываем современное уведомление
+  if (activeLaunches.length === 0 && launchedProjects.length > 0) {
+    return (
+      <section className="py-6 px-4">
+        <div className="container mx-auto max-w-5xl">
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="relative overflow-hidden bg-gradient-to-r from-emerald-500 via-green-500 to-teal-500 rounded-2xl shadow-xl"
+          >
+            {/* Animated background pattern */}
+            <div className="absolute inset-0 opacity-10">
+              <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')]"></div>
+            </div>
+
+            <div className="relative px-6 py-5 flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                {/* Animated icon */}
+                <motion.div
+                  animate={{ 
+                    rotate: [0, 10, -10, 10, 0],
+                    scale: [1, 1.1, 1, 1.1, 1]
+                  }}
+                  transition={{ 
+                    duration: 2,
+                    repeat: Infinity,
+                    repeatDelay: 3
+                  }}
+                  className="flex-shrink-0 w-14 h-14 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center shadow-lg"
+                >
+                  <Rocket className="h-7 w-7 text-white" />
+                </motion.div>
+
+                {/* Text content */}
+                <div>
+                  <h3 className="text-xl font-bold text-white mb-1 flex items-center gap-2">
+                    🎉 Проект запущен!
+                  </h3>
+                  <p className="text-white/90 text-sm font-medium">
+                    Платформа работает в полном режиме
+                  </p>
+                </div>
+              </div>
+
+              {/* Success badge */}
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.3, type: "spring" }}
+                className="hidden sm:flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full"
+              >
+                <CheckCircle className="h-5 w-5 text-white" />
+                <span className="text-white font-semibold text-sm">Активно</span>
+              </motion.div>
+            </div>
+
+            {/* Bottom accent line */}
+            <motion.div
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: 1 }}
+              transition={{ duration: 1, delay: 0.5 }}
+              className="h-1 bg-gradient-to-r from-white/0 via-white/50 to-white/0"
+            />
+          </motion.div>
+        </div>
+      </section>
+    )
+  }
+
+  // Если нет запусков вообще - не показываем ничего
+  if (launches.length === 0) {
     return null
   }
 

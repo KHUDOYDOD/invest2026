@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎨 ВОССТАНОВЛЕННЫЙ ОРИГИНАЛЬНЫЙ ДИЗАЙН</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #0f172a, #1e293b, #334155);
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2rem;
+        }
+        .button {
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 10px;
+            text-decoration: none;
+            display: inline-block;
+            transition: transform 0.2s;
+        }
+        .button:hover {
+            transform: scale(1.05);
+        }
+        .status {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid #22c55e;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 600px;
+        }
+        .countdown {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #3b82f6;
+            margin: 15px 0;
+        }
+        .info {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid #3b82f6;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 15px auto;
+            max-width: 500px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="title">🎨 ОРИГИНАЛЬНЫЙ ДИЗАЙН ВОССТАНОВЛЕН!</h1>
+    
+    <div class="status">
+        <h2>✅ ДИЗАЙН ГОТОВ К ПРОСМОТРУ</h2>
+        <p>🚀 Автоматическое открытие через <span class="countdown" id="countdown">5</span> секунд</p>
+        <p>🔄 С принудительной очисткой кэша!</p>
+    </div>
+
+    <div class="info">
+        <h3>🎯 ЧТО ВЫ УВИДИТЕ:</h3>
+        <p>⚫ <strong>Темно-серый фон</strong> (slate-900)</p>
+        <p>🔵 <strong>Сине-фиолетовые градиенты</strong></p>
+        <p>✨ <strong>Плавные анимации</strong></p>
+        <p>🚀 <strong>Элегантные карточки</strong></p>
+    </div>
+
+    <div>
+        <a href="javascript:openHomepage()" class="button">
+            🏠 ГЛАВНАЯ СТРАНИЦА
+        </a>
+        
+        <a href="javascript:openAdmin()" class="button">
+            🔧 АДМИН-ПАНЕЛЬ
+        </a>
+    </div>
+
+    <div class="info">
+        <h3>💡 ЕСЛИ НЕ ВИДИТЕ ИЗМЕНЕНИЯ:</h3>
+        <p>🔄 Нажмите <strong>Ctrl+F5</strong> для жесткого обновления</p>
+        <p>🌐 Попробуйте <strong>другой браузер</strong></p>
+        <p>📱 Очистите <strong>кэш браузера</strong></p>
+    </div>
+
+    <script>
+        let countdown = 5;
+        const countdownElement = document.getElementById('countdown');
+        
+        const timer = setInterval(() => {
+            countdown--;
+            countdownElement.textContent = countdown;
+            
+            if (countdown <= 0) {
+                clearInterval(timer);
+                openHomepage();
+            }
+        }, 1000);
+
+        function openHomepage() {
+            // Генерируем уникальный timestamp для принудительного обновления
+            const timestamp = new Date().getTime();
+            const url = `http://213.171.31.215?nocache=${timestamp}&v=2026&refresh=true`;
+            window.open(url, '_blank');
+        }
+
+        function openAdmin() {
+            // Генерируем уникальный timestamp для принудительного обновления
+            const timestamp = new Date().getTime();
+            const url = `http://213.171.31.215/admin/project-launches?nocache=${timestamp}&v=2026&refresh=true`;
+            window.open(url, '_blank');
+        }
+
+        // Автоматически открываем админ-панель через 7 секунд
+        setTimeout(() => {
+            openAdmin();
+        }, 7000);
+
+        // Показываем инструкции по очистке кэша
+        setTimeout(() => {
+            alert('🎨 ДИЗАЙН ВОССТАНОВЛЕН!\n\n✅ Если видите старый дизайн:\n🔄 Нажмите Ctrl+F5\n🌐 Попробуйте другой браузер\n📱 Очистите кэш браузера');
+        }, 10000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎨 СОВРЕМЕННЫЙ ДИЗАЙН ГОТОВ! 🚀</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #7c3aed, #a855f7, #3b82f6);
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Анимированный фон */
+        .bg-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+        
+        .bg-element {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .bg-element:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(45deg, #f59e0b, #f97316);
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .bg-element:nth-child(2) {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(45deg, #06b6d4, #3b82f6);
+            top: 60%;
+            right: 15%;
+            animation-delay: 2s;
+        }
+        
+        .bg-element:nth-child(3) {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(45deg, #ec4899, #f472b6);
+            bottom: 30%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            max-width: 700px;
+            position: relative;
+            z-index: 10;
+            animation: slideUp 0.8s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        h1 {
+            font-size: 2.8em;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #fbbf24, #f472b6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+        
+        .subtitle {
+            font-size: 1.4em;
+            margin: 20px 0;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+        
+        .countdown {
+            font-size: 2.2em;
+            font-weight: bold;
+            color: #fbbf24;
+            margin: 25px 0;
+            text-shadow: 0 2px 10px rgba(251, 191, 36, 0.3);
+        }
+        
+        .links {
+            margin-top: 30px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            background: linear-gradient(45deg, #f59e0b, #f97316);
+            color: white;
+            text-decoration: none;
+            border-radius: 16px;
+            font-weight: 600;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .link:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(245, 158, 11, 0.4);
+        }
+        
+        .link.primary {
+            background: linear-gradient(45deg, #10b981, #06b6d4);
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+        }
+        
+        .link.primary:hover {
+            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.4);
+        }
+        
+        .features {
+            margin-top: 35px;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .features h3 {
+            color: #fbbf24;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            text-align: left;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            font-size: 0.95em;
+            line-height: 1.4;
+        }
+        
+        .feature-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+        
+        .note {
+            margin-top: 25px;
+            font-size: 0.9em;
+            opacity: 0.7;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation">
+        <div class="bg-element"></div>
+        <div class="bg-element"></div>
+        <div class="bg-element"></div>
+    </div>
+    
+    <div class="container">
+        <h1>🎨 СОВРЕМЕННЫЙ ДИЗАЙН ГОТОВ! 🚀</h1>
+        <div class="subtitle">Секция "Запуски проектов" полностью преображена!</div>
+        <div class="countdown" id="countdown">5</div>
+        <p>🌟 Автоматическое перенаправление на ГЛАВНУЮ СТРАНИЦУ с СОВРЕМЕННЫМ ДИЗАЙНОМ!</p>
+        
+        <div class="links">
+            <a href="http://213.171.31.215?cache_bust=1737649000000&modern_design=true" class="link primary" onclick="clearCache()">
+                🏠 ГЛАВНАЯ СТРАНИЦА
+            </a>
+            <a href="http://213.171.31.215/admin/project-launches?cache_bust=1737649000000&modern_design=true" class="link" onclick="clearCache()">
+                🎨 АДМИН ПАНЕЛЬ
+            </a>
+        </div>
+        
+        <div class="features">
+            <h3>🎯 Что улучшено:</h3>
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <div class="feature-icon" style="background: linear-gradient(45deg, #7c3aed, #a855f7);">🎨</div>
+                    <span><strong>Современный градиент</strong> - фиолетово-синий фон</span>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon" style="background: linear-gradient(45deg, #f59e0b, #f97316);">✨</div>
+                    <span><strong>Стеклянный эффект</strong> - backdrop-blur и прозрачность</span>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon" style="background: linear-gradient(45deg, #10b981, #06b6d4);">🎭</div>
+                    <span><strong>Framer Motion</strong> - плавные анимации появления</span>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon" style="background: linear-gradient(45deg, #ec4899, #f472b6);">🌟</div>
+                    <span><strong>Hover эффекты</strong> - интерактивные элементы</span>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon" style="background: linear-gradient(45deg, #06b6d4, #3b82f6);">📱</div>
+                    <span><strong>Адаптивность</strong> - отлично на всех устройствах</span>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon" style="background: linear-gradient(45deg, #8b5cf6, #a855f7);">🎪</div>
+                    <span><strong>Геометрия</strong> - анимированные фоновые элементы</span>
+                </div>
+            </div>
+        </div>
+        
+        <p class="note">
+            💡 Если дизайн все еще старый - нажмите Ctrl+F5 или откройте в приватном окне
+        </p>
+    </div>
+
+    <script>
+        // Принудительная очистка кэша
+        function clearCache() {
+            // Очищаем localStorage и sessionStorage
+            if (typeof(Storage) !== "undefined") {
+                localStorage.clear();
+                sessionStorage.clear();
+            }
+            
+            // Принудительно обновляем все CSS файлы
+            const links = document.querySelectorAll('link[rel="stylesheet"]');
+            links.forEach(link => {
+                const href = link.href;
+                link.href = href + (href.includes('?') ? '&' : '?') + 'v=' + Date.now();
+            });
+            
+            // Очищаем кэш Service Worker если есть
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                    for(let registration of registrations) {
+                        registration.unregister();
+                    }
+                });
+            }
+        }
+
+        // Обратный отсчет и автоматическое перенаправление
+        let countdown = 5;
+        const countdownElement = document.getElementById('countdown');
+        
+        const timer = setInterval(() => {
+            countdown--;
+            countdownElement.textContent = countdown;
+            
+            if (countdown <= 0) {
+                clearInterval(timer);
+                clearCache();
+                // Перенаправляем на главную страницу с принудительным обновлением
+                window.location.href = 'http://213.171.31.215?cache_bust=' + Date.now() + '&modern_design=true&force_reload=1';
+            }
+        }, 1000);
+
+        // Принудительно очищаем кэш при загрузке
+        window.onload = function() {
+            clearCache();
+        };
+        
+        // Дополнительная очистка кэша через 1 секунду
+        setTimeout(clearCache, 1000);
+    </script>
+</body>
+</html>

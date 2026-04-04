@@ -3,8 +3,9 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { TrendingUp, Shield, Users, DollarSign, ArrowRight, Play } from "lucide-react"
+import { TrendingUp, Shield, Users, DollarSign, ArrowRight, Play, Rocket, CheckCircle } from "lucide-react"
 import { useLanguage } from "@/contexts/language-context"
+import { motion } from "framer-motion"
 
 export function HeroSection() {
   const { t } = useLanguage()
@@ -178,11 +179,45 @@ export function HeroSection() {
       <div className="container mx-auto max-w-6xl text-center relative z-10 px-4">
         {/* Main Content */}
         <div className="space-y-8">
-          {/* Badge */}
-          <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-600/20 to-purple-600/20 backdrop-blur-sm border border-blue-500/30 rounded-full text-blue-300 text-sm font-medium">
-            <span className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></span>
-            {t('hero.badge')}
-          </div>
+          {/* Project Launch Badge - Replaced old badge */}
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            className="inline-block"
+          >
+            <div className="bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl shadow-lg overflow-hidden">
+              <div className="px-6 py-3 flex items-center gap-4">
+                {/* Simple animated icon */}
+                <motion.div
+                  animate={{ 
+                    rotate: [0, 5, -5, 0],
+                  }}
+                  transition={{ 
+                    duration: 2,
+                    repeat: Infinity,
+                    repeatDelay: 1
+                  }}
+                  className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center"
+                >
+                  <Rocket className="h-5 w-5 text-white" />
+                </motion.div>
+
+                {/* Text */}
+                <div>
+                  <div className="text-base font-bold text-white flex items-center gap-2">
+                    🎉 Проект запущен!
+                  </div>
+                </div>
+
+                {/* Badge */}
+                <div className="hidden sm:flex items-center gap-2 bg-white/20 px-3 py-1.5 rounded-lg">
+                  <CheckCircle className="h-4 w-4 text-white" />
+                  <span className="text-white font-semibold text-xs">Активно</span>
+                </div>
+              </div>
+            </div>
+          </motion.div>
 
           {/* Main Heading */}
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-black leading-tight animate-fade-in">

@@ -3,156 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎨 СУПЕР ЯРКИЙ ДИЗАЙН ГЛАВНОЙ СТРАНИЦЫ! 🚀</title>
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
+    <title>🎉 Современный дизайн уведомления</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(135deg, #ec4899, #8b5cf6, #3b82f6);
-            color: white;
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            text-align: center;
+        @keyframes rocket-bounce {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(10deg) scale(1.1); }
+            50% { transform: rotate(-10deg) scale(1); }
+            75% { transform: rotate(10deg) scale(1.1); }
         }
-        .container {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 30px;
-            padding: 40px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            animation: bounce 2s infinite;
+        
+        @keyframes fade-in {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-            40% { transform: translateY(-10px); }
-            60% { transform: translateY(-5px); }
+        
+        @keyframes scale-in {
+            from { transform: scale(0); }
+            to { transform: scale(1); }
         }
-        h1 {
-            font-size: 3em;
-            margin-bottom: 20px;
-            background: linear-gradient(45deg, #fbbf24, #f472b6, #06b6d4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: pulse 2s infinite;
+        
+        @keyframes line-expand {
+            from { transform: scaleX(0); }
+            to { transform: scaleX(1); }
         }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
+        
+        .animate-rocket {
+            animation: rocket-bounce 2s ease-in-out infinite;
+            animation-delay: 3s;
         }
-        .loading {
-            font-size: 1.5em;
-            margin: 20px 0;
-            animation: pulse 1s infinite;
+        
+        .animate-fade-in {
+            animation: fade-in 0.5s ease-out forwards;
         }
-        .countdown {
-            font-size: 2em;
-            font-weight: bold;
-            color: #fbbf24;
-            margin: 20px 0;
+        
+        .animate-scale-in {
+            animation: scale-in 0.3s ease-out 0.3s forwards;
+            transform: scale(0);
         }
-        .links {
-            margin-top: 30px;
-        }
-        .link {
-            display: inline-block;
-            margin: 10px;
-            padding: 15px 30px;
-            background: linear-gradient(45deg, #fbbf24, #f97316);
-            color: white;
-            text-decoration: none;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 1.2em;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-        }
-        .link:hover {
-            transform: scale(1.1);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-        }
-        .update {
-            background: linear-gradient(45deg, #10b981, #06b6d4);
-            animation: pulse 1s infinite;
+        
+        .animate-line {
+            animation: line-expand 1s ease-out 0.5s forwards;
+            transform: scaleX(0);
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <h1>🎨 СУПЕР ЯРКИЙ ДИЗАЙН ГЛАВНОЙ СТРАНИЦЫ! 🚀</h1>
-        <div class="loading">✨ Секция "Запуски проектов" теперь СУПЕР ЯРКАЯ! ✨</div>
-        <div class="countdown" id="countdown">5</div>
-        <p>🌈 Автоматическое перенаправление на ГЛАВНУЮ СТРАНИЦУ с НОВЫМ ЯРКИМ ДИЗАЙНОМ!</p>
-        
-        <div class="links">
-            <a href="http://213.171.31.215?cache_bust=1737648000000&force_refresh=true" class="link update" onclick="clearCache()">
-                🏠 ГЛАВНАЯ СТРАНИЦА (СУПЕР ЯРКАЯ!)
-            </a>
-            <a href="http://213.171.31.215/admin/project-launches?cache_bust=1737648000000&force_refresh=true" class="link" onclick="clearCache()">
-                🎨 АДМИН ПАНЕЛЬ (ТОЖЕ ЯРКАЯ!)
-            </a>
+<body class="bg-gray-900 min-h-screen flex items-center justify-center p-4">
+    <div class="max-w-5xl w-full">
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-white mb-2">🎉 Новый дизайн готов!</h1>
+            <p class="text-gray-400">Современное уведомление о запуске проекта</p>
         </div>
-        
-        <div style="margin-top: 30px; padding: 20px; background: rgba(255, 255, 255, 0.1); border-radius: 15px;">
-            <h3 style="color: #fbbf24; margin-bottom: 15px;">🎯 ЧТО ИЗМЕНЕНО:</h3>
-            <ul style="text-align: left; font-size: 1.1em; line-height: 1.6;">
-                <li>🌈 <strong>Розово-фиолетово-синий градиент</strong> фон</li>
-                <li>✨ <strong>Супер яркие заголовки</strong> с эмодзи и анимациями</li>
-                <li>🎨 <strong>Цветные карточки</strong> с bounce анимациями</li>
-                <li>⏰ <strong>Магический обратный отсчет</strong> с яркими цветами</li>
-                <li>🚀 <strong>Анимированные фоновые элементы</strong></li>
-                <li>💫 <strong>Увеличенные размеры</strong> и яркость</li>
+
+        <!-- Современное уведомление -->
+        <div class="animate-fade-in relative overflow-hidden bg-gradient-to-r from-emerald-500 via-green-500 to-teal-500 rounded-2xl shadow-2xl">
+            <!-- Animated background pattern -->
+            <div class="absolute inset-0 opacity-10">
+                <div class="absolute inset-0" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==');"></div>
+            </div>
+
+            <div class="relative px-6 py-5 flex items-center justify-between flex-wrap gap-4">
+                <div class="flex items-center space-x-4">
+                    <!-- Animated icon -->
+                    <div class="animate-rocket flex-shrink-0 w-14 h-14 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center shadow-lg">
+                        <svg class="h-7 w-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                    </div>
+
+                    <!-- Text content -->
+                    <div>
+                        <h3 class="text-xl font-bold text-white mb-1 flex items-center gap-2">
+                            🎉 Проект запущен!
+                        </h3>
+                        <p class="text-white/90 text-sm font-medium">
+                            Платформа работает в полном режиме
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Success badge -->
+                <div class="animate-scale-in flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full">
+                    <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span class="text-white font-semibold text-sm">Активно</span>
+                </div>
+            </div>
+
+            <!-- Bottom accent line -->
+            <div class="animate-line h-1 bg-gradient-to-r from-white/0 via-white/50 to-white/0"></div>
+        </div>
+
+        <!-- Информация -->
+        <div class="mt-8 bg-gray-800 rounded-xl p-6 border border-gray-700">
+            <h2 class="text-xl font-bold text-white mb-4">✨ Особенности дизайна:</h2>
+            <ul class="space-y-2 text-gray-300">
+                <li class="flex items-start gap-2">
+                    <span class="text-green-400">✓</span>
+                    <span><strong>Градиентный фон:</strong> Зеленый градиент (emerald → green → teal)</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <span class="text-green-400">✓</span>
+                    <span><strong>Анимированная иконка:</strong> Ракета с вращением и масштабированием</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <span class="text-green-400">✓</span>
+                    <span><strong>Эмодзи:</strong> 🎉 для привлекательности</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <span class="text-green-400">✓</span>
+                    <span><strong>Бейдж "Активно":</strong> С иконкой CheckCircle</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <span class="text-green-400">✓</span>
+                    <span><strong>Backdrop blur:</strong> Эффект размытия фона</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <span class="text-green-400">✓</span>
+                    <span><strong>Плавные анимации:</strong> Fade in, scale, hover эффекты</span>
+                </li>
             </ul>
         </div>
-        
-        <p style="margin-top: 30px; font-size: 0.9em; opacity: 0.8;">
-            💡 Если дизайн все еще старый - нажмите Ctrl+F5 или откройте в приватном окне
-        </p>
+
+        <!-- Кнопки действий -->
+        <div class="mt-6 flex flex-wrap gap-4 justify-center">
+            <a href="http://localhost:3000" target="_blank" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors">
+                🚀 Открыть локальный сервер
+            </a>
+            <a href="https://github.com/KHUDOYDOD/invest2026" target="_blank" class="px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white font-semibold rounded-lg transition-colors">
+                📦 GitHub репозиторий
+            </a>
+        </div>
+
+        <!-- Инструкции -->
+        <div class="mt-8 bg-blue-900/30 border border-blue-700/50 rounded-xl p-6">
+            <h3 class="text-lg font-bold text-blue-300 mb-3">📋 Как запустить:</h3>
+            <div class="space-y-3">
+                <div class="bg-gray-900/50 rounded-lg p-3">
+                    <p class="text-gray-400 text-sm mb-1">Локально:</p>
+                    <code class="text-green-400 text-sm">npm run dev</code>
+                </div>
+                <div class="bg-gray-900/50 rounded-lg p-3">
+                    <p class="text-gray-400 text-sm mb-1">На VPS:</p>
+                    <code class="text-green-400 text-sm">./vps-update.sh</code>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <script>
-        // Принудительная очистка кэша
-        function clearCache() {
-            // Очищаем localStorage
-            if (typeof(Storage) !== "undefined") {
-                localStorage.clear();
-                sessionStorage.clear();
-            }
-            
-            // Принудительно обновляем все CSS файлы
-            const links = document.querySelectorAll('link[rel="stylesheet"]');
-            links.forEach(link => {
-                const href = link.href;
-                link.href = href + (href.includes('?') ? '&' : '?') + 'v=' + Date.now();
-            });
-        }
-
-        // Обратный отсчет и автоматическое перенаправление
-        let countdown = 5;
-        const countdownElement = document.getElementById('countdown');
-        
-        const timer = setInterval(() => {
-            countdown--;
-            countdownElement.textContent = countdown;
-            
-            if (countdown <= 0) {
-                clearInterval(timer);
-                clearCache();
-                // Перенаправляем на главную страницу с принудительным обновлением
-                window.location.href = 'http://213.171.31.215?cache_bust=' + Date.now() + '&force_refresh=true';
-            }
-        }, 1000);
-
-        // Принудительно очищаем кэш при загрузке
-        window.onload = function() {
-            clearCache();
-        };
-    </script>
 </body>
 </html>

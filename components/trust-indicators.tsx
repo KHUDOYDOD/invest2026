@@ -41,7 +41,7 @@ export function TrustIndicators() {
   }, [])
 
   return (
-    <section className="py-16 px-4 bg-gradient-to-r from-slate-900/90 to-blue-900/90 backdrop-blur-sm border-y border-white/10">
+    <section className="py-16 px-4 bg-gradient-to-r from-slate-900/90 to-blue-900/90 backdrop-blur-sm">
       <div className="container mx-auto max-w-6xl">
         {/* Trust Metrics */}
         <div className={`grid grid-cols-2 md:grid-cols-4 gap-6 mb-12 ${isVisible ? "animate-scale-in" : "opacity-0"}`}>

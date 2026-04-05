@@ -31,19 +31,23 @@ export async function GET(request: NextRequest) {
     // АВТОМАТИЧЕСКОЕ ОБНОВЛЕНИЕ СТАТУСА ИНВЕСТИЦИЙ
     // Обновляем статус всех инвестиций, у которых истек срок
     try {
-      await query(
-        `UPDATE investments 
-         SET status = 'completed' 
-         WHERE user_id = $1 
-         AND status = 'active' 
-         AND (created_at + INTERVAL '1 day' * (
-           SELECT duration_days 
-           FROM investment_plans 
-           WHERE id = investments.plan_id
-         )) <= NOW()`,
+      const updateResult = await query(
+        `UPDATE investments i
+         SET status = 'completed'
+         FROM investment_plans ip
+         WHERE i.plan_id = ip.id
+         AND i.user_id = $1
+         AND i.status = 'active'
+         AND (
+           (i.end_date IS NOT NULL AND i.end_date <= NOW())
+           OR (i.start_date IS NOT NULL AND i.start_date + INTERVAL '1 day' * ip.duration <= NOW())
+           OR (i.end_date IS NULL AND i.start_date IS NULL AND i.created_at + INTERVAL '1 day' * ip.duration <= NOW())
+         )`,
         [userId]
       )
-      console.log('✅ Auto-updated expired investments to completed status')
+      if (updateResult.rowCount > 0) {
+        console.log(`✅ Auto-updated ${updateResult.rowCount} expired investments to completed status`)
+      }
     } catch (updateError) {
       console.error('⚠️ Error auto-updating investment status:', updateError)
     }

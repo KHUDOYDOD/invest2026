@@ -157,50 +157,48 @@ export function ProjectLaunches() {
                 {/* Animated gradient overlay */}
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-purple-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 
-                <div className="relative p-3 flex justify-center">
+                <div className="relative p-2 flex justify-center">
                   <div className="flex flex-col items-center">
-                    <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg shadow-blue-500/30 group-hover:scale-110 transition-transform duration-300 mb-2">
-                      <Rocket className="h-4 w-4 text-white" />
-                    </div>
-                    
                     {/* Современный обратный отсчет */}
                     {isCountdownActive && currentTimeLeft && (
-                      <div className="bg-gradient-to-br from-slate-900/80 to-slate-800/80 rounded-lg p-2 border border-slate-700/50 backdrop-blur-sm flex flex-col items-center w-full">
-                        <div className="flex items-center justify-center gap-1 mb-1.5">
-                          <Clock className="h-3 w-3 text-blue-400" />
-                          <span className="text-blue-300 font-semibold text-xs">До старта проекта осталось</span>
+                      <div className="bg-gradient-to-br from-slate-900/90 to-slate-800/90 rounded-lg p-2.5 border border-slate-700/50 backdrop-blur-sm flex flex-col items-center">
+                        <div className="flex items-center justify-center gap-1.5 mb-2">
+                          <div className="w-6 h-6 bg-gradient-to-br from-blue-500 to-purple-600 rounded-md flex items-center justify-center shadow-lg shadow-blue-500/30">
+                            <Rocket className="h-3.5 w-3.5 text-white" />
+                          </div>
+                          <span className="text-blue-300 font-semibold text-[11px]">До старта проекта осталось</span>
                         </div>
 
-                      <div className="grid grid-cols-4 gap-1.5 w-full">
+                      <div className="grid grid-cols-4 gap-1.5">
                         {currentTimeLeft.days > 0 && (
-                          <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 to-blue-700 rounded-md p-1.5 text-center shadow-lg shadow-blue-500/30">
+                          <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 to-blue-700 rounded p-1.5 text-center shadow-lg shadow-blue-500/30 min-w-[45px]">
                             <div className="absolute inset-0 bg-gradient-to-t from-white/10 to-transparent" />
-                            <div className="relative text-lg font-bold text-white leading-none drop-shadow-lg">
+                            <div className="relative text-base font-bold text-white leading-none drop-shadow-lg">
                               {currentTimeLeft.days}
                             </div>
-                            <div className="relative text-[9px] text-blue-200 uppercase font-medium mt-0.5">дней</div>
+                            <div className="relative text-[8px] text-blue-200 uppercase font-medium mt-0.5">дней</div>
                           </div>
                         )}
-                        <div className="relative overflow-hidden bg-gradient-to-br from-emerald-600 to-green-700 rounded-md p-1.5 text-center shadow-lg shadow-emerald-500/30">
+                        <div className="relative overflow-hidden bg-gradient-to-br from-emerald-600 to-green-700 rounded p-1.5 text-center shadow-lg shadow-emerald-500/30 min-w-[45px]">
                           <div className="absolute inset-0 bg-gradient-to-t from-white/10 to-transparent" />
-                          <div className="relative text-lg font-bold text-white leading-none drop-shadow-lg">
+                          <div className="relative text-base font-bold text-white leading-none drop-shadow-lg">
                             {String(currentTimeLeft.hours).padStart(2, '0')}
                           </div>
-                          <div className="relative text-[9px] text-emerald-200 uppercase font-medium mt-0.5">часов</div>
+                          <div className="relative text-[8px] text-emerald-200 uppercase font-medium mt-0.5">часов</div>
                         </div>
-                        <div className="relative overflow-hidden bg-gradient-to-br from-purple-600 to-purple-700 rounded-md p-1.5 text-center shadow-lg shadow-purple-500/30">
+                        <div className="relative overflow-hidden bg-gradient-to-br from-purple-600 to-purple-700 rounded p-1.5 text-center shadow-lg shadow-purple-500/30 min-w-[45px]">
                           <div className="absolute inset-0 bg-gradient-to-t from-white/10 to-transparent" />
-                          <div className="relative text-lg font-bold text-white leading-none drop-shadow-lg">
+                          <div className="relative text-base font-bold text-white leading-none drop-shadow-lg">
                             {String(currentTimeLeft.minutes).padStart(2, '0')}
                           </div>
-                          <div className="relative text-[9px] text-purple-200 uppercase font-medium mt-0.5">минут</div>
+                          <div className="relative text-[8px] text-purple-200 uppercase font-medium mt-0.5">минут</div>
                         </div>
-                        <div className="relative overflow-hidden bg-gradient-to-br from-pink-600 to-rose-700 rounded-md p-1.5 text-center shadow-lg shadow-pink-500/30">
+                        <div className="relative overflow-hidden bg-gradient-to-br from-pink-600 to-rose-700 rounded p-1.5 text-center shadow-lg shadow-pink-500/30 min-w-[45px]">
                           <div className="absolute inset-0 bg-gradient-to-t from-white/10 to-transparent" />
-                          <div className="relative text-lg font-bold text-white leading-none drop-shadow-lg">
+                          <div className="relative text-base font-bold text-white leading-none drop-shadow-lg">
                             {String(currentTimeLeft.seconds).padStart(2, '0')}
                           </div>
-                          <div className="relative text-[9px] text-pink-200 uppercase font-medium mt-0.5">секунд</div>
+                          <div className="relative text-[8px] text-pink-200 uppercase font-medium mt-0.5">секунд</div>
                         </div>
                       </div>
                     </div>

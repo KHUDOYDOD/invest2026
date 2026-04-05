@@ -28,6 +28,26 @@ export async function GET(request: NextRequest) {
 
     console.log('Fetching dashboard data for user:', userId)
 
+    // АВТОМАТИЧЕСКОЕ ОБНОВЛЕНИЕ СТАТУСА ИНВЕСТИЦИЙ
+    // Обновляем статус всех инвестиций, у которых истек срок
+    try {
+      await query(
+        `UPDATE investments 
+         SET status = 'completed' 
+         WHERE user_id = $1 
+         AND status = 'active' 
+         AND (created_at + INTERVAL '1 day' * (
+           SELECT duration_days 
+           FROM investment_plans 
+           WHERE id = investments.plan_id
+         )) <= NOW()`,
+        [userId]
+      )
+      console.log('✅ Auto-updated expired investments to completed status')
+    } catch (updateError) {
+      console.error('⚠️ Error auto-updating investment status:', updateError)
+    }
+
     // Получаем данные пользователя
     const userResult = await query(
       `SELECT 

@@ -171,13 +171,13 @@ export function ProjectLaunches() {
 
                       {/* Современный обратный отсчет */}
                       {isCountdownActive && currentTimeLeft && (
-                        <div className="bg-gradient-to-br from-slate-900/80 to-slate-800/80 rounded-lg p-2 border border-slate-700/50 mt-2 backdrop-blur-sm">
-                          <div className="flex items-center gap-1 mb-1.5">
+                        <div className="bg-gradient-to-br from-slate-900/80 to-slate-800/80 rounded-lg p-2 border border-slate-700/50 mt-2 backdrop-blur-sm flex flex-col items-center">
+                          <div className="flex items-center justify-center gap-1 mb-1.5">
                             <Clock className="h-3 w-3 text-blue-400" />
                             <span className="text-blue-300 font-semibold text-xs">До старта проекта осталось</span>
                           </div>
 
-                          <div className="grid grid-cols-4 gap-1.5">
+                          <div className="grid grid-cols-4 gap-1.5 w-full">
                             {currentTimeLeft.days > 0 && (
                               <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 to-blue-700 rounded-md p-1.5 text-center shadow-lg shadow-blue-500/30">
                                 <div className="absolute inset-0 bg-gradient-to-t from-white/10 to-transparent" />

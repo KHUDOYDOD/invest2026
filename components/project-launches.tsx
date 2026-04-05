@@ -95,7 +95,7 @@ export function ProjectLaunches() {
   const activeLaunches = launches.filter(launch => !launch.is_launched)
   const launchedProjects = launches.filter(launch => launch.is_launched)
 
-  // Если есть только запущенные проекты - показываем красивый статус блок
+  // Если есть только запущенные проекты - показываем современный статус блок
   if (activeLaunches.length === 0 && launchedProjects.length > 0) {
     const launchedProject = launchedProjects[0]
     const launchDate = new Date(launchedProject.launch_date)
@@ -104,106 +104,70 @@ export function ProjectLaunches() {
     
     return (
       <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, type: "spring", bounce: 0.4 }}
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5, type: "spring", bounce: 0.3 }}
         className="inline-flex"
       >
-        <div className="relative group">
-          {/* Основной блок */}
-          <div className="relative bg-gradient-to-br from-emerald-900/40 via-green-900/30 to-teal-900/40 backdrop-blur-xl border border-emerald-500/30 rounded-2xl p-4 shadow-2xl shadow-emerald-500/20 hover:shadow-emerald-500/40 transition-all duration-500">
-            {/* Анимированный фон */}
-            <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 via-green-500/10 to-teal-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            
-            {/* Пульсирующие круги на фоне */}
+        <div className="relative overflow-hidden bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-sm border border-slate-700/50 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300">
+          {/* Светящаяся линия сверху */}
+          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-emerald-500 to-transparent" />
+          
+          {/* Контент */}
+          <div className="relative px-6 py-4 flex items-center gap-4">
+            {/* Иконка */}
             <motion.div
               animate={{ 
-                scale: [1, 1.2, 1],
-                opacity: [0.3, 0.6, 0.3]
+                y: [0, -3, 0]
               }}
-              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -top-4 -right-4 w-24 h-24 bg-emerald-500/20 rounded-full blur-2xl"
-            />
-            <motion.div
-              animate={{ 
-                scale: [1.2, 1, 1.2],
-                opacity: [0.2, 0.5, 0.2]
-              }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-              className="absolute -bottom-4 -left-4 w-32 h-32 bg-green-500/20 rounded-full blur-2xl"
-            />
-            
-            <div className="relative flex items-center gap-4">
-              {/* Иконка с анимацией */}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              className="relative flex-shrink-0"
+            >
+              <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/30">
+                <Rocket className="h-6 w-6 text-white" />
+              </div>
+              {/* Статус индикатор */}
               <motion.div
                 animate={{ 
-                  rotate: [0, 5, -5, 0],
-                  scale: [1, 1.05, 1]
+                  scale: [1, 1.2, 1],
+                  opacity: [0.8, 1, 0.8]
                 }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                className="relative"
-              >
-                <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/50 group-hover:shadow-emerald-500/70 transition-shadow duration-300">
-                  <Rocket className="h-7 w-7 text-white" />
-                </div>
-                {/* Пульсирующая точка */}
-                <motion.div
-                  animate={{ 
-                    scale: [1, 1.5, 1],
-                    opacity: [1, 0, 1]
-                  }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "easeOut" }}
-                  className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-400 rounded-full shadow-lg shadow-emerald-400/80"
-                />
-              </motion.div>
+                transition={{ duration: 2, repeat: Infinity }}
+                className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-emerald-400 rounded-full border-2 border-slate-800"
+              />
+            </motion.div>
+            
+            {/* Информация */}
+            <div className="flex flex-col gap-1.5">
+              <div className="flex items-center gap-2">
+                <span className="text-white font-bold text-base">
+                  Проект запущен
+                </span>
+                <CheckCircle className="h-4 w-4 text-emerald-400" />
+              </div>
               
-              {/* Текст и статистика */}
-              <div className="flex flex-col gap-1">
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-emerald-400" />
-                  <span className="text-emerald-100 font-bold text-base tracking-wide">
-                    Проект запущен
+              <div className="flex items-center gap-3 text-xs text-slate-400">
+                <div className="flex items-center gap-1.5">
+                  <Calendar className="h-3.5 w-3.5" />
+                  <span>
+                    {launchDate.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', year: 'numeric' })}
                   </span>
                 </div>
                 
-                <div className="flex items-center gap-3 text-xs">
-                  <div className="flex items-center gap-1.5">
-                    <Calendar className="h-3.5 w-3.5 text-emerald-400/70" />
-                    <span className="text-emerald-200/80">
-                      {launchDate.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', year: 'numeric' })}
-                    </span>
-                  </div>
-                  
-                  <div className="w-px h-3 bg-emerald-500/30" />
-                  
-                  <div className="flex items-center gap-1.5">
-                    <TrendingUp className="h-3.5 w-3.5 text-emerald-400/70" />
-                    <span className="text-emerald-200/80">
-                      {daysRunning} {daysRunning === 1 ? 'день' : daysRunning < 5 ? 'дня' : 'дней'} работы
-                    </span>
-                  </div>
+                <div className="w-1 h-1 bg-slate-600 rounded-full" />
+                
+                <div className="flex items-center gap-1.5">
+                  <TrendingUp className="h-3.5 w-3.5" />
+                  <span>
+                    {daysRunning} {daysRunning === 1 ? 'день' : daysRunning < 5 ? 'дня' : 'дней'}
+                  </span>
                 </div>
               </div>
             </div>
           </div>
           
-          {/* Декоративные элементы */}
-          <motion.div
-            animate={{ 
-              x: [0, 2, 0],
-              opacity: [0.5, 1, 0.5]
-            }}
-            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute -top-1 -right-1 w-2 h-2 bg-emerald-400 rounded-full blur-sm"
-          />
-          <motion.div
-            animate={{ 
-              x: [0, -2, 0],
-              opacity: [0.5, 1, 0.5]
-            }}
-            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
-            className="absolute -bottom-1 -left-1 w-2 h-2 bg-green-400 rounded-full blur-sm"
-          />
+          {/* Тонкое свечение снизу */}
+          <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent" />
         </div>
       </motion.div>
     )

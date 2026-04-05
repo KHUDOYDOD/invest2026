@@ -95,7 +95,7 @@ export function ProjectLaunches() {
   const activeLaunches = launches.filter(launch => !launch.is_launched)
   const launchedProjects = launches.filter(launch => launch.is_launched)
 
-  // Если есть только запущенные проекты - показываем современный статус блок
+  // Если есть только запущенные проекты - показываем яркий статус блок
   if (activeLaunches.length === 0 && launchedProjects.length > 0) {
     const launchedProject = launchedProjects[0]
     const launchDate = new Date(launchedProject.launch_date)
@@ -104,70 +104,51 @@ export function ProjectLaunches() {
     
     return (
       <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5, type: "spring", bounce: 0.3 }}
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
         className="inline-flex"
       >
-        <div className="relative overflow-hidden bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-sm border border-slate-700/50 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300">
-          {/* Светящаяся линия сверху */}
-          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-emerald-500 to-transparent" />
+        <div className="relative bg-gradient-to-r from-emerald-500 to-green-600 rounded-2xl px-6 py-3 shadow-2xl shadow-emerald-500/40">
+          {/* Пульсирующее свечение */}
+          <motion.div
+            animate={{ 
+              opacity: [0.5, 0.8, 0.5]
+            }}
+            transition={{ duration: 2, repeat: Infinity }}
+            className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-green-500 rounded-2xl blur-xl"
+          />
           
           {/* Контент */}
-          <div className="relative px-6 py-4 flex items-center gap-4">
+          <div className="relative flex items-center gap-3">
             {/* Иконка */}
-            <motion.div
-              animate={{ 
-                y: [0, -3, 0]
-              }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-              className="relative flex-shrink-0"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/30">
-                <Rocket className="h-6 w-6 text-white" />
-              </div>
-              {/* Статус индикатор */}
+            <div className="flex items-center justify-center">
               <motion.div
                 animate={{ 
-                  scale: [1, 1.2, 1],
-                  opacity: [0.8, 1, 0.8]
+                  rotate: [0, 10, -10, 0]
                 }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-emerald-400 rounded-full border-2 border-slate-800"
-              />
-            </motion.div>
+                transition={{ duration: 3, repeat: Infinity }}
+              >
+                <Rocket className="h-6 w-6 text-white drop-shadow-lg" />
+              </motion.div>
+            </div>
             
-            {/* Информация */}
-            <div className="flex flex-col gap-1.5">
-              <div className="flex items-center gap-2">
-                <span className="text-white font-bold text-base">
-                  Проект запущен
-                </span>
-                <CheckCircle className="h-4 w-4 text-emerald-400" />
-              </div>
-              
-              <div className="flex items-center gap-3 text-xs text-slate-400">
-                <div className="flex items-center gap-1.5">
-                  <Calendar className="h-3.5 w-3.5" />
-                  <span>
-                    {launchDate.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', year: 'numeric' })}
-                  </span>
-                </div>
-                
-                <div className="w-1 h-1 bg-slate-600 rounded-full" />
-                
-                <div className="flex items-center gap-1.5">
-                  <TrendingUp className="h-3.5 w-3.5" />
-                  <span>
-                    {daysRunning} {daysRunning === 1 ? 'день' : daysRunning < 5 ? 'дня' : 'дней'}
-                  </span>
-                </div>
-              </div>
+            {/* Текст */}
+            <div className="flex items-center gap-2">
+              <span className="text-white font-bold text-lg drop-shadow-md">
+                Платформа запущена и работает
+              </span>
+              <CheckCircle className="h-5 w-5 text-white drop-shadow-lg" />
+            </div>
+            
+            {/* Статистика */}
+            <div className="flex items-center gap-2 ml-2 pl-2 border-l-2 border-white/30">
+              <TrendingUp className="h-4 w-4 text-white/90" />
+              <span className="text-white/90 font-semibold text-sm">
+                {daysRunning} {daysRunning === 1 ? 'день' : daysRunning < 5 ? 'дня' : 'дней'}
+              </span>
             </div>
           </div>
-          
-          {/* Тонкое свечение снизу */}
-          <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent" />
         </div>
       </motion.div>
     )

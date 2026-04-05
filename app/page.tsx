@@ -29,9 +29,6 @@ export default function HomePage() {
       {/* Hero Section */}
       <HeroSection />
 
-      {/* Project Launches */}
-      <ProjectLaunches />
-
       {/* Trust Indicators */}
       <section className="py-16 bg-slate-900">
         <TrustIndicators />

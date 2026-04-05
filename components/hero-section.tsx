@@ -5,6 +5,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { TrendingUp, Shield, Users, DollarSign, ArrowRight, Play } from "lucide-react"
 import { useLanguage } from "@/contexts/language-context"
+import { ProjectLaunches } from "@/components/project-launches"
 
 export function HeroSection() {
   const { t } = useLanguage()
@@ -178,11 +179,8 @@ export function HeroSection() {
       <div className="container mx-auto max-w-6xl text-center relative z-10 px-4">
         {/* Main Content */}
         <div className="space-y-8">
-          {/* Badge */}
-          <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-600/20 to-purple-600/20 backdrop-blur-sm border border-blue-500/30 rounded-full text-blue-300 text-sm font-medium">
-            <span className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></span>
-            {t('hero.badge')}
-          </div>
+          {/* Project Launches Badge */}
+          <ProjectLaunches />
 
           {/* Main Heading */}
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-black leading-tight animate-fade-in">

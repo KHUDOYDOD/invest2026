@@ -238,7 +238,7 @@ export function ProjectLaunches() {
     return null
   }
 
-  // Если есть активные запуски - показываем только countdown
+  // Если есть активные запуски - показываем countdown в стиле как на скриншоте
   const firstLaunch = activeLaunches[0]
   const isCountdownActive = firstLaunch.show_countdown && firstLaunch.countdown_end
   const currentTimeLeft = isCountdownActive ? timeLeft[firstLaunch.id] : null
@@ -249,50 +249,145 @@ export function ProjectLaunches() {
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.5, type: "spring" }}
+      initial={{ opacity: 0, scale: 0.9, y: -20 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      transition={{ duration: 0.8, type: "spring", bounce: 0.4 }}
       className="inline-flex"
     >
-      <div className="bg-gradient-to-br from-slate-900/95 to-slate-800/95 rounded-xl p-5 border border-slate-700/50 backdrop-blur-md shadow-2xl shadow-purple-500/20">
-        <div className="flex items-center justify-center gap-3 mb-5">
-          <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/40 hover:scale-110 transition-transform duration-300">
-            <Rocket className="h-6 w-6 text-white" />
-          </div>
-          <span className="text-blue-300 font-bold text-base">До старта проекта осталось</span>
-        </div>
-
-        <div className="grid grid-cols-4 gap-3">
-          {currentTimeLeft.days > 0 && (
-            <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl p-4 text-center shadow-lg shadow-blue-500/30 hover:scale-105 transition-transform duration-300">
-              <div className="absolute inset-0 bg-gradient-to-t from-white/10 to-transparent" />
-              <div className="relative text-3xl font-bold text-white leading-none drop-shadow-lg mb-2">
-                {currentTimeLeft.days}
+      <div className="relative">
+        {/* Анимированное свечение вокруг */}
+        <motion.div
+          animate={{ 
+            scale: [1, 1.05, 1],
+            opacity: [0.4, 0.7, 0.4]
+          }}
+          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute -inset-3 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-3xl blur-xl"
+        />
+        
+        {/* Основной контейнер */}
+        <div className="relative bg-gradient-to-br from-slate-800 via-slate-900 to-slate-800 rounded-2xl p-6 border-2 border-blue-500/30 shadow-2xl backdrop-blur-xl">
+          {/* Верхняя часть с иконкой и статусом */}
+          <div className="flex items-center gap-4 mb-5">
+            {/* Анимированная иконка ракеты */}
+            <motion.div
+              animate={{ 
+                y: [0, -5, 0],
+                rotate: [0, 3, -3, 0]
+              }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              className="relative"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-emerald-400 to-green-600 rounded-2xl blur-lg opacity-60" />
+              <div className="relative w-16 h-16 bg-gradient-to-br from-emerald-500 to-green-600 rounded-2xl flex items-center justify-center shadow-lg">
+                <Rocket className="h-8 w-8 text-white" />
               </div>
-              <div className="relative text-xs text-blue-200 uppercase font-semibold tracking-wide">дней</div>
+            </motion.div>
+            
+            {/* Текст статуса */}
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-1">
+                <motion.div
+                  animate={{ scale: [1, 1.3, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                >
+                  <div className="w-2.5 h-2.5 bg-emerald-400 rounded-full shadow-lg shadow-emerald-400/50" />
+                </motion.div>
+                <span className="text-emerald-400 text-xs font-bold uppercase tracking-wider">
+                  Активна
+                </span>
+              </div>
+              <h3 className="text-white text-xl font-bold leading-tight">
+                До старта проекта осталось
+              </h3>
             </div>
-          )}
-          <div className="relative overflow-hidden bg-gradient-to-br from-emerald-600 to-green-700 rounded-xl p-4 text-center shadow-lg shadow-emerald-500/30 hover:scale-105 transition-transform duration-300">
-            <div className="absolute inset-0 bg-gradient-to-t from-white/10 to-transparent" />
-            <div className="relative text-3xl font-bold text-white leading-none drop-shadow-lg mb-2">
-              {String(currentTimeLeft.hours).padStart(2, '0')}
-            </div>
-            <div className="relative text-xs text-emerald-200 uppercase font-semibold tracking-wide">часов</div>
+            
+            {/* Иконка проверки */}
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.3, type: "spring", bounce: 0.6 }}
+            >
+              <div className="w-12 h-12 bg-emerald-500/20 rounded-full flex items-center justify-center border-2 border-emerald-500/50">
+                <CheckCircle className="h-7 w-7 text-emerald-400" />
+              </div>
+            </motion.div>
           </div>
-          <div className="relative overflow-hidden bg-gradient-to-br from-purple-600 to-purple-700 rounded-xl p-4 text-center shadow-lg shadow-purple-500/30 hover:scale-105 transition-transform duration-300">
-            <div className="absolute inset-0 bg-gradient-to-t from-white/10 to-transparent" />
-            <div className="relative text-3xl font-bold text-white leading-none drop-shadow-lg mb-2">
-              {String(currentTimeLeft.minutes).padStart(2, '0')}
-            </div>
-            <div className="relative text-xs text-purple-200 uppercase font-semibold tracking-wide">минут</div>
+          
+          {/* Разделитель */}
+          <div className="h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent mb-5" />
+          
+          {/* Таймер обратного отсчёта */}
+          <div className="grid grid-cols-4 gap-3">
+            {/* Дни */}
+            {currentTimeLeft.days > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="bg-gradient-to-br from-emerald-500/20 to-green-500/20 rounded-xl p-4 border border-emerald-500/30"
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <Calendar className="h-4 w-4 text-emerald-400" />
+                  <span className="text-emerald-400 text-xs font-semibold">Дней</span>
+                </div>
+                <div className="text-white text-3xl font-bold">{currentTimeLeft.days}</div>
+              </motion.div>
+            )}
+            
+            {/* Часы */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="bg-gradient-to-br from-blue-500/20 to-cyan-500/20 rounded-xl p-4 border border-blue-500/30"
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <Clock className="h-4 w-4 text-blue-400" />
+                <span className="text-blue-400 text-xs font-semibold">Часов</span>
+              </div>
+              <div className="text-white text-3xl font-bold">{String(currentTimeLeft.hours).padStart(2, '0')}</div>
+            </motion.div>
+            
+            {/* Минуты */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+              className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-xl p-4 border border-purple-500/30"
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <Clock className="h-4 w-4 text-purple-400" />
+                <span className="text-purple-400 text-xs font-semibold">Минут</span>
+              </div>
+              <div className="text-white text-3xl font-bold">{String(currentTimeLeft.minutes).padStart(2, '0')}</div>
+            </motion.div>
+            
+            {/* Секунды */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.7 }}
+              className="bg-gradient-to-br from-pink-500/20 to-rose-500/20 rounded-xl p-4 border border-pink-500/30"
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <Zap className="h-4 w-4 text-pink-400" />
+                <span className="text-pink-400 text-xs font-semibold">Секунд</span>
+              </div>
+              <div className="text-white text-3xl font-bold">{String(currentTimeLeft.seconds).padStart(2, '0')}</div>
+            </motion.div>
           </div>
-          <div className="relative overflow-hidden bg-gradient-to-br from-pink-600 to-rose-700 rounded-xl p-4 text-center shadow-lg shadow-pink-500/30 hover:scale-105 transition-transform duration-300">
-            <div className="absolute inset-0 bg-gradient-to-t from-white/10 to-transparent" />
-            <div className="relative text-3xl font-bold text-white leading-none drop-shadow-lg mb-2">
-              {String(currentTimeLeft.seconds).padStart(2, '0')}
-            </div>
-            <div className="relative text-xs text-pink-200 uppercase font-semibold tracking-wide">секунд</div>
-          </div>
+          
+          {/* Дополнительная информация */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.8 }}
+            className="mt-5 flex items-center justify-center gap-2 text-slate-400 text-sm"
+          >
+            <TrendingUp className="h-4 w-4 text-emerald-400" />
+            <span>Запуск платформы скоро</span>
+          </motion.div>
         </div>
       </div>
     </motion.div>

@@ -118,55 +118,9 @@ export function ProjectLaunches() {
   const activeLaunches = launches.filter(launch => !launch.is_launched)
   const launchedProjects = launches.filter(launch => launch.is_launched)
 
-  // Если есть только запущенные проекты - показываем простое элегантное уведомление
+  // Если есть только запущенные проекты - ничего не показываем
   if (activeLaunches.length === 0 && launchedProjects.length > 0) {
-    return (
-      <section className="py-6 px-4">
-        <div className="container mx-auto max-w-4xl">
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-            className="bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl shadow-lg overflow-hidden"
-          >
-            <div className="px-6 py-4 flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                {/* Simple animated icon */}
-                <motion.div
-                  animate={{ 
-                    rotate: [0, 5, -5, 0],
-                  }}
-                  transition={{ 
-                    duration: 2,
-                    repeat: Infinity,
-                    repeatDelay: 1
-                  }}
-                  className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center"
-                >
-                  <Rocket className="h-6 w-6 text-white" />
-                </motion.div>
-
-                {/* Text */}
-                <div>
-                  <h3 className="text-lg font-bold text-white">
-                    🎉 Проект запущен!
-                  </h3>
-                  <p className="text-white/90 text-sm">
-                    Платформа работает в полном режиме
-                  </p>
-                </div>
-              </div>
-
-              {/* Badge */}
-              <div className="hidden sm:flex items-center gap-2 bg-white/20 px-4 py-2 rounded-lg">
-                <CheckCircle className="h-5 w-5 text-white" />
-                <span className="text-white font-semibold text-sm">Активно</span>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-    )
+    return null
   }
 
   // Если нет запусков вообще - не показываем ничего

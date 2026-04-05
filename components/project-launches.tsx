@@ -159,49 +159,48 @@ export function ProjectLaunches() {
                 <div className="relative p-3">
                   {/* Современный обратный отсчет */}
                   {isCountdownActive && currentTimeLeft && (
-                        <div className="bg-gradient-to-br from-slate-900/80 to-slate-800/80 rounded-lg p-2 border border-slate-700/50 mt-2 backdrop-blur-sm flex flex-col items-center">
-                          <div className="flex items-center justify-center gap-1 mb-1.5">
-                            <Clock className="h-3 w-3 text-blue-400" />
-                            <span className="text-blue-300 font-semibold text-xs">До старта проекта осталось</span>
-                          </div>
+                    <div className="bg-gradient-to-br from-slate-900/80 to-slate-800/80 rounded-lg p-2 border border-slate-700/50 backdrop-blur-sm flex flex-col items-center">
+                      <div className="flex items-center justify-center gap-1 mb-1.5">
+                        <Clock className="h-3 w-3 text-blue-400" />
+                        <span className="text-blue-300 font-semibold text-xs">До старта проекта осталось</span>
+                      </div>
 
-                          <div className="grid grid-cols-4 gap-1.5 w-full">
-                            {currentTimeLeft.days > 0 && (
-                              <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 to-blue-700 rounded-md p-1.5 text-center shadow-lg shadow-blue-500/30">
-                                <div className="absolute inset-0 bg-gradient-to-t from-white/10 to-transparent" />
-                                <div className="relative text-lg font-bold text-white leading-none drop-shadow-lg">
-                                  {currentTimeLeft.days}
-                                </div>
-                                <div className="relative text-[9px] text-blue-200 uppercase font-medium mt-0.5">дней</div>
-                              </div>
-                            )}
-                            <div className="relative overflow-hidden bg-gradient-to-br from-emerald-600 to-green-700 rounded-md p-1.5 text-center shadow-lg shadow-emerald-500/30">
-                              <div className="absolute inset-0 bg-gradient-to-t from-white/10 to-transparent" />
-                              <div className="relative text-lg font-bold text-white leading-none drop-shadow-lg">
-                                {String(currentTimeLeft.hours).padStart(2, '0')}
-                              </div>
-                              <div className="relative text-[9px] text-emerald-200 uppercase font-medium mt-0.5">часов</div>
+                      <div className="grid grid-cols-4 gap-1.5 w-full">
+                        {currentTimeLeft.days > 0 && (
+                          <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 to-blue-700 rounded-md p-1.5 text-center shadow-lg shadow-blue-500/30">
+                            <div className="absolute inset-0 bg-gradient-to-t from-white/10 to-transparent" />
+                            <div className="relative text-lg font-bold text-white leading-none drop-shadow-lg">
+                              {currentTimeLeft.days}
                             </div>
-                            <div className="relative overflow-hidden bg-gradient-to-br from-purple-600 to-purple-700 rounded-md p-1.5 text-center shadow-lg shadow-purple-500/30">
-                              <div className="absolute inset-0 bg-gradient-to-t from-white/10 to-transparent" />
-                              <div className="relative text-lg font-bold text-white leading-none drop-shadow-lg">
-                                {String(currentTimeLeft.minutes).padStart(2, '0')}
-                              </div>
-                              <div className="relative text-[9px] text-purple-200 uppercase font-medium mt-0.5">минут</div>
-                            </div>
-                            <div className="relative overflow-hidden bg-gradient-to-br from-pink-600 to-rose-700 rounded-md p-1.5 text-center shadow-lg shadow-pink-500/30">
-                              <div className="absolute inset-0 bg-gradient-to-t from-white/10 to-transparent" />
-                              <div className="relative text-lg font-bold text-white leading-none drop-shadow-lg">
-                                {String(currentTimeLeft.seconds).padStart(2, '0')}
-                              </div>
-                              <div className="relative text-[9px] text-pink-200 uppercase font-medium mt-0.5">секунд</div>
-                            </div>
+                            <div className="relative text-[9px] text-blue-200 uppercase font-medium mt-0.5">дней</div>
                           </div>
+                        )}
+                        <div className="relative overflow-hidden bg-gradient-to-br from-emerald-600 to-green-700 rounded-md p-1.5 text-center shadow-lg shadow-emerald-500/30">
+                          <div className="absolute inset-0 bg-gradient-to-t from-white/10 to-transparent" />
+                          <div className="relative text-lg font-bold text-white leading-none drop-shadow-lg">
+                            {String(currentTimeLeft.hours).padStart(2, '0')}
+                          </div>
+                          <div className="relative text-[9px] text-emerald-200 uppercase font-medium mt-0.5">часов</div>
                         </div>
-                      )}
+                        <div className="relative overflow-hidden bg-gradient-to-br from-purple-600 to-purple-700 rounded-md p-1.5 text-center shadow-lg shadow-purple-500/30">
+                          <div className="absolute inset-0 bg-gradient-to-t from-white/10 to-transparent" />
+                          <div className="relative text-lg font-bold text-white leading-none drop-shadow-lg">
+                            {String(currentTimeLeft.minutes).padStart(2, '0')}
+                          </div>
+                          <div className="relative text-[9px] text-purple-200 uppercase font-medium mt-0.5">минут</div>
+                        </div>
+                        <div className="relative overflow-hidden bg-gradient-to-br from-pink-600 to-rose-700 rounded-md p-1.5 text-center shadow-lg shadow-pink-500/30">
+                          <div className="absolute inset-0 bg-gradient-to-t from-white/10 to-transparent" />
+                          <div className="relative text-lg font-bold text-white leading-none drop-shadow-lg">
+                            {String(currentTimeLeft.seconds).padStart(2, '0')}
+                          </div>
+                          <div className="relative text-[9px] text-pink-200 uppercase font-medium mt-0.5">секунд</div>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
+              </motion.div>
             )
           })}
         </div>

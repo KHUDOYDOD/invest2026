@@ -124,67 +124,67 @@ export function ProjectLaunches() {
 
   // Если есть активные запуски - показываем полную версию
   return (
-    <section className="py-12 px-4 bg-gradient-to-br from-slate-50 to-gray-100">
+    <section className="py-4 px-4 bg-gradient-to-br from-slate-50 to-gray-100">
       <div className="container mx-auto max-w-6xl">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">Запуск проектов</h2>
-          <p className="text-gray-600">Следите за запуском новых инвестиционных возможностей</p>
+        <div className="text-center mb-3">
+          <h2 className="text-xl font-bold text-gray-900 mb-1">Запуск проектов</h2>
+          <p className="text-xs text-gray-600">Следите за запуском новых инвестиционных возможностей</p>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
           {activeLaunches.map((launch) => {
             const isCountdownActive = launch.show_countdown && launch.countdown_end
             const currentTimeLeft = isCountdownActive ? timeLeft[launch.id] : null
 
             return (
-              <div key={launch.id} className="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow">
-                <div className="p-6">
-                  <div className="flex items-start space-x-3 mb-4">
-                    <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Rocket className="h-5 w-5 text-blue-600" />
+              <div key={launch.id} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
+                <div className="p-3">
+                  <div className="flex items-start space-x-2 mb-2">
+                    <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Rocket className="h-4 w-4 text-blue-600" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-lg font-bold text-gray-900 mb-1 truncate">
+                      <h3 className="text-sm font-bold text-gray-900 mb-0.5 truncate">
                         {launch.title}
                       </h3>
-                      <p className="text-sm text-gray-600 line-clamp-2">
+                      <p className="text-xs text-gray-600 line-clamp-1">
                         {launch.description}
                       </p>
 
                       {/* Чистый обратный отсчет */}
                       {isCountdownActive && currentTimeLeft && (
-                        <div className="bg-gray-50 rounded-lg p-4 border border-gray-200 mt-4">
-                          <div className="flex items-center space-x-2 mb-3">
-                            <Clock className="h-4 w-4 text-gray-600" />
-                            <span className="text-gray-700 font-semibold text-sm">Обратный отсчет</span>
+                        <div className="bg-gray-50 rounded-md p-2 border border-gray-200 mt-2">
+                          <div className="flex items-center space-x-1 mb-1.5">
+                            <Clock className="h-3 w-3 text-gray-600" />
+                            <span className="text-gray-700 font-semibold text-xs">Обратный отсчет</span>
                           </div>
 
-                          <div className="grid grid-cols-4 gap-2">
+                          <div className="grid grid-cols-4 gap-1.5">
                             {currentTimeLeft.days > 0 && (
-                              <div className="bg-blue-500 rounded-lg p-3 text-center">
-                                <div className="text-2xl font-bold text-white">
+                              <div className="bg-blue-500 rounded-md p-1.5 text-center">
+                                <div className="text-lg font-bold text-white leading-none">
                                   {currentTimeLeft.days}
                                 </div>
-                                <div className="text-xs text-blue-100 uppercase font-medium">дней</div>
+                                <div className="text-[9px] text-blue-100 uppercase font-medium mt-0.5">дней</div>
                               </div>
                             )}
-                            <div className="bg-green-500 rounded-lg p-3 text-center">
-                              <div className="text-2xl font-bold text-white">
+                            <div className="bg-green-500 rounded-md p-1.5 text-center">
+                              <div className="text-lg font-bold text-white leading-none">
                                 {String(currentTimeLeft.hours).padStart(2, '0')}
                               </div>
-                              <div className="text-xs text-green-100 uppercase font-medium">часов</div>
+                              <div className="text-[9px] text-green-100 uppercase font-medium mt-0.5">часов</div>
                             </div>
-                            <div className="bg-purple-500 rounded-lg p-3 text-center">
-                              <div className="text-2xl font-bold text-white">
+                            <div className="bg-purple-500 rounded-md p-1.5 text-center">
+                              <div className="text-lg font-bold text-white leading-none">
                                 {String(currentTimeLeft.minutes).padStart(2, '0')}
                               </div>
-                              <div className="text-xs text-purple-100 uppercase font-medium">минут</div>
+                              <div className="text-[9px] text-purple-100 uppercase font-medium mt-0.5">минут</div>
                             </div>
-                            <div className="bg-pink-500 rounded-lg p-3 text-center">
-                              <div className="text-2xl font-bold text-white">
+                            <div className="bg-pink-500 rounded-md p-1.5 text-center">
+                              <div className="text-lg font-bold text-white leading-none">
                                 {String(currentTimeLeft.seconds).padStart(2, '0')}
                               </div>
-                              <div className="text-xs text-pink-100 uppercase font-medium">секунд</div>
+                              <div className="text-[9px] text-pink-100 uppercase font-medium mt-0.5">секунд</div>
                             </div>
                           </div>
                         </div>

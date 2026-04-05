@@ -801,9 +801,9 @@ function DashboardContent() {
                   </Link>
                 </div>
 
-              {investments.length > 0 ? (
+              {investments.filter(inv => inv.status?.toLowerCase() === 'active').length > 0 ? (
                 <div className="space-y-6">
-                  {investments.map((investment, idx) => (
+                  {investments.filter(inv => inv.status?.toLowerCase() === 'active').map((investment, idx) => (
                     <motion.div 
                       key={investment.id}
                       initial={{ opacity: 0, x: -20 }}

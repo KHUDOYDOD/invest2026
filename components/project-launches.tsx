@@ -157,20 +157,8 @@ export function ProjectLaunches() {
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-purple-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 
                 <div className="relative p-3">
-                  <div className="flex flex-col items-center mb-2">
-                    <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg shadow-blue-500/30 group-hover:scale-110 transition-transform duration-300 mb-2">
-                      <Rocket className="h-4 w-4 text-white" />
-                    </div>
-                    <div className="w-full text-center">
-                      <h3 className="text-sm font-bold text-white mb-0.5 group-hover:text-blue-300 transition-colors">
-                        {launch.title}
-                      </h3>
-                      <p className="text-xs text-slate-400 line-clamp-2">
-                        {launch.description}
-                      </p>
-
-                      {/* Современный обратный отсчет */}
-                      {isCountdownActive && currentTimeLeft && (
+                  {/* Современный обратный отсчет */}
+                  {isCountdownActive && currentTimeLeft && (
                         <div className="bg-gradient-to-br from-slate-900/80 to-slate-800/80 rounded-lg p-2 border border-slate-700/50 mt-2 backdrop-blur-sm flex flex-col items-center">
                           <div className="flex items-center justify-center gap-1 mb-1.5">
                             <Clock className="h-3 w-3 text-blue-400" />
@@ -214,7 +202,6 @@ export function ProjectLaunches() {
                     </div>
                   </div>
                 </div>
-              </motion.div>
             )
           })}
         </div>

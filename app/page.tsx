@@ -32,6 +32,21 @@ export default function HomePage() {
       {/* Project Launches */}
       <ProjectLaunches />
 
+      {/* Trust Indicators */}
+      <section className="py-16 bg-slate-900">
+        <TrustIndicators />
+      </section>
+
+      {/* User Activity Rows */}
+      <section className="py-12 bg-slate-800/50">
+        <UserActivityRows />
+      </section>
+
+      {/* New Users Showcase */}
+      <section className="py-12 bg-slate-900">
+        <NewUsersShowcase />
+      </section>
+
       {/* Live Activity - One clean section */}
       <section className="py-12 bg-slate-800/50">
         <LiveActivityFeed />
@@ -67,6 +82,16 @@ export default function HomePage() {
       {/* Statistics */}
       <section className="py-20 bg-slate-800/50">
         <Statistics />
+      </section>
+
+      {/* News Section */}
+      <section className="py-20 bg-slate-900">
+        <NewsSection />
+      </section>
+
+      {/* Mobile App */}
+      <section className="py-20 bg-slate-800/50">
+        <MobileApp />
       </section>
 
       {/* Testimonials */}

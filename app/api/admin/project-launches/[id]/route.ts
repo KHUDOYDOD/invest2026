@@ -17,44 +17,38 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
     const current = currentResult.rows[0]
 
     // Обновляем только переданные поля
+    const updates: any = {}
+    if (body.name !== undefined) updates.name = body.name
+    if (body.title !== undefined) updates.title = body.title
+    if (body.description !== undefined) updates.description = body.description
+    if (body.status !== undefined) updates.status = body.status
+    if (body.launch_date !== undefined) updates.launch_date = body.launch_date
+    if (body.target_amount !== undefined) updates.target_amount = body.target_amount
+    if (body.raised_amount !== undefined) updates.raised_amount = body.raised_amount
+    if (body.is_launched !== undefined) updates.is_launched = body.is_launched
+    if (body.is_active !== undefined) updates.is_active = body.is_active
+    if (body.show_on_site !== undefined) updates.show_on_site = body.show_on_site
+    if (body.position !== undefined) updates.position = body.position
+    if (body.icon_type !== undefined) updates.icon_type = body.icon_type
+    if (body.background_type !== undefined) updates.background_type = body.background_type
+    if (body.color_scheme !== undefined) updates.color_scheme = body.color_scheme
+    if (body.show_countdown !== undefined) updates.show_countdown = body.show_countdown
+    if (body.countdown_end !== undefined) updates.countdown_end = body.countdown_end
+
+    // Формируем SET часть запроса
+    const setClause = Object.keys(updates).map((key, index) => `${key} = $${index + 1}`).join(', ')
+    const values = Object.values(updates)
+    values.push(id) // Добавляем id в конец
+
     const result = await query(
       `UPDATE project_launches 
-       SET name = COALESCE($1, name),
-           title = COALESCE($2, title),
-           description = COALESCE($3, description),
-           status = COALESCE($4, status),
-           launch_date = COALESCE($5, launch_date),
-           target_amount = COALESCE($6, target_amount),
-           raised_amount = COALESCE($7, raised_amount),
-           is_launched = COALESCE($8, is_launched),
-           is_active = COALESCE($9, is_active),
-           show_on_site = COALESCE($10, show_on_site),
-           position = COALESCE($11, position),
-           icon_type = COALESCE($12, icon_type),
-           background_type = COALESCE($13, background_type),
-           color_scheme = COALESCE($14, color_scheme),
-           updated_at = CURRENT_TIMESTAMP
-       WHERE id = $15
+       SET ${setClause}, updated_at = CURRENT_TIMESTAMP
+       WHERE id = $${values.length}
        RETURNING *`,
-      [
-        body.name || null,
-        body.title || null,
-        body.description || null,
-        body.status || null,
-        body.launch_date || null,
-        body.target_amount || null,
-        body.raised_amount || null,
-        body.is_launched !== undefined ? body.is_launched : null,
-        body.is_active !== undefined ? body.is_active : null,
-        body.show_on_site !== undefined ? body.show_on_site : null,
-        body.position || null,
-        body.icon_type || null,
-        body.background_type || null,
-        body.color_scheme || null,
-        id
-      ]
+      values
     )
 
+    console.log('✅ Project updated:', result.rows[0])
     return NextResponse.json(result.rows[0])
   } catch (error) {
     console.error('Error updating project launch:', error)

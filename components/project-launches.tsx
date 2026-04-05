@@ -82,6 +82,7 @@ export function ProjectLaunches() {
           // Автоматически запускаем проект когда таймер достиг 00:00:00
           if (timeRemaining.days === 0 && timeRemaining.hours === 0 && 
               timeRemaining.minutes === 0 && timeRemaining.seconds === 0) {
+            console.log('⏰ Timer reached 00:00:00, launching project:', launch.id)
             // Запускаем проект в базе данных
             fetch('/api/admin/project-launches/' + launch.id, {
               method: 'PATCH',
@@ -90,9 +91,17 @@ export function ProjectLaunches() {
                 is_launched: true,
                 launch_date: new Date().toISOString()
               })
-            }).then(() => {
+            }).then(response => {
+              console.log('✅ Project launch response:', response.status)
+              return response.json()
+            }).then(data => {
+              console.log('✅ Project launched successfully:', data)
               // Перезагружаем данные
-              window.location.reload()
+              setTimeout(() => {
+                window.location.reload()
+              }, 500)
+            }).catch(error => {
+              console.error('❌ Error launching project:', error)
             })
           }
         }
@@ -113,12 +122,32 @@ export function ProjectLaunches() {
   const activeLaunches = launches.filter(launch => !launch.is_launched)
   const launchedProjects = launches.filter(launch => launch.is_launched)
 
+  console.log('🚀 Project Launches Debug:', {
+    totalLaunches: launches.length,
+    activeLaunches: activeLaunches.length,
+    launchedProjects: launchedProjects.length,
+    launches: launches
+  })
+
   // Если есть только запущенные проекты - показываем современный статус блок
   if (activeLaunches.length === 0 && launchedProjects.length > 0) {
     const launchedProject = launchedProjects[0]
+    
+    // Проверяем что launch_date существует
+    if (!launchedProject.launch_date) {
+      console.error('❌ Launch date is missing for launched project:', launchedProject)
+      return null
+    }
+    
     const launchDate = new Date(launchedProject.launch_date)
     const now = new Date()
     const daysRunning = Math.floor((now.getTime() - launchDate.getTime()) / (1000 * 60 * 60 * 24))
+    
+    console.log('✅ Showing launched project:', {
+      name: launchedProject.name,
+      launchDate: launchDate,
+      daysRunning: daysRunning
+    })
     
     return (
       <motion.div

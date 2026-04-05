@@ -318,8 +318,8 @@ export function ProjectLaunches() {
           <div className="h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent mb-5" />
           
           {/* Таймер обратного отсчёта */}
-          <div className="grid grid-cols-4 gap-3">
-            {/* Дни */}
+          <div className={`grid gap-3 ${currentTimeLeft.days > 0 ? 'grid-cols-4' : 'grid-cols-3'}`}>
+            {/* Дни - показываем только если больше 0 */}
             {currentTimeLeft.days > 0 && (
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
@@ -339,7 +339,7 @@ export function ProjectLaunches() {
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
+              transition={{ delay: currentTimeLeft.days > 0 ? 0.5 : 0.4 }}
               className="bg-gradient-to-br from-blue-500/20 to-cyan-500/20 rounded-xl p-4 border border-blue-500/30"
             >
               <div className="flex items-center gap-2 mb-2">
@@ -353,7 +353,7 @@ export function ProjectLaunches() {
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
+              transition={{ delay: currentTimeLeft.days > 0 ? 0.6 : 0.5 }}
               className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-xl p-4 border border-purple-500/30"
             >
               <div className="flex items-center gap-2 mb-2">
@@ -367,7 +367,7 @@ export function ProjectLaunches() {
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7 }}
+              transition={{ delay: currentTimeLeft.days > 0 ? 0.7 : 0.6 }}
               className="bg-gradient-to-br from-pink-500/20 to-rose-500/20 rounded-xl p-4 border border-pink-500/30"
             >
               <div className="flex items-center gap-2 mb-2">

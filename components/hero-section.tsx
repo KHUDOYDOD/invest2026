@@ -104,85 +104,159 @@ export function HeroSection() {
   }
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900">
-      {/* Simple clean background */}
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
+      {/* Dynamic Investment Background */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900/20 via-slate-900 to-slate-900"></div>
+        {/* Animated gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/30 via-purple-900/30 to-pink-900/30"></div>
         
-        {/* Subtle grid pattern */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+        {/* Animated orbs */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-blue-600/30 to-cyan-600/30 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-gradient-to-r from-purple-600/30 to-pink-600/30 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute top-1/2 left-1/2 w-[500px] h-[500px] bg-gradient-to-r from-green-600/20 to-emerald-600/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+
+        {/* Animated overlay elements */}
+        <div className="absolute inset-0">
+          {/* Floating charts and graphs - Enhanced */}
+          <div className="absolute top-20 left-10 w-40 h-40 bg-gradient-to-br from-green-500/30 to-emerald-600/30 rounded-2xl backdrop-blur-sm border-2 border-green-400/50 animate-pulse shadow-2xl shadow-green-500/30 hover:scale-110 transition-transform">
+            <div className="p-5 h-full flex flex-col justify-between">
+              <TrendingUp className="h-8 w-8 text-green-400 animate-bounce" />
+              <div className="text-right">
+                <div className="text-green-400 text-2xl font-black">{realStats.profitabilityRate}%</div>
+                <div className="text-green-300 text-sm font-bold">📈 ROI</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="absolute top-40 right-20 w-36 h-36 bg-gradient-to-br from-blue-500/30 to-cyan-600/30 rounded-2xl backdrop-blur-sm border-2 border-blue-400/50 animate-pulse shadow-2xl shadow-blue-500/30 hover:scale-110 transition-transform" style={{ animationDelay: '0.5s' }}>
+            <div className="p-4 h-full flex flex-col justify-between">
+              <DollarSign className="h-8 w-8 text-blue-400 animate-bounce" style={{ animationDelay: '0.5s' }} />
+              <div className="text-right">
+                <div className="text-blue-400 text-2xl font-black">{formatNumber(realStats.investmentsAmount)}</div>
+                <div className="text-blue-300 text-sm font-bold">💰 Invested</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="absolute bottom-32 left-20 w-44 h-32 bg-gradient-to-br from-purple-500/30 to-pink-600/30 rounded-2xl backdrop-blur-sm border-2 border-purple-400/50 animate-pulse shadow-2xl shadow-purple-500/30 hover:scale-110 transition-transform" style={{ animationDelay: '1s' }}>
+            <div className="p-4 h-full flex items-center justify-between">
+              <Users className="h-8 w-8 text-purple-400 animate-bounce" style={{ animationDelay: '1s' }} />
+              <div className="text-right">
+                <div className="text-purple-400 text-2xl font-black">{realStats.usersCount.toLocaleString()}</div>
+                <div className="text-purple-300 text-sm font-bold">👥 Investors</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="absolute bottom-20 right-10 w-40 h-40 bg-gradient-to-br from-yellow-500/30 to-orange-600/30 rounded-2xl backdrop-blur-sm border-2 border-yellow-400/50 animate-pulse shadow-2xl shadow-yellow-500/30 hover:scale-110 transition-transform" style={{ animationDelay: '1.5s' }}>
+            <div className="p-5 h-full flex flex-col justify-between">
+              <Shield className="h-8 w-8 text-yellow-400 animate-bounce" style={{ animationDelay: '1.5s' }} />
+              <div className="text-right">
+                <div className="text-yellow-400 text-2xl font-black">{formatNumber(realStats.payoutsAmount)}</div>
+                <div className="text-yellow-300 text-sm font-bold">🛡️ Payouts</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Particle effect */}
+          <div className="absolute inset-0">
+            {[...Array(20)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute w-1 h-1 bg-white/30 rounded-full animate-pulse"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                  animationDelay: `${Math.random() * 2}s`,
+                }}
+              />
+            ))}
+          </div>
+        </div>
       </div>
 
       <div className="container mx-auto max-w-6xl text-center relative z-10 px-4">
         {/* Main Content */}
         <div className="space-y-8">
-          {/* Simple badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-full">
-            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-            <span className="text-sm text-slate-300 font-medium">Платформа работает с 2025 года</span>
+          {/* Badge */}
+          <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-600/20 to-purple-600/20 backdrop-blur-sm border border-blue-500/30 rounded-full text-blue-300 text-sm font-medium">
+            <span className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></span>
+            {t('hero.badge')}
           </div>
 
-          {/* Main Heading - Clean and readable */}
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-white max-w-4xl mx-auto">
-            Инвестируйте с умом,<br />
-            <span className="text-blue-400">получайте стабильный доход</span>
+          {/* Main Heading */}
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-black leading-tight animate-fade-in">
+            <span className="bg-gradient-to-r from-white via-blue-100 to-white bg-clip-text text-transparent">
+              {t('hero.title').split(',')[0]}{" "}
+            </span>
+            <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent animate-pulse">
+              {t('hero.title').split(',')[0].split(' ').slice(-2).join(' ')}
+            </span>
+            <span className="bg-gradient-to-r from-white via-blue-100 to-white bg-clip-text text-transparent">
+              ,<br />{t('hero.title').split(',')[1]?.trim().split(' ').slice(0, -2).join(' ')}{" "}
+            </span>
+            <span className="bg-gradient-to-r from-green-400 via-emerald-500 to-teal-600 bg-clip-text text-transparent animate-pulse" style={{ animationDelay: '0.5s' }}>
+              {t('hero.title').split(',')[1]?.trim().split(' ').slice(-2).join(' ')}
+            </span>
+            <span className="text-4xl ml-2">💰</span>
           </h1>
 
-          {/* Subtitle - Clear and simple */}
-          <p className="text-lg md:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed">
-            Профессиональная инвестиционная платформа с ежедневными выплатами и гарантированной безопасностью
+          {/* Subtitle */}
+          <p className="text-lg md:text-xl text-transparent bg-clip-text bg-gradient-to-r from-slate-200 via-white to-slate-200 max-w-3xl mx-auto leading-relaxed font-medium">
+            {t('hero.subtitle')}
           </p>
 
-          {/* CTA Buttons - Simple and clear */}
+          {/* CTA Buttons */}
           {heroSettings.show_buttons && (
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Link href="/register">
+              <Link href={heroSettings.button1_link}>
                 <Button
                   size="lg"
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-6 text-base font-semibold rounded-lg transition-colors"
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 text-lg font-medium rounded-xl shadow-2xl hover:shadow-blue-500/25 transform hover:scale-105 transition-all duration-300 group"
                 >
-                  Начать инвестировать
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                  {t('hero.cta_primary')}
+                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
-              <Link href="/login">
+              <Link href={heroSettings.button2_link}>
                 <Button
                   size="lg"
                   variant="outline"
-                  className="border-2 border-slate-600 bg-transparent text-white hover:bg-slate-800 px-8 py-6 text-base font-semibold rounded-lg transition-colors"
+                  className="border-2 border-slate-600 bg-slate-800/50 backdrop-blur-sm text-white hover:bg-slate-700 px-8 py-4 text-lg font-medium rounded-xl transform hover:scale-105 transition-all duration-300 group"
                 >
-                  Войти в систему
+                  <Play className="mr-2 h-5 w-5" />
+                  {t('hero.cta_secondary')}
                 </Button>
               </Link>
             </div>
           )}
 
-          {/* Stats Preview - Clean cards */}
+          {/* Stats Preview */}
           {heroSettings.show_stats && (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-16 max-w-5xl mx-auto">
-              <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-6 text-center">
-                <div className="text-3xl md:text-4xl font-bold text-white mb-2">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16">
+              <div className="bg-gradient-to-br from-green-500/20 to-emerald-600/20 backdrop-blur-sm border-2 border-green-400/50 rounded-2xl p-8 text-center hover:scale-110 transition-transform duration-300 shadow-2xl shadow-green-500/30 group">
+                <div className="text-4xl md:text-5xl font-black bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent mb-3 group-hover:scale-125 transition-transform">
                   {formatNumber(realStats.usersCount)}
                 </div>
-                <div className="text-slate-400 text-sm">Активных инвесторов</div>
+                <div className="text-slate-200 text-sm font-bold">👥 {t('hero.stats_users')}</div>
               </div>
-              <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-6 text-center">
-                <div className="text-3xl md:text-4xl font-bold text-white mb-2">
-                  ${formatNumber(realStats.investmentsAmount)}
+              <div className="bg-gradient-to-br from-blue-500/20 to-cyan-600/20 backdrop-blur-sm border-2 border-blue-400/50 rounded-2xl p-8 text-center hover:scale-110 transition-transform duration-300 shadow-2xl shadow-blue-500/30 group">
+                <div className="text-4xl md:text-5xl font-black bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent mb-3 group-hover:scale-125 transition-transform">
+                  {formatNumber(realStats.investmentsAmount)}
                 </div>
-                <div className="text-slate-400 text-sm">Общие инвестиции</div>
+                <div className="text-slate-200 text-sm font-bold">💰 {t('hero.stats_invested')}</div>
               </div>
-              <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-6 text-center">
-                <div className="text-3xl md:text-4xl font-bold text-green-400 mb-2">
+              <div className="bg-gradient-to-br from-purple-500/20 to-pink-600/20 backdrop-blur-sm border-2 border-purple-400/50 rounded-2xl p-8 text-center hover:scale-110 transition-transform duration-300 shadow-2xl shadow-purple-500/30 group">
+                <div className="text-4xl md:text-5xl font-black bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-3 group-hover:scale-125 transition-transform">
                   {realStats.profitabilityRate}%
                 </div>
-                <div className="text-slate-400 text-sm">Средняя доходность</div>
+                <div className="text-slate-200 text-sm font-bold">📈 {t('hero.stats_return')}</div>
               </div>
-              <div className="bg-slate-800/50 border border-slate-700 rounded-lg p-6 text-center">
-                <div className="text-3xl md:text-4xl font-bold text-white mb-2">
-                  ${formatNumber(realStats.payoutsAmount)}
+              <div className="bg-gradient-to-br from-yellow-500/20 to-orange-600/20 backdrop-blur-sm border-2 border-yellow-400/50 rounded-2xl p-8 text-center hover:scale-110 transition-transform duration-300 shadow-2xl shadow-yellow-500/30 group">
+                <div className="text-4xl md:text-5xl font-black bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent mb-3 group-hover:scale-125 transition-transform">
+                  {formatNumber(realStats.payoutsAmount)}
                 </div>
-                <div className="text-slate-400 text-sm">Выплачено</div>
+                <div className="text-slate-200 text-sm font-bold">🛡️ {t('hero.stats_payouts')}</div>
               </div>
             </div>
           )}

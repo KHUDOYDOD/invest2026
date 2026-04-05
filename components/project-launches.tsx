@@ -140,7 +140,8 @@ export function ProjectLaunches() {
           <p className="text-xs text-slate-400">Следите за запуском новых инвестиционных возможностей</p>
         </div>
 
-        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+        <div className="flex justify-center">
+          <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3 max-w-md">
           {activeLaunches.map((launch, index) => {
             const isCountdownActive = launch.show_countdown && launch.countdown_end
             const currentTimeLeft = isCountdownActive ? timeLeft[launch.id] : null
@@ -156,7 +157,7 @@ export function ProjectLaunches() {
                 {/* Animated gradient overlay */}
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-purple-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 
-                <div className="relative p-3">
+                <div className="relative p-3 flex justify-center">
                   <div className="flex flex-col items-center">
                     <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg shadow-blue-500/30 group-hover:scale-110 transition-transform duration-300 mb-2">
                       <Rocket className="h-4 w-4 text-white" />
@@ -209,6 +210,7 @@ export function ProjectLaunches() {
               </motion.div>
             )
           })}
+        </div>
         </div>
       </div>
     </section>

@@ -76,7 +76,25 @@ export function ProjectLaunches() {
       
       launches.forEach(launch => {
         if (!launch.is_launched && launch.show_countdown && launch.countdown_end) {
-          newTimeLeft[launch.id] = calculateTimeLeft(launch.countdown_end)
+          const timeRemaining = calculateTimeLeft(launch.countdown_end)
+          newTimeLeft[launch.id] = timeRemaining
+          
+          // Автоматически запускаем проект когда таймер достиг 00:00:00
+          if (timeRemaining.days === 0 && timeRemaining.hours === 0 && 
+              timeRemaining.minutes === 0 && timeRemaining.seconds === 0) {
+            // Запускаем проект в базе данных
+            fetch('/api/admin/project-launches/' + launch.id, {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ 
+                is_launched: true,
+                launch_date: new Date().toISOString()
+              })
+            }).then(() => {
+              // Перезагружаем данные
+              window.location.reload()
+            })
+          }
         }
       })
       
@@ -317,29 +335,27 @@ export function ProjectLaunches() {
           {/* Разделитель */}
           <div className="h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent mb-5" />
           
-          {/* Таймер обратного отсчёта */}
-          <div className={`grid gap-3 ${currentTimeLeft.days > 0 ? 'grid-cols-4' : 'grid-cols-3'}`}>
-            {/* Дни - показываем только если больше 0 */}
-            {currentTimeLeft.days > 0 && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                className="bg-gradient-to-br from-emerald-500/20 to-green-500/20 rounded-xl p-4 border border-emerald-500/30"
-              >
-                <div className="flex items-center gap-2 mb-2">
-                  <Calendar className="h-4 w-4 text-emerald-400" />
-                  <span className="text-emerald-400 text-xs font-semibold">Дней</span>
-                </div>
-                <div className="text-white text-3xl font-bold">{currentTimeLeft.days}</div>
-              </motion.div>
-            )}
+          {/* Таймер обратного отсчёта - всегда 4 карточки */}
+          <div className="grid grid-cols-4 gap-3">
+            {/* Дни - всегда показываем */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="bg-gradient-to-br from-emerald-500/20 to-green-500/20 rounded-xl p-4 border border-emerald-500/30"
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <Calendar className="h-4 w-4 text-emerald-400" />
+                <span className="text-emerald-400 text-xs font-semibold">Дней</span>
+              </div>
+              <div className="text-white text-3xl font-bold">{String(currentTimeLeft.days).padStart(2, '0')}</div>
+            </motion.div>
             
             {/* Часы */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: currentTimeLeft.days > 0 ? 0.5 : 0.4 }}
+              transition={{ delay: 0.5 }}
               className="bg-gradient-to-br from-blue-500/20 to-cyan-500/20 rounded-xl p-4 border border-blue-500/30"
             >
               <div className="flex items-center gap-2 mb-2">
@@ -353,7 +369,7 @@ export function ProjectLaunches() {
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: currentTimeLeft.days > 0 ? 0.6 : 0.5 }}
+              transition={{ delay: 0.6 }}
               className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-xl p-4 border border-purple-500/30"
             >
               <div className="flex items-center gap-2 mb-2">
@@ -367,7 +383,7 @@ export function ProjectLaunches() {
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: currentTimeLeft.days > 0 ? 0.7 : 0.6 }}
+              transition={{ delay: 0.7 }}
               className="bg-gradient-to-br from-pink-500/20 to-rose-500/20 rounded-xl p-4 border border-pink-500/30"
             >
               <div className="flex items-center gap-2 mb-2">

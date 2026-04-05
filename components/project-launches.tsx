@@ -102,15 +102,15 @@ export function ProjectLaunches() {
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-green-600/20 to-emerald-600/20 backdrop-blur-sm border border-green-500/30 rounded-full"
+        className="inline-flex items-center px-3 py-1.5 bg-gradient-to-r from-green-600/20 to-emerald-600/20 backdrop-blur-sm border border-green-500/30 rounded-full"
       >
         <motion.div
           animate={{ scale: [1, 1.2, 1] }}
           transition={{ duration: 2, repeat: Infinity }}
-          className="w-2 h-2 bg-green-400 rounded-full mr-3"
+          className="w-1.5 h-1.5 bg-green-400 rounded-full mr-2"
         />
-        <Rocket className="h-4 w-4 text-green-400 mr-2" />
-        <span className="text-green-300 text-sm font-medium">
+        <Rocket className="h-3.5 w-3.5 text-green-400 mr-1.5" />
+        <span className="text-green-300 text-xs font-medium">
           Платформа работает с 2025 года
         </span>
       </motion.div>

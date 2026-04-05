@@ -217,7 +217,7 @@ function InvestmentsContent() {
                   {[
                     { id: "plans", label: "Выбрать план", icon: Target },
                     { id: "active", label: "Активные", icon: TrendingUp },
-                    { id: "history", label: "История", icon: BarChart3 },
+                    { id: "history", label: "Архив", icon: BarChart3 },
                   ].map((tab) => {
                     const Icon = tab.icon
                     return (
@@ -296,7 +296,7 @@ function InvestmentsContent() {
                         <BarChart3 className="h-6 w-6" />
                       </div>
                       <div>
-                        <CardTitle className="text-2xl">История инвестиций</CardTitle>
+                        <CardTitle className="text-2xl">📦 Архив инвестиций</CardTitle>
                         <CardDescription className="text-white/90">
                           Завершенные инвестиции и их результаты
                         </CardDescription>

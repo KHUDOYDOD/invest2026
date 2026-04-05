@@ -165,17 +165,22 @@ export function InvestmentsList() {
     )
   }
 
-  if (investments.length === 0) {
+  // Фильтруем только активные инвестиции
+  const activeInvestments = investments.filter(inv => inv.status.toLowerCase() === 'active')
+
+  if (activeInvestments.length === 0) {
     return (
       <div className="w-full py-8">
         <div className="flex flex-col items-center justify-center space-y-4 text-center">
-          <p className="text-gray-400">У вас пока нет активных инвестиций.</p>
-          <Link href="/dashboard/investments">
-            <Button className="bg-gradient-to-r from-blue-600 to-indigo-700 hover:opacity-90">
-              <Plus className="h-4 w-4 mr-2" />
-              Начать инвестировать
-            </Button>
-          </Link>
+          <div className="p-4 bg-blue-500/20 rounded-full mb-2">
+            <TrendingUp className="h-12 w-12 text-blue-400" />
+          </div>
+          <p className="text-white text-xl font-bold">У вас пока нет активных инвестиций</p>
+          <p className="text-gray-400">Выберите инвестиционный план и начните зарабатывать</p>
+          <Button className="bg-gradient-to-r from-blue-600 to-indigo-700 hover:opacity-90 mt-4">
+            <Plus className="h-4 w-4 mr-2" />
+            Выбрать план
+          </Button>
         </div>
       </div>
     )
@@ -351,7 +356,7 @@ export function InvestmentsList() {
       )}
 
       <div className="space-y-6">
-        {investments.map((investment, index) => {
+        {activeInvestments.map((investment, index) => {
         const timer = timers[investment.id] || { days: 0, hours: 0, minutes: 0, seconds: 0, total: 0 }
         const dailyReturnRate = investment.daily_return_rate || 0
         const totalReturn = investment.amount > 0 ? (investment.total_profit / investment.amount) * 100 : 0

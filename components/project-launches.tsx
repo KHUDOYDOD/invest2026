@@ -98,26 +98,22 @@ export function ProjectLaunches() {
   // Если есть только запущенные проекты - показываем компактный бейдж
   if (activeLaunches.length === 0 && launchedProjects.length > 0) {
     return (
-      <section className="py-4 px-4 bg-slate-900">
-        <div className="container mx-auto max-w-6xl flex justify-center">
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-green-600/20 to-emerald-600/20 backdrop-blur-sm border border-green-500/30 rounded-full"
-          >
-            <motion.div
-              animate={{ scale: [1, 1.2, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
-              className="w-2 h-2 bg-green-400 rounded-full mr-3"
-            />
-            <Rocket className="h-4 w-4 text-green-400 mr-2" />
-            <span className="text-green-300 text-sm font-medium">
-              Платформа работает с 2025 года
-            </span>
-          </motion.div>
-        </div>
-      </section>
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-green-600/20 to-emerald-600/20 backdrop-blur-sm border border-green-500/30 rounded-full"
+      >
+        <motion.div
+          animate={{ scale: [1, 1.2, 1] }}
+          transition={{ duration: 2, repeat: Infinity }}
+          className="w-2 h-2 bg-green-400 rounded-full mr-3"
+        />
+        <Rocket className="h-4 w-4 text-green-400 mr-2" />
+        <span className="text-green-300 text-sm font-medium">
+          Платформа работает с 2025 года
+        </span>
+      </motion.div>
     )
   }
 
